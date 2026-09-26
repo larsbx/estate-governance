@@ -1,0 +1,103 @@
+# estate-repository-v1 manifest template.
+#
+# Copy to the consumer root as estate.toml, replace placeholder values, keep
+# only applicable planes, then run the governance vendoring tool against the
+# consumer: it copies the audit and template contract and appends the
+# [governance] pin (revision + sha256 per vendored file). Never hand-edit it.
+version = 1
+template = "estate-repository-v1"
+
+[repository]
+id = "OWNER/REPOSITORY"
+kind = "research"
+lifecycle = "active"
+default_branch = "main"
+layout_status = "transitional"
+
+[principles]
+ordering = ["authority", "domain", "language"]
+empty_silos = "forbidden"
+cross_language_disagreement = "fail_closed"
+generated_surfaces = "derived_only"
+vendor_code = "non_local"
+experimental_code = "non_authoritative"
+
+# Keep only applicable planes. Add current/current_globs while transitional.
+
+[[plane]]
+id = "policy"
+target = "policy"
+authority = "governance"
+required = true
+current = ["estate.toml"]
+
+[[plane]]
+id = "kernel"
+target = "kernel"
+authority = "canonical_executable"
+required = false
+
+[[plane]]
+id = "proof"
+target = "proof"
+authority = "claim_state"
+required = false
+
+[[plane]]
+id = "reference"
+target = "reference"
+authority = "non_authoritative_reference"
+required = false
+
+[[plane]]
+id = "oracles"
+target = "oracles"
+authority = "non_authoritative_oracle"
+required = false
+
+[[plane]]
+id = "experiments"
+target = "experiments"
+authority = "non_authoritative_experiment"
+required = false
+
+[[plane]]
+id = "schemas"
+target = "schemas"
+authority = "contract"
+required = false
+
+[[plane]]
+id = "conformance"
+target = "conformance"
+authority = "evidence"
+required = false
+
+[[plane]]
+id = "vendor"
+target = "vendor"
+authority = "pinned_external"
+required = false
+
+[[plane]]
+id = "tooling"
+target = "tools"
+authority = "repository_tooling"
+required = false
+
+[[plane]]
+id = "docs"
+target = "docs"
+authority = "exposition"
+required = false
+
+[[language]]
+name = "PRIMARY_LANGUAGE"
+authority = "canonical"
+roles = ["kernel"]
+acceptance_authority = true
+
+[migration]
+mode = "boundary_first"
+mass_move = false
+next = []
