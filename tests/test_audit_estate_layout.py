@@ -181,3 +181,35 @@ def test_governance_source_must_not_pin_itself():
 def test_main_reports_failure(consumer: Path, capsys):
     assert audit.main(["--root", str(consumer)]) == 1
     assert "estate-layout audit failed" in capsys.readouterr().err
+
+
+def test_canonical_layout_requires_every_plane_at_its_target(consumer: Path):
+    data = pinned(consumer)
+    data["repository"]["layout_status"] = "canonical"
+    with pytest.raises(AssertionError, match="canonical layout: plane policy must map its target"):
+        audit.validate(data, consumer)
+
+
+def test_canonical_layout_rejects_glob_mappings(consumer: Path):
+    (consumer / "policy").mkdir()
+    (consumer / "kernel").mkdir()
+    data = pinned(consumer)
+    data["repository"]["layout_status"] = "canonical"
+    for plane in data["plane"]:
+        plane["current"] = [plane["target"]]
+    audit.validate(data, consumer)
+    data["plane"][1]["current_globs"] = ["kern*"]
+    with pytest.raises(AssertionError, match="canonical layout: plane kernel must map its target"):
+        audit.validate(data, consumer)
+
+
+def test_canonical_layout_requires_an_empty_migration_queue(consumer: Path):
+    (consumer / "policy").mkdir()
+    (consumer / "kernel").mkdir()
+    data = pinned(consumer)
+    data["repository"]["layout_status"] = "canonical"
+    for plane in data["plane"]:
+        plane["current"] = [plane["target"]]
+    data["migration"] = {"next": ["one more move"]}
+    with pytest.raises(AssertionError, match="canonical layout must have no pending migration"):
+        audit.validate(data, consumer)

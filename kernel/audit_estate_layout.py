@@ -121,6 +121,24 @@ def validate_planes(data: dict, root: Path) -> None:
     for mandatory in ("kernel", "policy"):
         require(mandatory in ids, f"{mandatory} plane is required for this template")
 
+    if data["repository"]["layout_status"] == "canonical":
+        validate_canonical(data, root)
+
+
+def validate_canonical(data: dict, root: Path) -> None:
+    """Canonical: every plane maps its target, beside which only root-level files may sit."""
+    for plane in data["plane"]:
+        current = plane.get("current", [])
+        extras = [rel for rel in current if rel != plane["target"]]
+        require(
+            plane["target"] in current
+            and not plane.get("current_globs")
+            and all("/" not in rel and (root / rel).is_file() for rel in extras),
+            f"canonical layout: plane {plane['id']} must map its target {plane['target']!r} "
+            "plus only root-level files",
+        )
+    require(not data.get("migration", {}).get("next"), "canonical layout must have no pending migration")
+
 
 def validate_languages(data: dict) -> None:
     names: set[str] = set()

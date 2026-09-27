@@ -139,6 +139,8 @@ Every adopter runs the estate-layout audit, vendored at
 - a supporting language holding acceptance authority;
 - missing architecture entrypoints (`ARCHITECTURE.md` and this contract);
 - a missing, incomplete, or mismatching `[governance]` pin (below);
+- under `layout_status = "canonical"`: a plane not mapped to its target (only
+  root-level files may sit beside it), any glob mapping, or a pending migration step;
 - a pixi workspace or connected polyglot manifest naming a different repository,
   or a polyglot manifest that does not link to `estate.toml`.
 
@@ -180,6 +182,6 @@ re-vendoring, which is an explicit, reviewable pin bump.
 | `larsbx/finite-julia-set-research` | transitional | Mojo |
 | `larsbx/finite-math-kernels` | transitional | Mojo |
 | `larsbx/julia-oracle-lab` | transitional | Julia |
-| `larsbx/langlands-lab` | transitional | Python |
+| `larsbx/langlands-lab` | canonical | Python |
 | `larsbx/mandelbrot-bulbs-and-ford-circles-research` | transitional | Python |
 | `larsbx/estate-governance` (template source; carries no pin) | canonical | Python |
