@@ -1,0 +1,13 @@
+[project]
+name = "estate-governance"
+version = "1.0.0"
+description = "Canonical estate repository template, layout audit, and vendoring tool"
+requires-python = ">=3.11"
+
+[project.optional-dependencies]
+test = ["pytest>=8"]
+
+[tool.pytest.ini_options]
+pythonpath = ["kernel", "tools"]
+testpaths = ["tests"]
+addopts = "-q"

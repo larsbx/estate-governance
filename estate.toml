@@ -1,0 +1,65 @@
+version = 1
+template = "estate-repository-v1"
+
+[repository]
+id = "larsbx/estate-governance"
+kind = "governance"
+lifecycle = "active"
+default_branch = "main"
+layout_status = "canonical"
+
+[principles]
+ordering = ["authority", "domain", "language"]
+empty_silos = "forbidden"
+cross_language_disagreement = "fail_closed"
+generated_surfaces = "derived_only"
+vendor_code = "non_local"
+experimental_code = "non_authoritative"
+
+# This repository is the template source: it carries no [governance] pin.
+
+[[plane]]
+id = "policy"
+target = "policy"
+authority = "governance"
+required = true
+current = ["estate.toml", "policy"]
+
+[[plane]]
+id = "kernel"
+target = "kernel"
+authority = "canonical_executable"
+required = true
+current = ["kernel"]
+
+[[plane]]
+id = "conformance"
+target = "tests"
+authority = "evidence"
+required = true
+current = ["tests"]
+
+[[plane]]
+id = "tooling"
+target = "tools"
+authority = "repository_tooling"
+required = true
+current = ["tools"]
+
+[[plane]]
+id = "docs"
+target = "docs"
+authority = "exposition"
+required = true
+current = ["docs", "ARCHITECTURE.md", "README.md"]
+
+[[language]]
+name = "Python"
+authority = "canonical"
+roles = ["kernel", "tooling"]
+acceptance_authority = true
+
+[migration]
+mode = "boundary_first"
+mass_move = false
+next = []
