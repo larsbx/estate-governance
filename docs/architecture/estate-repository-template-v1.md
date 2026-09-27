@@ -141,7 +141,8 @@ Every adopter runs the estate-layout audit, vendored at
 - a missing, incomplete, or mismatching `[governance]` pin (below);
 - under `layout_status = "canonical"`: a plane not mapped to its target (only
   root-level files may sit beside it), any glob mapping, a pending migration step,
-  or a top-level directory (hidden and build directories aside) that is no plane's target;
+  or a top-level directory that is no plane's target (exempt: hidden directories,
+  `__pycache__`, `*.egg-info`, `build`, `dist`);
 - a pixi workspace or connected polyglot manifest naming a different repository,
   or a polyglot manifest that does not link to `estate.toml`.
 

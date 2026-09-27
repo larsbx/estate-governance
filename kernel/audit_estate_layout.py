@@ -30,8 +30,9 @@ VENDORED: dict[str, str] = {
     "docs/architecture/estate-repository-template-v1.md": "docs/architecture/estate-repository-template-v1.md",
 }
 
-#: Top-level directories outside every plane: hidden ones and build artifacts.
-UNTRACKED = re.compile(r"\..*|__pycache__|.*\.egg-info")
+#: Top-level directories outside every plane: hidden ones and build artifacts
+#: (Python bytecode, setuptools metadata, and the standard build/ and dist/ outputs).
+UNTRACKED = re.compile(r"\..*|__pycache__|.*\.egg-info|build|dist")
 
 ENTRYPOINTS = ("ARCHITECTURE.md", "docs/architecture/estate-repository-template-v1.md")
 
