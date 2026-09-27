@@ -140,7 +140,8 @@ Every adopter runs the estate-layout audit, vendored at
 - missing architecture entrypoints (`ARCHITECTURE.md` and this contract);
 - a missing, incomplete, or mismatching `[governance]` pin (below);
 - under `layout_status = "canonical"`: a plane not mapped to its target (only
-  root-level files may sit beside it), any glob mapping, or a pending migration step;
+  root-level files may sit beside it), any glob mapping, a pending migration step,
+  or a top-level directory (hidden and build directories aside) that is no plane's target;
 - a pixi workspace or connected polyglot manifest naming a different repository,
   or a polyglot manifest that does not link to `estate.toml`.
 
@@ -176,12 +177,14 @@ re-vendoring, which is an explicit, reviewable pin bump.
 
 ## Adopters
 
-| Repository | Layout | Canonical language |
-| --- | --- | --- |
-| `larsbx/finite-mandelbrot-research` (first adopter) | transitional | Mojo |
-| `larsbx/finite-julia-set-research` | transitional | Mojo |
-| `larsbx/finite-math-kernels` | transitional | Mojo |
-| `larsbx/julia-oracle-lab` | transitional | Julia |
-| `larsbx/langlands-lab` | canonical | Python |
-| `larsbx/mandelbrot-bulbs-and-ford-circles-research` | transitional | Python |
-| `larsbx/estate-governance` (template source; carries no pin) | canonical | Python |
+Layout status lives in each adopter's `estate.toml`, never here.
+
+| Repository | Canonical language |
+| --- | --- |
+| `larsbx/finite-mandelbrot-research` (first adopter) | Mojo |
+| `larsbx/finite-julia-set-research` | Mojo |
+| `larsbx/finite-math-kernels` | Mojo |
+| `larsbx/julia-oracle-lab` | Julia |
+| `larsbx/langlands-lab` | Python |
+| `larsbx/mandelbrot-bulbs-and-ford-circles-research` | Python |
+| `larsbx/estate-governance` (template source; carries no pin) | Python |

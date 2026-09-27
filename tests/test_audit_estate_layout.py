@@ -190,26 +190,49 @@ def test_canonical_layout_requires_every_plane_at_its_target(consumer: Path):
         audit.validate(data, consumer)
 
 
-def test_canonical_layout_rejects_glob_mappings(consumer: Path):
-    (consumer / "policy").mkdir()
-    (consumer / "kernel").mkdir()
-    data = pinned(consumer)
+def canonical(root: Path) -> dict:
+    """The baseline consumer on the canonical layout, with vendored tools/ and docs/ claimed."""
+    (root / "src").rmdir()
+    for target in ("policy", "kernel"):
+        (root / target).mkdir(exist_ok=True)
+    data = pinned(root)
     data["repository"]["layout_status"] = "canonical"
     for plane in data["plane"]:
         plane["current"] = [plane["target"]]
-    audit.validate(data, consumer)
+    data["plane"] += [
+        {"id": "tooling", "target": "tools", "authority": "repository_tooling", "current": ["tools"]},
+        {"id": "docs", "target": "docs", "authority": "exposition", "current": ["docs", "ARCHITECTURE.md"]},
+    ]
+    return data
+
+
+def test_canonical_layout_rejects_glob_mappings(consumer: Path):
+    data = canonical(consumer)
     data["plane"][1]["current_globs"] = ["kern*"]
     with pytest.raises(AssertionError, match="canonical layout: plane kernel must map its target"):
         audit.validate(data, consumer)
 
 
 def test_canonical_layout_requires_an_empty_migration_queue(consumer: Path):
-    (consumer / "policy").mkdir()
-    (consumer / "kernel").mkdir()
-    data = pinned(consumer)
-    data["repository"]["layout_status"] = "canonical"
-    for plane in data["plane"]:
-        plane["current"] = [plane["target"]]
+    data = canonical(consumer)
     data["migration"] = {"next": ["one more move"]}
     with pytest.raises(AssertionError, match="canonical layout must have no pending migration"):
         audit.validate(data, consumer)
+
+
+def test_canonical_layout_passes_when_every_directory_is_claimed(consumer: Path):
+    audit.validate(canonical(consumer), consumer)
+
+
+def test_canonical_layout_rejects_an_unclaimed_top_level_directory(consumer: Path):
+    data = canonical(consumer)
+    (consumer / "bin").mkdir()
+    with pytest.raises(AssertionError, match="canonical layout: top-level directory 'bin' belongs to no plane"):
+        audit.validate(data, consumer)
+
+
+def test_canonical_coverage_ignores_hidden_and_build_directories(consumer: Path):
+    data = canonical(consumer)
+    for name in (".github", "__pycache__", "pkg.egg-info"):
+        (consumer / name).mkdir()
+    audit.validate(data, consumer)
