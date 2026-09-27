@@ -31,8 +31,9 @@ VENDORED: dict[str, str] = {
 }
 
 #: Top-level directories outside every plane: hidden ones and build artifacts
-#: (Python bytecode, setuptools metadata, and the standard build/ and dist/ outputs).
-UNTRACKED = re.compile(r"\..*|__pycache__|.*\.egg-info|build|dist")
+#: (Python bytecode, setuptools metadata, the standard build/ and dist/ outputs,
+#: and the coverage/ report directory, which Julia coverage tooling writes at the root).
+UNTRACKED = re.compile(r"\..*|__pycache__|.*\.egg-info|build|dist|coverage")
 
 ENTRYPOINTS = ("ARCHITECTURE.md", "docs/architecture/estate-repository-template-v1.md")
 
