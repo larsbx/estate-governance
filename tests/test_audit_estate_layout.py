@@ -233,6 +233,14 @@ def test_canonical_layout_rejects_an_unclaimed_top_level_directory(consumer: Pat
 
 def test_canonical_coverage_ignores_hidden_and_build_directories(consumer: Path):
     data = canonical(consumer)
-    for name in (".github", "__pycache__", "pkg.egg-info"):
+    for name in (".github", "__pycache__", "pkg.egg-info", "build", "dist", "coverage"):
         (consumer / name).mkdir()
     audit.validate(data, consumer)
+
+
+@pytest.mark.parametrize("name", ["builds", "distribution", "coverages", "src"])
+def test_canonical_coverage_exempts_build_outputs_by_exact_name_only(consumer: Path, name: str):
+    data = canonical(consumer)
+    (consumer / name).mkdir(exist_ok=True)
+    with pytest.raises(AssertionError, match=f"top-level directory '{name}' belongs to no plane"):
+        audit.validate(data, consumer)
