@@ -1,12 +1,27 @@
-version = 1
-template = "estate-repository-v1"
+version = 2
+template = "estate-repository-v2"
 
-[repository]
-id = "larsbx/estate-governance"
-kind = "governance"
-lifecycle = "active"
+# SPEC_estate v0.1 §3 fields, then this template's layout sections.
+
+[repo]
+id = "estate-governance"
+slug = "larsbx/estate-governance"
+class = "meta"                # the estate meta-repo sits outside the layering (SPEC_estate §11)
+band = "STANDARD"
+stage = "candidate"           # written by estate CI only (no estate CI ledger exists yet)
 default_branch = "main"
-layout_status = "canonical"
+inv = []
+
+[origin]
+decided_by = "proposed"       # agent-authored; the owner adopts it by decision record
+chats = []
+artifacts = []
+
+[exports]
+names = ["estate-repository-v2", "estate.audit", "estate.pin"]
+
+[layout]
+status = "canonical"
 
 [principles]
 ordering = ["authority", "domain", "language"]
@@ -16,14 +31,14 @@ generated_surfaces = "derived_only"
 vendor_code = "non_local"
 experimental_code = "non_authoritative"
 
-# This repository is the template source: it carries no [governance] pin.
+# The meta-repo imports nothing: it carries no [[dep]].
 
 [[plane]]
 id = "policy"
 target = "policy"
 authority = "governance"
 required = true
-current = ["estate.toml", "policy"]
+current = ["policy", "ESTATE.toml"]
 
 [[plane]]
 id = "kernel"

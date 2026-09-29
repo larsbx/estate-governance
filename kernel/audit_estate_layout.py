@@ -1,13 +1,22 @@
 #!/usr/bin/env python3
-"""Validate the estate repository architecture manifest (estate-repository-v1).
+"""Validate a repository's estate manifest, ESTATE.toml (estate-repository-v2).
 
-Canonical source: larsbx/estate-governance, kernel/audit_estate_layout.py.
-Consumers carry a byte-identical copy at tools/audit_estate_layout.py, pinned
-by sha256 in the [governance] table of their estate.toml. Never edit a
-vendored copy; change the source and re-vendor.
+The manifest carries SPEC_estate v0.1 §3 (identity, class, layer, band,
+stage, origin, code and conformance edges, exports) and this template's
+in-repository layout (authority planes, languages, migration queue).
 
-This audit is intentionally domain-agnostic. Domain theorem status and
-certificate acceptance remain consumer responsibilities.
+Canonical and only copy: larsbx/estate-governance, kernel/audit_estate_layout.py.
+Consumers do not vendor it (SPEC_estate §5). Their CI checks this repository
+out at the commit their ESTATE.toml pins as a [[dep]] and runs
+
+    python .estate/kernel/audit_estate_layout.py --root .
+
+The audit then refuses to pass unless its own bytes hash to that pin, so a
+consumer is always judged by exactly the audit it declared.
+
+This audit checks one manifest against one tree. The estate-wide checks that
+need every manifest at once (SPEC_estate EA1-EA7: acyclicity, layering across
+edges, name uniqueness, the stage ledger) are not implemented here.
 """
 
 from __future__ import annotations
@@ -15,27 +24,43 @@ from __future__ import annotations
 import argparse
 import glob
 import hashlib
+import json
 import re
 import sys
 import tomllib
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+MANIFEST = "ESTATE.toml"
+TEMPLATE = "estate-repository-v2"
 
 GOVERNANCE_REPOSITORY = "larsbx/estate-governance"
+GOVERNANCE_ID = GOVERNANCE_REPOSITORY.split("/")[1]
 
-#: Consumer path -> source path in the governance repository.
-VENDORED: dict[str, str] = {
-    "tools/audit_estate_layout.py": "kernel/audit_estate_layout.py",
-    "docs/architecture/estate-repository-template-v1.md": "docs/architecture/estate-repository-template-v1.md",
+#: SPEC_estate §1: class -> (default layer, default band). The meta-repo sits outside the layering.
+CLASSES: dict[str, tuple[int, str]] = {
+    "kernel": (0, "HARDENED"),
+    "substrate": (1, "STANDARD"),
+    "platform": (2, "STANDARD"),
+    "app": (3, "STANDARD"),
+    "research": (3, "EXPLORE"),
+    "corpus": (3, "EXPLORE"),
 }
+META = "meta"
+BANDS = ("EXPLORE", "STANDARD", "HARDENED", "LAW")
+STAGES = ("candidate", "seeded", "incubating", "stable", "frozen", "archived")
 
-#: Top-level directories outside every plane: hidden ones and build artifacts
-#: (Python bytecode, setuptools metadata, the standard build/ and dist/ outputs,
-#: and the coverage/ report directory, which Julia coverage tooling writes at the root).
+PIN = re.compile(r"sha256:[0-9a-f]{64}|tag:[A-Za-z0-9._/-]+")
+REV = re.compile(r"[0-9a-f]{40}")
+DECISION = re.compile(r"DR-\d{4}")
+
+#: Top-level directories outside every plane: hidden ones (including the .estate
+#: checkout of this repository) and build artifacts (Python bytecode, setuptools
+#: metadata, the standard build/ and dist/ outputs, and the coverage/ report
+#: directory, which Julia coverage tooling writes at the root).
 UNTRACKED = re.compile(r"\..*|__pycache__|.*\.egg-info|build|dist|coverage")
 
-ENTRYPOINTS = ("ARCHITECTURE.md", "docs/architecture/estate-repository-template-v1.md")
+CONTRACT = "docs/architecture/estate-repository-template-v2.md"
 
 ALLOWED_PLANE_AUTHORITIES = frozenset({
     "governance",
@@ -69,22 +94,100 @@ def sha256(path: Path) -> str:
 
 
 def load(path: Path | None = None) -> dict:
-    path = path or ROOT / "estate.toml"
+    path = path or ROOT / MANIFEST
     require(path.is_file(), f"missing estate manifest: {path}")
     return tomllib.loads(path.read_text(encoding="utf-8"))
 
 
-def validate_identity(data: dict) -> str:
-    require(data.get("version") == 1, "estate.toml version must be 1")
-    require(data.get("template") == "estate-repository-v1",
-            "estate.toml template must be estate-repository-v1")
-    repository = data.get("repository", {})
-    repository_id = repository.get("id", "")
-    require(re.fullmatch(r"[^/\s]+/[^/\s]+", repository_id),
-            "repository.id must be OWNER/REPOSITORY")
-    require(repository.get("layout_status") in {"transitional", "canonical"},
-            "repository.layout_status must be transitional or canonical")
-    return repository_id
+def vendored_digest(root: Path, repository: str) -> str:
+    """sha256 over the vendored.toml packages taken from `repository`, canonically serialized."""
+    packages = tomllib.loads((root / "vendored.toml").read_text(encoding="utf-8")).get("package", [])
+    rows = sorted(
+        ({k: p.get(k) for k in ("name", "commit", "root", "files")} for p in packages if p.get("repository") == repository),
+        key=lambda p: p["name"],
+    )
+    return hashlib.sha256(json.dumps(rows, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+
+
+def validate_repo(data: dict) -> dict:
+    require(data.get("version") == 2, "ESTATE.toml version must be 2")
+    require(data.get("template") == TEMPLATE, f"ESTATE.toml template must be {TEMPLATE}")
+    repo = data.get("repo", {})
+    rid, slug, cls = repo.get("id", ""), repo.get("slug", ""), repo.get("class")
+    require(re.fullmatch(r"[a-z0-9][a-z0-9._-]*", rid), "repo.id must be a lowercase repository name")
+    require(re.fullmatch(r"[^/\s]+/[^/\s]+", slug), "repo.slug must be OWNER/REPOSITORY")
+    require(slug.split("/")[1] == rid, "repo.slug must name repo.id")
+    require(cls in CLASSES or cls == META, f"repo.class must be one of {sorted([*CLASSES, META])}")
+    require(repo.get("band") in BANDS, f"repo.band must be one of {list(BANDS)}")
+    require(repo.get("stage") in STAGES, f"repo.stage must be one of {list(STAGES)}")
+    require("override" not in repo or DECISION.fullmatch(str(repo["override"])),
+            "repo.override must name a decision record (DR-nnnn)")
+    if cls == META:
+        require(slug == GOVERNANCE_REPOSITORY, f"class meta is reserved for {GOVERNANCE_REPOSITORY}")
+        require("layer" not in repo, "the estate meta-repo sits outside the layering: no layer")
+    else:
+        layer, band = CLASSES[cls]
+        if "override" not in repo:
+            require(repo.get("layer") == layer,
+                    f"layer {repo.get('layer')} differs from the {cls} default {layer}; name a decision record in repo.override")
+            require(repo["band"] == band,
+                    f"band {repo['band']} differs from the {cls} default {band}; name a decision record in repo.override")
+        require(repo.get("layer") in (0, 1, 2, 3), "repo.layer must be 0, 1, 2 or 3")
+    for prefix in repo.get("inv", []):
+        require(re.fullmatch(r"INV-[A-Z][A-Z0-9]*", prefix), f"INV family prefix must look like INV-XX: {prefix!r}")
+    return repo
+
+
+def validate_origin(data: dict, repo: dict) -> None:
+    origin = data.get("origin", {})
+    require(origin.get("decided_by") in ("stated", "proposed"), "origin.decided_by must be stated or proposed")
+    if origin["decided_by"] == "proposed":
+        require(repo["stage"] == "candidate", "decided_by = proposed caps the repo at candidate (SPEC_estate §3)")
+    suite = origin.get("genesis_suite")
+    require(suite is None or suite == "green" or re.fullmatch(r"xfail:\S+", suite),
+            "origin.genesis_suite must be green or xfail:<test ids>")
+    require(all(re.fullmatch(r"https://\S+", c) for c in origin.get("chats", [])), "origin.chats must be https links")
+    require(all(isinstance(a, dict) and a.get("path") and re.fullmatch(r"sha256:[0-9a-f]{64}", str(a.get("h", "")))
+                for a in origin.get("artifacts", [])),
+            "origin.artifacts entries need a path and a sha256 h")
+
+
+def validate_edges(data: dict, repo: dict, root: Path) -> None:
+    deps = data.get("dep", [])
+    ids = [d.get("id") for d in deps]
+    for dup in {i for i in ids if ids.count(i) > 1}:
+        fail(f"duplicate dep: {dup}")
+    for dep in deps:
+        require(PIN.fullmatch(str(dep.get("pin", ""))),
+                f"dep {dep.get('id')}: pin must be a content hash or signed tag (sha256:... or tag:...), never a floating ref")
+
+    if repo["slug"] == GOVERNANCE_REPOSITORY:
+        require(not deps, "the estate meta-repo imports nothing (SPEC_estate §11)")
+    else:
+        governance = next((d for d in deps if d.get("id") == GOVERNANCE_ID), None)
+        require(governance, f"a consumer must depend on {GOVERNANCE_ID} ([[dep]] with rev and pin)")
+        require(REV.fullmatch(str(governance.get("rev", ""))), f"dep {GOVERNANCE_ID}: rev must be a 40-hex commit")
+        require(governance["pin"] == "sha256:" + sha256(Path(__file__)),
+                f"dep {GOVERNANCE_ID}: pin does not match the running audit; check out the pinned rev")
+        require(not (root / "tools" / "audit_estate_layout.py").exists(),
+                "a vendored copy of the estate audit is forbidden (SPEC_estate §5); CI checks governance out")
+
+    vendored = root / "vendored.toml"
+    if vendored.is_file():
+        packages = tomllib.loads(vendored.read_text(encoding="utf-8")).get("package", [])
+        for source in sorted({p.get("repository") for p in packages}):
+            dep = next((d for d in deps if d.get("id") == source.split("/")[1]), None)
+            require(dep, f"vendors packages from {source} without a [[dep]]")
+            require(dep["pin"] == "sha256:" + vendored_digest(root, source),
+                    f"dep {dep['id']}: pin disagrees with vendored.toml")
+
+    for edge in data.get("conform", []):
+        require(edge.get("id"), "conform.id is required")
+        require(edge.get("vectors"), f"conform {edge['id']}: vectors is required")
+
+    names = data.get("exports", {}).get("names", [])
+    for dup in {n for n in names if names.count(n) > 1}:
+        fail(f"duplicate export: {dup}")
 
 
 def validate_principles(data: dict) -> None:
@@ -97,6 +200,8 @@ def validate_principles(data: dict) -> None:
 
 
 def validate_planes(data: dict, root: Path) -> None:
+    require(data.get("layout", {}).get("status") in {"transitional", "canonical"},
+            "layout.status must be transitional or canonical")
     planes = data.get("plane", [])
     require(planes, "at least one authority plane is required")
 
@@ -126,7 +231,7 @@ def validate_planes(data: dict, root: Path) -> None:
     for mandatory in ("kernel", "policy"):
         require(mandatory in ids, f"{mandatory} plane is required for this template")
 
-    if data["repository"]["layout_status"] == "canonical":
+    if data["layout"]["status"] == "canonical":
         validate_canonical(data, root)
 
 
@@ -169,53 +274,34 @@ def validate_languages(data: dict) -> None:
             "canonical language must own the kernel role")
 
 
-def validate_governance(data: dict, repository_id: str, root: Path) -> None:
-    governance = data.get("governance")
-    if repository_id == GOVERNANCE_REPOSITORY:
-        require(governance is None, "governance source repository must not pin itself")
-        return
-
-    require(governance and governance.get("repository") == GOVERNANCE_REPOSITORY,
-            f"[governance] must pin repository {GOVERNANCE_REPOSITORY}")
-    require(re.fullmatch(r"[0-9a-f]{40}", governance.get("revision", "")),
-            "governance.revision must be a 40-hex commit")
-    digests = governance.get("sha256", {})
-    require(set(digests) == set(VENDORED),
-            f"governance.sha256 must cover exactly the vendored file set {sorted(VENDORED)}")
-    for rel, digest in sorted(digests.items()):
-        require((root / rel).is_file(), f"missing vendored governance file: {rel}")
-        require(sha256(root / rel) == digest,
-                f"vendored governance file digest mismatch (local edit?): {rel}")
-
-
-def validate_workspaces(repository_id: str, root: Path) -> None:
+def validate_workspaces(slug: str, root: Path) -> None:
     workspace = root / "pixi.toml"
     if workspace.is_file():
-        expected = repository_id.split("/", 1)[1]
+        expected = slug.split("/", 1)[1]
         name = tomllib.loads(workspace.read_text(encoding="utf-8")).get("workspace", {}).get("name")
-        require(name == expected, f"pixi workspace identity disagrees with estate.toml: expected {expected!r}")
+        require(name == expected, f"pixi workspace identity disagrees with {MANIFEST}: expected {expected!r}")
 
     polyglot = root / "polyglot.manifest.toml"
     if polyglot.is_file():
         pdata = tomllib.loads(polyglot.read_text(encoding="utf-8"))
-        require(pdata.get("repository") == repository_id,
-                "polyglot.manifest.toml repository disagrees with estate.toml")
-        require(pdata.get("estate", {}).get("manifest") == "estate.toml",
-                "polyglot.manifest.toml must link to estate.toml")
+        require(pdata.get("repository") == slug, f"polyglot.manifest.toml repository disagrees with {MANIFEST}")
+        require(pdata.get("estate", {}).get("manifest") == MANIFEST, f"polyglot.manifest.toml must link to {MANIFEST}")
         if (root / "oracles/julia").exists():
             require("Julia" in pdata.get("authority", {}).get("supporting_languages", []),
                     "Julia oracle lane exists but polyglot supporting_languages omits Julia")
 
 
 def validate(data: dict, root: Path = ROOT) -> None:
-    repository_id = validate_identity(data)
+    repo = validate_repo(data)
+    validate_origin(data, repo)
     validate_principles(data)
     validate_planes(data, root)
     validate_languages(data)
-    for required in ENTRYPOINTS:
+    entrypoints = ["ARCHITECTURE.md"] + ([CONTRACT] if repo["slug"] == GOVERNANCE_REPOSITORY else [])
+    for required in entrypoints:
         require((root / required).is_file(), f"missing architecture entrypoint: {required}")
-    validate_governance(data, repository_id, root)
-    validate_workspaces(repository_id, root)
+    validate_edges(data, repo, root)
+    validate_workspaces(repo["slug"], root)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -223,11 +309,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--root", type=Path, default=ROOT, help="repository root (default: this checkout)")
     root = parser.parse_args(argv).root.resolve()
     try:
-        validate(load(root / "estate.toml"), root)
+        validate(load(root / MANIFEST), root)
     except (AssertionError, tomllib.TOMLDecodeError) as exc:
-        print(f"estate-layout audit failed: {exc}", file=sys.stderr)
+        print(f"estate audit failed: {exc}", file=sys.stderr)
         return 1
-    print("estate-layout audit passed")
+    print("estate audit passed")
     return 0
 
 
