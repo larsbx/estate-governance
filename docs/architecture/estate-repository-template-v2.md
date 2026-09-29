@@ -156,18 +156,23 @@ status = "canonical"          # transitional | canonical
 
 ## Required CI gate
 
-Every adopter runs the audit from a checkout of `larsbx/estate-governance` at the
-`rev` its `ESTATE.toml` pins, on every push and pull request. The repository is
-private, so the checkout uses the `ESTATE_GOVERNANCE_TOKEN` secret (a read-only
-token for `estate-governance`); without it the step fails, closed:
+Every adopter retrieves the audit as a public, immutable, content-addressed artifact
+mirrored from this private governance repository. The workflow downloads the artifact
+from a public estate repository at a fixed commit, verifies its SHA-256 against
+`ESTATE.toml`, and only then executes it. No credential is exposed to PR-controlled
+code, and fork and Dependabot pull requests use the same fail-closed path.
 
 ```yaml
-- name: Estate audit (pinned estate-governance)
+- name: Estate audit (pinned public artifact)
   run: |
+    set -eu
     rev=$(python3 -c 'import tomllib; print(next(d["rev"] for d in tomllib.load(open("ESTATE.toml", "rb"))["dep"] if d["id"] == "estate-governance"))')
-    git clone -q "https://x-access-token:${{ secrets.ESTATE_GOVERNANCE_TOKEN }}@github.com/larsbx/estate-governance" .estate
-    git -C .estate checkout -q "$rev"
-    python3 .estate/kernel/audit_estate_layout.py --root .
+    pin=$(python3 -c 'import tomllib; print(next(d["pin"] for d in tomllib.load(open("ESTATE.toml", "rb"))["dep"] if d["id"] == "estate-governance"))')
+    test "$rev" = "<governance-commit>"
+    curl --fail --location --proto '=https' --tlsv1.2 --output /tmp/estate-audit.py \
+      "https://raw.githubusercontent.com/larsbx/finite-math-kernels/<artifact-commit>/policy/estate-audits/$rev.py"
+    printf '%s  %s\n' "${pin#sha256:}" /tmp/estate-audit.py | sha256sum --check --strict -
+    python3 /tmp/estate-audit.py --root .
 ```
 
 The audit fails closed on:

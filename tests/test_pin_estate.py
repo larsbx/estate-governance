@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 import hashlib
+import re
 import tomllib
+
+import pytest
 from pathlib import Path
 
 import audit_estate_layout as audit
@@ -40,9 +43,18 @@ root = "vendor/mojo"
 
 
 def consumer(tmp_path: Path) -> Path:
+    target = tmp_path / "vendor/mojo/finite_exact/rat_q.mojo"
+    target.parent.mkdir(parents=True)
+    target.write_bytes(b"vendored exact arithmetic")
+    vendored = VENDORED.replace("d" * 64, audit.sha256(target))
     (tmp_path / "ESTATE.toml").write_text(MANIFEST, encoding="utf-8")
-    (tmp_path / "vendored.toml").write_text(VENDORED, encoding="utf-8")
+    (tmp_path / "vendored.toml").write_text(vendored, encoding="utf-8")
     return tmp_path
+
+
+@pytest.fixture(autouse=True)
+def committed_audit(monkeypatch):
+    monkeypatch.setattr(pin_estate, "audit_at_revision", lambda revision: b"committed audit")
 
 
 def deps(root: Path) -> dict:
@@ -53,7 +65,7 @@ def test_pin_sets_the_governance_rev_and_audit_digest_and_the_vendored_digests(t
     root = consumer(tmp_path)
     pin_estate.pin(root, REV)
     d = deps(root)
-    audit_digest = hashlib.sha256((ROOT / "kernel" / "audit_estate_layout.py").read_bytes()).hexdigest()
+    audit_digest = hashlib.sha256(b"committed audit").hexdigest()
     assert d["estate-governance"] == {"id": "estate-governance", "rev": REV, "pin": "sha256:" + audit_digest}
     assert d["finite-math-kernels"]["pin"] == "sha256:" + audit.vendored_digest(root, "larsbx/finite-math-kernels")
 
@@ -83,3 +95,22 @@ def test_a_missing_governance_dep_is_an_error(tmp_path: Path):
         assert "estate-governance" in str(exc)
     else:
         raise AssertionError("expected a failure")
+
+
+def test_revision_hashes_committed_audit_not_worktree(tmp_path, monkeypatch):
+    root = consumer(tmp_path)
+    monkeypatch.setattr(pin_estate, "audit_at_revision", lambda rev: b"committed audit")
+    values = pin_estate.wanted(root, REV)
+    assert values[pin_estate.GOVERNANCE_ID]["pin"] == "sha256:" + hashlib.sha256(b"committed audit").hexdigest()
+
+
+@pytest.mark.parametrize("field", ["rev", "pin"])
+def test_check_rejects_missing_required_governance_field(tmp_path, monkeypatch, field):
+    root = consumer(tmp_path)
+    revision = "a" * 40
+    monkeypatch.setattr(pin_estate, "audit_at_revision", lambda rev: b"audit")
+    manifest = root / pin_estate.MANIFEST
+    text = manifest.read_text(encoding="utf-8")
+    text = re.sub(rf"^{field}\s*=.*\n", "", text, flags=re.MULTILINE)
+    manifest.write_text(text, encoding="utf-8")
+    assert pin_estate.main([str(root), "--revision", revision, "--check"]) == 1

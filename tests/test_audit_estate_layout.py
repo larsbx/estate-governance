@@ -203,7 +203,11 @@ root = "vendor/mojo"
 
 
 def with_kernels_dep(root: Path) -> dict:
-    (root / "vendored.toml").write_text(VENDORED_TOML, encoding="utf-8")
+    target = root / "vendor/mojo/finite_exact/rat_q.mojo"
+    target.parent.mkdir(parents=True)
+    target.write_bytes(b"vendored exact arithmetic")
+    manifest = VENDORED_TOML.replace("b" * 64, audit.sha256(target))
+    (root / "vendored.toml").write_text(manifest, encoding="utf-8")
     data = baseline()
     data["dep"].append({"id": "finite-math-kernels", "pin": "sha256:" + audit.vendored_digest(root, KERNELS)})
     return data
@@ -325,4 +329,12 @@ def test_canonical_coverage_exempts_build_outputs_by_exact_name_only(consumer: P
     data = canonical(consumer)
     (consumer / name).mkdir(exist_ok=True)
     with pytest.raises(AssertionError, match=f"top-level directory '{name}' belongs to no plane"):
+        audit.validate(data, consumer)
+
+
+def test_vendored_digest_rejects_changed_listed_file(consumer: Path):
+    data = with_kernels_dep(consumer)
+    file = consumer / "vendor/mojo/finite_exact/rat_q.mojo"
+    file.write_bytes(b"changed")
+    with pytest.raises(AssertionError, match="content hash mismatch"):
         audit.validate(data, consumer)

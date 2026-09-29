@@ -100,12 +100,34 @@ def load(path: Path | None = None) -> dict:
 
 
 def vendored_digest(root: Path, repository: str) -> str:
-    """sha256 over the vendored.toml packages taken from `repository`, canonically serialized."""
+    """Validate and hash vendored metadata together with the listed file contents."""
     packages = tomllib.loads((root / "vendored.toml").read_text(encoding="utf-8")).get("package", [])
-    rows = sorted(
-        ({k: p.get(k) for k in ("name", "commit", "root", "files")} for p in packages if p.get("repository") == repository),
-        key=lambda p: p["name"],
-    )
+    rows = []
+    for package in packages:
+        if package.get("repository") != repository:
+            continue
+        package_root = root / str(package.get("root", ""))
+        files = package.get("files", {})
+        require(isinstance(files, dict) and files, f"vendored package {package.get('name')}: files are required")
+        bound_files = {}
+        for rel, recorded in sorted(files.items()):
+            candidate = (package_root / rel).resolve()
+            try:
+                candidate.relative_to(root.resolve())
+            except ValueError:
+                fail(f"vendored package {package.get('name')}: file escapes repository: {rel}")
+            require(candidate.is_file(), f"vendored package {package.get('name')}: missing listed file {rel}")
+            actual = sha256(candidate)
+            require(actual == recorded,
+                    f"vendored package {package.get('name')}: content hash mismatch for {rel}")
+            bound_files[rel] = {"recorded": recorded, "actual": actual}
+        rows.append({
+            "name": package.get("name"),
+            "commit": package.get("commit"),
+            "root": package.get("root"),
+            "files": bound_files,
+        })
+    rows.sort(key=lambda row: row["name"])
     return hashlib.sha256(json.dumps(rows, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
 
 

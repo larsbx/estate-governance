@@ -14,6 +14,7 @@ Usage: pin_estate.py CONSUMER_ROOT [--revision SHA] [--check]
 from __future__ import annotations
 
 import argparse
+import hashlib
 import re
 import subprocess
 import sys
@@ -23,7 +24,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "kernel"))
 
-from audit_estate_layout import GOVERNANCE_ID, MANIFEST, sha256, vendored_digest  # noqa: E402
+from audit_estate_layout import GOVERNANCE_ID, MANIFEST, vendored_digest  # noqa: E402
 
 HEADER = re.compile(r"^\s*\[")
 FIELD = re.compile(r'^(?P<key>pin|rev)(?P<eq>\s*=\s*)"[^"]*"(?P<rest>.*)$')
@@ -33,9 +34,21 @@ def head_revision() -> str:
     return subprocess.run(["git", "-C", str(ROOT), "rev-parse", "HEAD"], check=True, capture_output=True, text=True).stdout.strip()
 
 
+def audit_at_revision(revision: str) -> bytes:
+    """Read the canonical audit from exactly the commit named by --revision."""
+    try:
+        return subprocess.run(
+            ["git", "-C", str(ROOT), "show", f"{revision}:kernel/audit_estate_layout.py"],
+            check=True, capture_output=True,
+        ).stdout
+    except subprocess.CalledProcessError as exc:
+        raise SystemExit(f"cannot read audit at governance revision {revision}") from exc
+
+
 def wanted(consumer: Path, revision: str) -> dict[str, dict[str, str]]:
     """dep id -> the rev/pin values it should carry."""
-    out = {GOVERNANCE_ID: {"rev": revision, "pin": "sha256:" + sha256(ROOT / "kernel" / "audit_estate_layout.py")}}
+    audit_pin = hashlib.sha256(audit_at_revision(revision)).hexdigest()
+    out = {GOVERNANCE_ID: {"rev": revision, "pin": "sha256:" + audit_pin}}
     vendored = consumer / "vendored.toml"
     if vendored.is_file():
         for source in {p["repository"] for p in tomllib.loads(vendored.read_text(encoding="utf-8")).get("package", [])}:
@@ -84,9 +97,19 @@ def main(argv: list[str] | None = None) -> int:
     consumer, revision = args.consumer.resolve(), args.revision or head_revision()
     if args.check:
         text = (consumer / MANIFEST).read_text(encoding="utf-8")
-        drift = rewrite(text, wanted(consumer, revision)) != text
+        values = wanted(consumer, revision)
+        rewritten = rewrite(text, values)
+        got = {d.get("id"): d for d in tomllib.loads(text).get("dep", [])}
+        missing_fields = [
+            f"{dep_id}.{key}"
+            for dep_id, fields in values.items()
+            for key in fields
+            if got.get(dep_id, {}).get(key) != fields[key]
+        ]
+        drift = rewritten != text or bool(missing_fields)
         if drift:
-            print(f"estate pins drift in {consumer / MANIFEST}", file=sys.stderr)
+            detail = f": missing or incorrect {', '.join(missing_fields)}" if missing_fields else ""
+            print(f"estate pins drift in {consumer / MANIFEST}{detail}", file=sys.stderr)
         return 1 if drift else 0
     pin(consumer, revision)
     print(f"pinned estate dependencies of {consumer}")
