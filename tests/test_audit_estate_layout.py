@@ -220,7 +220,7 @@ def test_a_vendored_dependency_pins_the_digest_of_its_vendored_files(consumer: P
 def test_a_vendored_dependency_pin_must_match_vendored_toml(consumer: Path):
     data = with_kernels_dep(consumer)
     (consumer / "vendored.toml").write_text(VENDORED_TOML.replace("b" * 64, "c" * 64), encoding="utf-8")
-    with pytest.raises(AssertionError, match="dep finite-math-kernels: pin disagrees with vendored.toml"):
+    with pytest.raises(AssertionError, match="content hash mismatch"):
         audit.validate(data, consumer)
 
 
