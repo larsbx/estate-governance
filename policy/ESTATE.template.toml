@@ -1,18 +1,37 @@
-# estate-repository-v1 manifest template.
+# estate-repository-v2 manifest template: SPEC_estate v0.1 §3 plus the layout.
 #
-# Copy to the consumer root as estate.toml, replace placeholder values, keep
-# only applicable planes, then run the governance vendoring tool against the
-# consumer: it copies the audit and template contract and appends the
-# [governance] pin (revision + sha256 per vendored file). Never hand-edit it.
-version = 1
-template = "estate-repository-v1"
+# Copy to the consumer root as ESTATE.toml, fill it in, keep only applicable
+# planes, then run tools/pin_estate.py against the consumer to set the
+# estate-governance rev and pin (and the pins of vendored deps). Never
+# hand-edit a pin or the stage.
+version = 2
+template = "estate-repository-v2"
 
-[repository]
-id = "OWNER/REPOSITORY"
-kind = "research"
-lifecycle = "active"
+[repo]
+id = "REPOSITORY"
+slug = "OWNER/REPOSITORY"
+class = "research"            # kernel | substrate | platform | app | research | corpus
+layer = 3                     # the class default; otherwise set override = "DR-nnnn"
+band = "EXPLORE"              # the class default; otherwise set override = "DR-nnnn"
+stage = "candidate"           # written by estate CI only
+inv = []
 default_branch = "main"
-layout_status = "transitional"
+
+[origin]
+decided_by = "proposed"       # stated | proposed
+chats = []
+artifacts = []
+
+[[dep]]
+id = "estate-governance"
+rev = "0000000000000000000000000000000000000000"   # set by tools/pin_estate.py
+pin = "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+
+[exports]
+names = []
+
+[layout]
+status = "transitional"
 
 [principles]
 ordering = ["authority", "domain", "language"]
@@ -29,7 +48,7 @@ id = "policy"
 target = "policy"
 authority = "governance"
 required = true
-current = ["estate.toml"]
+current = ["ESTATE.toml"]
 
 [[plane]]
 id = "kernel"

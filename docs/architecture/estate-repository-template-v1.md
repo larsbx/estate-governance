@@ -1,6 +1,6 @@
 # Estate repository template v1
 
-Status: reusable estate architecture contract. Canonical source: `larsbx/estate-governance`.
+Status: **superseded** by `estate-repository-template-v2.md` (manifest ESTATE.toml, pinned checkout instead of vendoring). Kept in place, unchanged below, as the record of v1.
 
 ## Purpose
 
