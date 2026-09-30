@@ -120,3 +120,20 @@ acceptance_authority = true
 mode = "boundary_first"
 mass_move = false
 next = []
+
+# Optional multi-program extension. Omit for the default single-program shape.
+#
+# [workspace]
+# mode = "multi_program"
+#
+# [[program]]
+# id = "finite-dynamics"
+# root = "programs/finite-dynamics"
+# manifest = "PROGRAM.toml"
+# claim_namespace = "FD"
+# canonical_language = "Mojo"
+#
+# [[shared_component]]
+# id = "finite-math-kernels"
+# root = "shared/finite-math-kernels"
+# consumers = ["finite-dynamics"]
