@@ -249,6 +249,15 @@ def validate_program_workspace(data: dict, root: Path) -> None:
         return
 
     require(len(programs) >= 2, "a multi_program workspace requires at least two [[program]] entries")
+    planes = data.get("plane", [])
+    program_plane = next((p for p in planes if p.get("target") == "programs"), None)
+    require(program_plane and program_plane.get("authority") == "program_collection",
+            "a multi_program workspace requires a programs plane with program_collection authority")
+    if components:
+        shared_plane = next((p for p in planes if p.get("target") == "shared"), None)
+        require(shared_plane and shared_plane.get("authority") == "shared_component_collection",
+                "shared components require a shared plane with shared_component_collection authority")
+
     program_ids: set[str] = set()
     roots: set[str] = set()
     namespaces: set[str] = set()
