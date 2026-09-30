@@ -126,6 +126,20 @@ next = []
 # [workspace]
 # mode = "multi_program"
 #
+# [[plane]]
+# id = "programs"
+# target = "programs"
+# authority = "program_collection"
+# required = true
+# current = ["programs"]
+#
+# [[plane]]
+# id = "shared"
+# target = "shared"
+# authority = "shared_component_collection"
+# required = true
+# current = ["shared"]
+#
 # [[program]]
 # id = "finite-dynamics"
 # root = "programs/finite-dynamics"
