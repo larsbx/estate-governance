@@ -10,8 +10,17 @@ policy/ESTATE.template.toml                          manifest template
 kernel/audit_estate_layout.py                        estate audit (canonical, never vendored)
 tools/pin_estate.py                                  pin a consumer to this checkout
 docs/architecture/estate-repository-template-v2.md   the contract (v1 kept, superseded)
+policy/PROGRAM.template.toml                       child manifest for multi-program repositories
+docs/architecture/multi-program-repository-v1.md    monorepo extension contract
 tests/                                               audit and pinning conformance
 ```
+
+## Repository shapes
+
+Single-program repositories remain the default. A repository that consolidates
+durable research concerns declares `[workspace] mode = "multi_program"` and lists
+directory-rooted `[[program]]` entries. Long-lived branches are not program
+boundaries. See the multi-program contract.
 
 ## Adopting the template
 

@@ -1,0 +1,16 @@
+# Child manifest for one durable mathematical program inside a multi-program repository.
+# The root ESTATE.toml remains the estate authority; this file binds program identity.
+version = 1
+
+[program]
+id = "PROGRAM_ID"
+
+[status]
+lifecycle = "active"          # active | paused | complete | archived
+theorem_status_source = "proof/claims.toml"
+
+[paths]
+kernel = "kernel"
+proof = "proof"
+docs = "docs"
+tests = "tests"
