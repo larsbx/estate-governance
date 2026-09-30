@@ -25,6 +25,14 @@ from a repository: identity and estate position (SPEC_estate v0.1 §3), then thi
 template's layout (authority planes, target paths, current transitional paths,
 language roles, migration state).
 
+## Repository shapes
+
+The default is one program per repository. Consolidated research repositories may
+opt into `[workspace] mode = "multi_program"` and declare directory-rooted programs
+and shared components. The additive contract is
+[`multi-program-repository-v1.md`](multi-program-repository-v1.md). Permanent
+branches are not accepted as program boundaries.
+
 ## Standard planes
 
 Only applicable planes are created. Empty silos are forbidden.
