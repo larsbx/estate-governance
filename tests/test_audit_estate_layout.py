@@ -413,6 +413,13 @@ def test_multi_program_rejects_path_escape(consumer: Path):
         audit.validate(data, consumer)
 
 
+def test_multi_program_rejects_collection_root_as_program(consumer: Path):
+    data = multi_program(consumer)
+    data["program"][0]["root"] = "programs"
+    with pytest.raises(AssertionError, match="must name a child below programs/"):
+        audit.validate(data, consumer)
+
+
 def test_multi_program_binds_child_manifest_identity(consumer: Path):
     data = multi_program(consumer)
     (consumer / "programs/finite-dynamics/PROGRAM.toml").write_text(
@@ -438,4 +445,24 @@ def test_shared_component_consumers_are_program_ids(consumer: Path):
         "consumers": ["finite-dynamics", "missing-program"],
     }]
     with pytest.raises(AssertionError, match="unknown consumers"):
+        audit.validate(data, consumer)
+
+
+def test_workspace_ids_are_unique_across_programs_and_components(consumer: Path):
+    data = multi_program(consumer)
+    component = consumer / "shared/finite-dynamics"
+    component.mkdir(parents=True)
+    data["plane"].append({
+        "id": "shared",
+        "target": "shared",
+        "authority": "shared_component_collection",
+        "required": True,
+        "current": ["shared"],
+    })
+    data["shared_component"] = [{
+        "id": "finite-dynamics",
+        "root": "shared/finite-dynamics",
+        "consumers": ["tiling-theory"],
+    }]
+    with pytest.raises(AssertionError, match="workspace id is reused"):
         audit.validate(data, consumer)
