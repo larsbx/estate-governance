@@ -63,6 +63,8 @@ UNTRACKED = re.compile(r"\..*|__pycache__|.*\.egg-info|build|dist|coverage")
 CONTRACT = "docs/architecture/estate-repository-template-v2.md"
 
 ALLOWED_PLANE_AUTHORITIES = frozenset({
+    "program_collection",
+    "shared_component_collection",
     "governance",
     "canonical_executable",
     "claim_state",
@@ -212,6 +214,102 @@ def validate_edges(data: dict, repo: dict, root: Path) -> None:
         fail(f"duplicate export: {dup}")
 
 
+
+PROGRAM_ID = re.compile(r"[a-z0-9][a-z0-9._-]*")
+CLAIM_NAMESPACE = re.compile(r"[A-Z][A-Z0-9]*")
+
+
+def repository_relative_path(value: object, field: str, prefix: str) -> Path:
+    require(isinstance(value, str) and value, f"{field} is required")
+    candidate = Path(value)
+    require(not candidate.is_absolute() and ".." not in candidate.parts,
+            f"{field} must be a repository-relative path without '..'")
+    require(candidate.parts and candidate.parts[0] == prefix,
+            f"{field} must be below {prefix}/")
+    return candidate
+
+
+def validate_program_workspace(data: dict, root: Path) -> None:
+    """Validate optional multi-program workspace boundaries.
+
+    Branches remain change lines; durable mathematical concerns are declared as
+    directory-rooted programs. Existing repositories default to single-program
+    mode and remain valid without workspace metadata.
+    """
+    workspace = data.get("workspace", {})
+    mode = workspace.get("mode", "single")
+    require(mode in {"single", "multi_program"},
+            "workspace.mode must be single or multi_program")
+
+    programs = data.get("program", [])
+    components = data.get("shared_component", [])
+    if mode == "single":
+        require(not programs and not components,
+                "[[program]] and [[shared_component]] require workspace.mode = multi_program")
+        return
+
+    require(len(programs) >= 2, "a multi_program workspace requires at least two [[program]] entries")
+    program_ids: set[str] = set()
+    roots: set[str] = set()
+    namespaces: set[str] = set()
+    for program in programs:
+        program_id = program.get("id", "")
+        require(PROGRAM_ID.fullmatch(str(program_id)),
+                f"program.id must be lowercase and stable: {program_id!r}")
+        require(program_id not in program_ids, f"duplicate program id: {program_id}")
+        program_ids.add(program_id)
+
+        program_root = repository_relative_path(program.get("root"), f"program {program_id}: root", "programs")
+        root_text = program_root.as_posix()
+        require(root_text not in roots, f"duplicate program root: {root_text}")
+        roots.add(root_text)
+        require((root / program_root).is_dir(), f"program {program_id}: missing root {root_text}")
+
+        manifest_name = program.get("manifest", "PROGRAM.toml")
+        require(manifest_name == "PROGRAM.toml",
+                f"program {program_id}: manifest must be PROGRAM.toml")
+        manifest_path = root / program_root / manifest_name
+        require(manifest_path.is_file(),
+                f"program {program_id}: missing manifest {root_text}/{manifest_name}")
+        manifest = tomllib.loads(manifest_path.read_text(encoding="utf-8"))
+        identity = manifest.get("program", {})
+        require(identity.get("id") == program_id,
+                f"program {program_id}: PROGRAM.toml identity disagrees with root manifest")
+
+        namespace = program.get("claim_namespace", "")
+        require(CLAIM_NAMESPACE.fullmatch(str(namespace)),
+                f"program {program_id}: claim_namespace must be uppercase alphanumeric")
+        require(namespace not in namespaces, f"duplicate program claim_namespace: {namespace}")
+        namespaces.add(namespace)
+
+        language = program.get("canonical_language", "")
+        require(isinstance(language, str) and language,
+                f"program {program_id}: canonical_language is required")
+
+    component_ids: set[str] = set()
+    for component in components:
+        component_id = component.get("id", "")
+        require(PROGRAM_ID.fullmatch(str(component_id)),
+                f"shared_component.id must be lowercase and stable: {component_id!r}")
+        require(component_id not in component_ids, f"duplicate shared_component id: {component_id}")
+        component_ids.add(component_id)
+
+        component_root = repository_relative_path(
+            component.get("root"), f"shared_component {component_id}: root", "shared")
+        root_text = component_root.as_posix()
+        require(root_text not in roots, f"duplicate workspace root: {root_text}")
+        roots.add(root_text)
+        require((root / component_root).is_dir(),
+                f"shared_component {component_id}: missing root {root_text}")
+
+        consumers = component.get("consumers", [])
+        require(isinstance(consumers, list) and consumers,
+                f"shared_component {component_id}: consumers must be non-empty")
+        unknown = sorted(set(consumers) - program_ids)
+        require(not unknown,
+                f"shared_component {component_id}: unknown consumers {unknown}")
+
+
 def validate_principles(data: dict) -> None:
     principles = data.get("principles", {})
     require(principles.get("ordering") == ["authority", "domain", "language"],
@@ -317,6 +415,7 @@ def validate(data: dict, root: Path = ROOT) -> None:
     repo = validate_repo(data)
     validate_origin(data, repo)
     validate_principles(data)
+    validate_program_workspace(data, root)
     validate_planes(data, root)
     validate_languages(data)
     entrypoints = ["ARCHITECTURE.md"] + ([CONTRACT] if repo["slug"] == GOVERNANCE_REPOSITORY else [])
