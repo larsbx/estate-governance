@@ -425,6 +425,13 @@ def test_shared_component_consumers_are_program_ids(consumer: Path):
     data = multi_program(consumer)
     component = consumer / "shared/finite-math-kernels"
     component.mkdir(parents=True)
+    data["plane"].append({
+        "id": "shared",
+        "target": "shared",
+        "authority": "shared_component_collection",
+        "required": True,
+        "current": ["shared"],
+    })
     data["shared_component"] = [{
         "id": "finite-math-kernels",
         "root": "shared/finite-math-kernels",
