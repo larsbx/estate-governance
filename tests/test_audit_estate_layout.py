@@ -361,6 +361,13 @@ def add_program(root: Path, data: dict, program_id: str, namespace: str, languag
 def multi_program(consumer: Path) -> dict:
     data = baseline()
     data["workspace"] = {"mode": "multi_program"}
+    data["plane"].append({
+        "id": "programs",
+        "target": "programs",
+        "authority": "program_collection",
+        "required": True,
+        "current": ["programs"],
+    })
     add_program(consumer, data, "finite-dynamics", "FD")
     add_program(consumer, data, "tiling-theory", "TT")
     return data
@@ -374,6 +381,13 @@ def test_program_entries_require_multi_program_mode(consumer: Path):
     data = baseline()
     add_program(consumer, data, "finite-dynamics", "FD")
     with pytest.raises(AssertionError, match=r"require workspace.mode = multi_program"):
+        audit.validate(data, consumer)
+
+
+def test_multi_program_workspace_requires_collection_plane(consumer: Path):
+    data = multi_program(consumer)
+    data["plane"] = [p for p in data["plane"] if p["id"] != "programs"]
+    with pytest.raises(AssertionError, match="requires a programs plane"):
         audit.validate(data, consumer)
 
 
