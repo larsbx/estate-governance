@@ -338,3 +338,83 @@ def test_vendored_digest_rejects_changed_listed_file(consumer: Path):
     file.write_bytes(b"changed")
     with pytest.raises(AssertionError, match="content hash mismatch"):
         audit.validate(data, consumer)
+
+
+# Multi-program workspaces: durable concerns are directories, never long-lived branches.
+
+def add_program(root: Path, data: dict, program_id: str, namespace: str, language: str = "Mojo") -> None:
+    program_root = root / "programs" / program_id
+    program_root.mkdir(parents=True)
+    (program_root / "PROGRAM.toml").write_text(
+        f'version = 1\n[program]\nid = "{program_id}"\n',
+        encoding="utf-8",
+    )
+    data.setdefault("program", []).append({
+        "id": program_id,
+        "root": f"programs/{program_id}",
+        "manifest": "PROGRAM.toml",
+        "claim_namespace": namespace,
+        "canonical_language": language,
+    })
+
+
+def multi_program(consumer: Path) -> dict:
+    data = baseline()
+    data["workspace"] = {"mode": "multi_program"}
+    add_program(consumer, data, "finite-dynamics", "FD")
+    add_program(consumer, data, "tiling-theory", "TT")
+    return data
+
+
+def test_multi_program_workspace_is_valid(consumer: Path):
+    audit.validate(multi_program(consumer), consumer)
+
+
+def test_program_entries_require_multi_program_mode(consumer: Path):
+    data = baseline()
+    add_program(consumer, data, "finite-dynamics", "FD")
+    with pytest.raises(AssertionError, match=r"require workspace.mode = multi_program"):
+        audit.validate(data, consumer)
+
+
+def test_multi_program_workspace_requires_two_programs(consumer: Path):
+    data = baseline()
+    data["workspace"] = {"mode": "multi_program"}
+    add_program(consumer, data, "finite-dynamics", "FD")
+    with pytest.raises(AssertionError, match="at least two"):
+        audit.validate(data, consumer)
+
+
+def test_multi_program_rejects_duplicate_claim_namespaces(consumer: Path):
+    data = multi_program(consumer)
+    data["program"][1]["claim_namespace"] = "FD"
+    with pytest.raises(AssertionError, match="duplicate program claim_namespace"):
+        audit.validate(data, consumer)
+
+
+def test_multi_program_rejects_path_escape(consumer: Path):
+    data = multi_program(consumer)
+    data["program"][0]["root"] = "../finite-dynamics"
+    with pytest.raises(AssertionError, match=r"repository-relative path without '\.\.'"):
+        audit.validate(data, consumer)
+
+
+def test_multi_program_binds_child_manifest_identity(consumer: Path):
+    data = multi_program(consumer)
+    (consumer / "programs/finite-dynamics/PROGRAM.toml").write_text(
+        'version = 1\n[program]\nid = "wrong"\n', encoding="utf-8")
+    with pytest.raises(AssertionError, match="PROGRAM.toml identity disagrees"):
+        audit.validate(data, consumer)
+
+
+def test_shared_component_consumers_are_program_ids(consumer: Path):
+    data = multi_program(consumer)
+    component = consumer / "shared/finite-math-kernels"
+    component.mkdir(parents=True)
+    data["shared_component"] = [{
+        "id": "finite-math-kernels",
+        "root": "shared/finite-math-kernels",
+        "consumers": ["finite-dynamics", "missing-program"],
+    }]
+    with pytest.raises(AssertionError, match="unknown consumers"):
+        audit.validate(data, consumer)
