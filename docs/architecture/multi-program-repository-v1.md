@@ -30,7 +30,7 @@ repository/
 └── tools/
 ```
 
-The root is program-first only at the workspace boundary. Authority remains first
+The `programs` and `shared` roots are claimed by explicit collection planes, so canonical coverage remains total. The root is program-first only at the workspace boundary. Authority remains first
 inside each program: canonical kernel, claim state, evidence, exposition, and
 experiments stay explicitly separated.
 
@@ -39,6 +39,20 @@ experiments stay explicitly separated.
 ```toml
 [workspace]
 mode = "multi_program"
+
+[[plane]]
+id = "programs"
+target = "programs"
+authority = "program_collection"
+required = true
+current = ["programs"]
+
+[[plane]]
+id = "shared"
+target = "shared"
+authority = "shared_component_collection"
+required = true
+current = ["shared"]
 
 [[program]]
 id = "finite-dynamics"
