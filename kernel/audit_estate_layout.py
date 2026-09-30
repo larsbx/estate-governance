@@ -224,8 +224,8 @@ def repository_relative_path(value: object, field: str, prefix: str) -> Path:
     candidate = Path(value)
     require(not candidate.is_absolute() and ".." not in candidate.parts,
             f"{field} must be a repository-relative path without '..'")
-    require(candidate.parts and candidate.parts[0] == prefix,
-            f"{field} must be below {prefix}/")
+    require(len(candidate.parts) >= 2 and candidate.parts[0] == prefix,
+            f"{field} must name a child below {prefix}/")
     return candidate
 
 
@@ -301,6 +301,8 @@ def validate_program_workspace(data: dict, root: Path) -> None:
         require(PROGRAM_ID.fullmatch(str(component_id)),
                 f"shared_component.id must be lowercase and stable: {component_id!r}")
         require(component_id not in component_ids, f"duplicate shared_component id: {component_id}")
+        require(component_id not in program_ids,
+                f"workspace id is reused by a program and shared_component: {component_id}")
         component_ids.add(component_id)
 
         component_root = repository_relative_path(
