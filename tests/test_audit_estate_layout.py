@@ -120,6 +120,8 @@ REJECTIONS = [
     ("plane.1.id", "engine", "kernel plane is required"),
     ("language", [], "exactly one canonical language"),
     ("language.0.roles", ["oracle"], "must own the kernel role"),
+    ("language.0.acceptance_authority", DELETE, "canonical language must hold acceptance authority"),
+    ("language.0.acceptance_authority", False, "canonical language must hold acceptance authority"),
     # dependency law (§5) and the governance pin
     ("dep", [], "must depend on estate-governance"),
     ("dep.0.id", "estate", "must depend on estate-governance"),
