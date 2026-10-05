@@ -120,8 +120,7 @@ REJECTIONS = [
     ("plane.1.id", "engine", "kernel plane is required"),
     ("language", [], "exactly one canonical language"),
     ("language.0.roles", ["oracle"], "must own the kernel role"),
-    ("language.0.acceptance_authority", DELETE, "canonical language must hold acceptance authority"),
-    ("language.0.acceptance_authority", False, "canonical language must hold acceptance authority"),
+    ("language.0.acceptance_authority", DELETE, "acceptance_authority must be an explicit boolean"),
     # dependency law (§5) and the governance pin
     ("dep", [], "must depend on estate-governance"),
     ("dep.0.id", "estate", "must depend on estate-governance"),
@@ -158,11 +157,61 @@ def test_stated_decisions_may_carry_a_later_stage(consumer: Path):
     audit.validate(data, consumer)
 
 
-def test_supporting_language_cannot_accept(consumer: Path):
+@pytest.mark.parametrize("canonical_accepts", [True, False])
+def test_supporting_language_cannot_accept(consumer: Path, canonical_accepts: bool):
     data = baseline()
+    data["language"][0]["acceptance_authority"] = canonical_accepts
     data["language"].append({"name": "Julia", "authority": "supporting", "roles": ["oracle"],
                              "acceptance_authority": True})
     with pytest.raises(AssertionError, match="cannot have acceptance authority"):
+        audit.validate(data, consumer)
+
+
+def test_canonical_oracle_kernel_may_have_zero_acceptance_authorities(consumer: Path):
+    # Julia Oracle Lab owns registry/binding validation, while every trusted
+    # acceptance boundary belongs to an external checker repository.
+    data = baseline()
+    data["language"][0].update(name="Julia", roles=["kernel", "oracle", "experiment"],
+                               acceptance_authority=False)
+    audit.validate(data, consumer)
+    audit.validate(canonical(consumer) | {"language": data["language"]}, consumer)
+
+
+@pytest.mark.parametrize("authority", ["canonical", "supporting"])
+@pytest.mark.parametrize("value", [0, 1, "true", "false", "", None, [], {}])
+def test_acceptance_authority_requires_a_boolean(consumer: Path, authority: str, value):
+    data = baseline()
+    if authority == "canonical":
+        data["language"][0]["acceptance_authority"] = value
+    else:
+        data["language"].append({"name": "Julia", "authority": authority, "roles": ["oracle"],
+                                 "acceptance_authority": value})
+    with pytest.raises(AssertionError, match="acceptance_authority must be an explicit boolean"):
+        audit.validate(data, consumer)
+
+
+@pytest.mark.parametrize("canonical_accepts", [True, False])
+@pytest.mark.parametrize("supporting_declares_false", [True, False])
+def test_supporting_language_may_only_observe(consumer: Path, canonical_accepts: bool,
+                                            supporting_declares_false: bool):
+    data = baseline()
+    data["language"][0]["acceptance_authority"] = canonical_accepts
+    supporting = {"name": "Julia", "authority": "supporting", "roles": ["oracle"]}
+    if supporting_declares_false:
+        supporting["acceptance_authority"] = False
+    data["language"].append(supporting)
+    audit.validate(data, consumer)
+
+
+@pytest.mark.parametrize("first_accepts, second_accepts", [(True, True), (True, False),
+                                                         (False, True), (False, False)])
+def test_two_canonical_languages_are_rejected(consumer: Path, first_accepts: bool,
+                                             second_accepts: bool):
+    data = baseline()
+    data["language"][0]["acceptance_authority"] = first_accepts
+    data["language"].append({"name": "Julia", "authority": "canonical", "roles": ["kernel"],
+                             "acceptance_authority": second_accepts})
+    with pytest.raises(AssertionError, match="exactly one canonical language"):
         audit.validate(data, consumer)
 
 

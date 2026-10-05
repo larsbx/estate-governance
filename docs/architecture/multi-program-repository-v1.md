@@ -78,6 +78,12 @@ Each program has a unique stable id, directory root, uppercase claim namespace,
 canonical language, and identity-bound `PROGRAM.toml`. Shared components explicitly
 name their consuming programs; an undeclared consumer fails the audit.
 
+Program-local `canonical_language` declarations describe code ownership and do not
+grant acceptance authority. The root canonical language's `acceptance_authority`
+declaration in `ESTATE.toml` governs the whole repository: `false` means that no
+program or shared component owns an acceptance or effect boundary. Programs that
+perform oracle work may use canonical local kernels under that zero-authority model.
+
 The audit rejects path traversal, missing roots or child manifests, duplicate ids,
 roots or claim namespaces, child identity disagreement, fewer than two programs,
 and shared components with empty or unknown consumer sets.

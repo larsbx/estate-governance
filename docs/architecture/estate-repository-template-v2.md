@@ -90,7 +90,8 @@ The skeleton is illustrative, not a command to create every directory.
 
 ## Authority rules
 
-1. Every acceptance or effect boundary has exactly one canonical implementation.
+1. Every acceptance or effect boundary owned by a repository has exactly one
+   canonical implementation. A repository may own no such boundary.
 2. A second implementation is a reference, oracle, formal refinement, generated
    adapter, or conformance checker until an explicit authority migration says otherwise.
 3. Cross-language disagreement fails closed.
@@ -104,7 +105,37 @@ The skeleton is illustrative, not a command to create every directory.
 
 ## Language rule
 
-`ESTATE.toml` records roles, not language prestige. Examples:
+`ESTATE.toml` records roles, not language prestige. Exactly one canonical language
+owns the repository-local kernel. Canonical code ownership and the
+`canonical_executable` plane do not themselves grant acceptance authority: a
+kernel may validate an oracle registry or bindings without accepting a domain claim.
+
+The canonical language must explicitly set the Boolean `acceptance_authority`.
+This existing field declares the repository's authority model:
+
+| Canonical language declaration | Repository authority model |
+| --- | --- |
+| `acceptance_authority = true` | The repository owns acceptance or effect boundaries; its canonical language is the sole language allowed to implement their acceptance authority. Each boundary has exactly one canonical implementation. |
+| `acceptance_authority = false` | The repository owns no acceptance or effect boundary. It has zero acceptance authorities; its canonical kernel only performs repository-local validation. |
+| Field omitted or non-Boolean | Invalid: authority must be declared explicitly. |
+
+Supporting languages cannot hold acceptance authority, including when the canonical
+language declares `false`. Their field may be omitted (meaning `false`); every
+supplied value must be Boolean. An accepting repository therefore has exactly one
+acceptance-authority language, while an explicitly non-accepting repository has zero.
+
+Describe the owned boundaries and implementation paths, or their absence, in
+`ARCHITECTURE.md` or a linked authority-boundary document. A repository declaring
+`false` must never emit `accepted`, `proved`, `authorized`, or deployment verdicts.
+Its evidence may inform an external authoritative checker without transferring
+that checker's authority. This declaration covers the whole repository, including
+programs in a multi-program workspace.
+
+The audit checks these manifest declarations and repository layout; it does not
+infer boundary ownership or prove verdict behavior from source code. Authority
+migrations still require an explicit decision and boundary verification.
+
+Examples for a repository that owns an acceptance boundary:
 
 ```toml
 [[language]]
@@ -122,6 +153,22 @@ acceptance_authority = false
 
 An estate repository may use a completely different language assignment while
 retaining the same planes.
+
+For an oracle repository that owns no acceptance boundary, its canonical entry
+can instead be:
+
+```toml
+[[language]]
+name = "Julia"
+authority = "canonical"
+roles = ["kernel", "oracle", "experiment"]
+acceptance_authority = false
+```
+
+This is Julia Oracle Lab's existing model: its kernel validates registry entries
+and bindings, and its [authority-boundary document](https://github.com/larsbx/julia-oracle-lab/blob/main/docs/AUTHORITY_BOUNDARY.md)
+places every trusted acceptance boundary outside the lab. The rule is independent
+of repository name or language.
 
 ## The manifest
 
@@ -200,9 +247,10 @@ The audit fails closed on:
   and fail-closed disagreement; duplicate plane ids or targets; unknown plane
   authorities; required planes without a current mapping, or mappings that resolve
   to nothing; a missing `kernel` or `policy` plane; anything but exactly one
-  canonical language owning the kernel role; a canonical language without
-  `acceptance_authority = true`, or a supporting language with it (so exactly
-  one language holds acceptance authority); a missing `ARCHITECTURE.md`;
+  canonical language owning the kernel role; a missing or non-Boolean canonical
+  `acceptance_authority` declaration, a non-Boolean supplied supporting declaration,
+  or a supporting language with `acceptance_authority = true` (explicit canonical
+  `false` permits zero acceptance authorities); a missing `ARCHITECTURE.md`;
 - under `layout.status = "canonical"`: a plane not mapped to its target (only
   root-level files beside it), any glob mapping, a pending migration step, or a
   top-level directory that is no plane's target (exempt: hidden directories,
