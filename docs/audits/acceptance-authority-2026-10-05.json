@@ -1,0 +1,241 @@
+{
+  "audit_sha256": "412a64dea58d709aae21e5a0315b8e7e96488c310a9d999267927ba3d8146a30",
+  "registered_adopters": [
+    {
+      "repository": "larsbx/finite-math-kernels",
+      "commit": "bf3f95c9cab794e263e01a71ca7ec41f08bb311f",
+      "manifest_sha256": "d94da6c97ac9bf1fbdc5283a81511dfb6dfd88cb8312784c2add965888fb3afd",
+      "languages": [
+        {
+          "name": "Mojo",
+          "authority": "canonical",
+          "roles": [
+            "kernel"
+          ],
+          "acceptance_authority": true
+        },
+        {
+          "name": "Python",
+          "authority": "supporting",
+          "roles": [
+            "reference",
+            "oracle",
+            "audit",
+            "proof_records",
+            "generation"
+          ],
+          "acceptance_authority": false
+        },
+        {
+          "name": "Rust",
+          "authority": "supporting",
+          "roles": [
+            "experiment"
+          ],
+          "acceptance_authority": false
+        },
+        {
+          "name": "Bend",
+          "authority": "supporting",
+          "roles": [
+            "experiment"
+          ],
+          "acceptance_authority": false
+        },
+        {
+          "name": "Elixir",
+          "authority": "supporting",
+          "roles": [
+            "experiment"
+          ],
+          "acceptance_authority": false
+        },
+        {
+          "name": "TLA+",
+          "authority": "supporting",
+          "roles": [
+            "formal_model"
+          ],
+          "acceptance_authority": false
+        }
+      ],
+      "old_rule": "pass",
+      "new_rule": "pass",
+      "prospective_full_audit": "pass"
+    },
+    {
+      "repository": "larsbx/finite-mandelbrot-research",
+      "commit": "11b6f0474c31b81f206a1fcf3c630f1bd9fbe9ff",
+      "manifest_sha256": "5fc1e6f72adc009559eb653683951dbe5737e12fdaed3d460913c35e675ea646",
+      "languages": [
+        {
+          "name": "Mojo",
+          "authority": "canonical",
+          "roles": [
+            "kernel",
+            "finite_proof_checking"
+          ],
+          "acceptance_authority": true
+        },
+        {
+          "name": "Python",
+          "authority": "supporting",
+          "roles": [
+            "audit",
+            "reference",
+            "migration"
+          ],
+          "acceptance_authority": false
+        },
+        {
+          "name": "Julia",
+          "authority": "supporting",
+          "roles": [
+            "oracle",
+            "experiment"
+          ],
+          "acceptance_authority": false
+        },
+        {
+          "name": "Lean",
+          "authority": "supporting",
+          "roles": [
+            "formal_proof_target"
+          ],
+          "acceptance_authority": false
+        },
+        {
+          "name": "Haskell",
+          "authority": "supporting",
+          "roles": [
+            "semantic_reference"
+          ],
+          "acceptance_authority": false
+        }
+      ],
+      "old_rule": "pass",
+      "new_rule": "pass",
+      "prospective_full_audit": "pass"
+    },
+    {
+      "repository": "larsbx/finite-julia-set-research",
+      "commit": "04db96236fd5c583414905b7014f05a4f9b00a75",
+      "manifest_sha256": "a19f8bd37f7b13d22c993e30f97bb4d9ef5d6549fc41d94ec65e22e7ab5358fb",
+      "languages": [
+        {
+          "name": "Mojo",
+          "authority": "canonical",
+          "roles": [
+            "kernel"
+          ],
+          "acceptance_authority": true
+        },
+        {
+          "name": "Python",
+          "authority": "supporting",
+          "roles": [
+            "reference",
+            "audit",
+            "generation"
+          ],
+          "acceptance_authority": false
+        },
+        {
+          "name": "Lean",
+          "authority": "supporting",
+          "roles": [
+            "formal_proof_target"
+          ],
+          "acceptance_authority": false
+        }
+      ],
+      "old_rule": "pass",
+      "new_rule": "pass",
+      "prospective_full_audit": "pass"
+    },
+    {
+      "repository": "larsbx/julia-oracle-lab",
+      "commit": "4eac858ef90da435df620c413ec88df4ebb0c6a5",
+      "manifest_sha256": "ff0a409dec6482f3f38194cb9b22197c0202419be05eccdae4bb074ec463a19f",
+      "languages": [
+        {
+          "name": "Julia",
+          "authority": "canonical",
+          "roles": [
+            "kernel",
+            "oracle",
+            "experiment"
+          ],
+          "acceptance_authority": false
+        }
+      ],
+      "old_rule": "fail: canonical language must hold acceptance authority",
+      "new_rule": "pass",
+      "prospective_full_audit": "pass"
+    },
+    {
+      "repository": "larsbx/langlands-lab",
+      "commit": "88f3fb692b7fcf8b0785378317e79a5dd3d15178",
+      "manifest_sha256": "b617a9a19a77fce28443664360d5822f2abf9f63dcede7f1fe34ff59aa893750",
+      "languages": [
+        {
+          "name": "Python",
+          "authority": "canonical",
+          "roles": [
+            "kernel"
+          ],
+          "acceptance_authority": true
+        },
+        {
+          "name": "Lean",
+          "authority": "supporting",
+          "roles": [
+            "formal_proof_target",
+            "oracle"
+          ],
+          "acceptance_authority": false
+        }
+      ],
+      "old_rule": "pass",
+      "new_rule": "pass",
+      "prospective_full_audit": "pass"
+    },
+    {
+      "repository": "larsbx/mandelbrot-bulbs-and-ford-circles-research",
+      "commit": "eed8f3a54e5f6122522a8c8c47ebd8b212c1440d",
+      "manifest_sha256": "24c78b073040fbdfcf85242a5b50e66dd69a364a6c4329d639fcd482f355ac19",
+      "languages": [
+        {
+          "name": "Python",
+          "authority": "canonical",
+          "roles": [
+            "kernel"
+          ],
+          "acceptance_authority": true
+        }
+      ],
+      "old_rule": "pass",
+      "new_rule": "pass",
+      "prospective_full_audit": "pass"
+    },
+    {
+      "repository": "larsbx/estate-governance",
+      "commit": "fcee6e05c7f74ab2fb4b27183a6c7c3db018c07e",
+      "manifest_sha256": "0893b9fd2f18dc27400aaf8194d7053c6a08d38a0e3ca2e49c39aea086a117bc",
+      "languages": [
+        {
+          "name": "Python",
+          "authority": "canonical",
+          "roles": [
+            "kernel",
+            "tooling"
+          ],
+          "acceptance_authority": true
+        }
+      ],
+      "old_rule": "pass",
+      "new_rule": "pass",
+      "prospective_full_audit": "pass"
+    }
+  ]
+}

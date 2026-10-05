@@ -396,6 +396,12 @@ def validate_languages(data: dict) -> None:
         names.add(name)
         require(authority in ALLOWED_LANGUAGE_AUTHORITIES,
                 f"language {name}: invalid authority {authority!r}")
+        # Canonical ownership of the kernel does not itself grant acceptance
+        # authority. Require an explicit choice; supporting entries may omit
+        # the field (false), but every supplied value must be a TOML boolean.
+        if authority == "canonical" or "acceptance_authority" in language:
+            require(isinstance(language.get("acceptance_authority"), bool),
+                    f"language {name}: acceptance_authority must be an explicit boolean")
         require(not language.get("acceptance_authority") or authority == "canonical",
                 f"language {name}: supporting language cannot have acceptance authority")
 
@@ -403,10 +409,9 @@ def validate_languages(data: dict) -> None:
     require(len(canonical) == 1, "exactly one canonical language is required")
     require("kernel" in canonical[0].get("roles", []),
             "canonical language must own the kernel role")
-    # With supporting languages barred above, this makes the canonical language
-    # the one and only acceptance authority: a manifest naming none is rejected.
-    require(canonical[0].get("acceptance_authority") is True,
-            "canonical language must hold acceptance authority")
+    # Exactly one canonical language, and zero or one acceptance authorities:
+    # explicit false declares that the repository owns no acceptance/effect
+    # boundary; true makes its canonical language the sole acceptance authority.
 
 
 def validate_workspaces(slug: str, root: Path) -> None:

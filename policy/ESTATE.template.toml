@@ -114,6 +114,9 @@ required = false
 name = "PRIMARY_LANGUAGE"
 authority = "canonical"
 roles = ["kernel"]
+# Explicit Boolean: true when this repository owns acceptance/effect boundaries;
+# false when it owns none (for example, an oracle registry/validation kernel).
+# Describe the boundaries or their absence in ARCHITECTURE.md or a linked document.
 acceptance_authority = true
 
 [migration]
