@@ -403,6 +403,10 @@ def validate_languages(data: dict) -> None:
     require(len(canonical) == 1, "exactly one canonical language is required")
     require("kernel" in canonical[0].get("roles", []),
             "canonical language must own the kernel role")
+    # With supporting languages barred above, this makes the canonical language
+    # the one and only acceptance authority: a manifest naming none is rejected.
+    require(canonical[0].get("acceptance_authority") is True,
+            "canonical language must hold acceptance authority")
 
 
 def validate_workspaces(slug: str, root: Path) -> None:

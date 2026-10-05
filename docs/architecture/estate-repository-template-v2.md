@@ -200,8 +200,9 @@ The audit fails closed on:
   and fail-closed disagreement; duplicate plane ids or targets; unknown plane
   authorities; required planes without a current mapping, or mappings that resolve
   to nothing; a missing `kernel` or `policy` plane; anything but exactly one
-  canonical language owning the kernel role; a supporting language with acceptance
-  authority; a missing `ARCHITECTURE.md`;
+  canonical language owning the kernel role; a canonical language without
+  `acceptance_authority = true`, or a supporting language with it (so exactly
+  one language holds acceptance authority); a missing `ARCHITECTURE.md`;
 - under `layout.status = "canonical"`: a plane not mapped to its target (only
   root-level files beside it), any glob mapping, a pending migration step, or a
   top-level directory that is no plane's target (exempt: hidden directories,
