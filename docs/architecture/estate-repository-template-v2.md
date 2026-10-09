@@ -289,4 +289,5 @@ the owner adopts them by decision record:
 | `larsbx/julia-oracle-lab` | research | L3 | EXPLORE | Julia |
 | `larsbx/langlands-lab` | research | L3 | EXPLORE | Python |
 | `larsbx/mandelbrot-bulbs-and-ford-circles-research` | research | L3 | EXPLORE | Python |
+| `larsbx/my-math-homelab` (multi-program workspace) | research | L3 | EXPLORE | Python |
 | `larsbx/estate-governance` | meta | outside | STANDARD | Python |
