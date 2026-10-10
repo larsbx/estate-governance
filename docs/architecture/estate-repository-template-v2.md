@@ -283,10 +283,23 @@ the owner adopts them by decision record:
 
 | Repository | Class | Layer | Band | Canonical language |
 | --- | --- | --- | --- | --- |
-| `larsbx/finite-math-kernels` | kernel | L0 | HARDENED | Mojo |
-| `larsbx/finite-mandelbrot-research` | research | L3 | EXPLORE | Mojo |
+| `larsbx/arithmetic-bicycle-conjecture-research` | research | L3 | EXPLORE | Python |
+| `larsbx/closure-fiber-of-multiplication-research` | research | L3 | EXPLORE | Mojo |
+| `larsbx/finite-dynamics` | research | L3 | EXPLORE | Python |
 | `larsbx/finite-julia-set-research` | research | L3 | EXPLORE | Mojo |
+| `larsbx/finite-mandelbrot-research` | research | L3 | EXPLORE | Mojo |
+| `larsbx/finite-math-kernels` | kernel | L0 | HARDENED | Mojo |
+| `larsbx/giant-fibers-finite-fields-thin-groups` | research | L3 | EXPLORE | Mojo |
 | `larsbx/julia-oracle-lab` | research | L3 | EXPLORE | Julia |
 | `larsbx/langlands-lab` | research | L3 | EXPLORE | Python |
 | `larsbx/mandelbrot-bulbs-and-ford-circles-research` | research | L3 | EXPLORE | Python |
+| `larsbx/math-vizops` | app | L3 | STANDARD | Python |
+| `larsbx/my-math-homelab` | research | L3 | EXPLORE | Python |
+| `larsbx/novelty-lab` | research | L3 | EXPLORE | Python |
+| `larsbx/oracles` | research | L3 | EXPLORE | Python |
+| `larsbx/pisot-substitution-conjecture-research` | research | L3 | EXPLORE | Mojo |
+| `larsbx/pisot-vijayaraghavan-problem-research` | research | L3 | EXPLORE | Python |
+| `larsbx/s-adic-pisot-conjecture-research` | research | L3 | EXPLORE | Mojo |
+| `larsbx/tiling-theory-research` | research | L3 | EXPLORE | Python |
+| `larsbx/vizing-domination-conjecture-research` | research | L3 | EXPLORE | Python |
 | `larsbx/estate-governance` | meta | outside | STANDARD | Python |
