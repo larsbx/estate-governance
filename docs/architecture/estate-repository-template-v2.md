@@ -211,11 +211,10 @@ status = "canonical"          # transitional | canonical
 
 ## Required CI gate
 
-Every adopter retrieves the audit as a public, immutable, content-addressed artifact
-mirrored from this private governance repository. The workflow downloads the artifact
-from a public estate repository at a fixed commit, verifies its SHA-256 against
-`ESTATE.toml`, and only then executes it. No credential is exposed to PR-controlled
-code, and fork and Dependabot pull requests use the same fail-closed path.
+Every adopter retrieves the audit from this public repository at the pinned commit,
+verifies its SHA-256 against `ESTATE.toml`, and only then executes it. A commit-addressed
+raw URL is immutable, no credential is exposed to PR-controlled code, and fork and
+Dependabot pull requests use the same fail-closed path.
 
 ```yaml
 - name: Estate audit (pinned public artifact)
@@ -225,7 +224,7 @@ code, and fork and Dependabot pull requests use the same fail-closed path.
     pin=$(python3 -c 'import tomllib; print(next(d["pin"] for d in tomllib.load(open("ESTATE.toml", "rb"))["dep"] if d["id"] == "estate-governance"))')
     test "$rev" = "<governance-commit>"
     curl --fail --location --proto '=https' --tlsv1.2 --output /tmp/estate-audit.py \
-      "https://raw.githubusercontent.com/larsbx/finite-math-kernels/<artifact-commit>/policy/estate-audits/$rev.py"
+      "https://raw.githubusercontent.com/larsbx/estate-governance/$rev/kernel/audit_estate_layout.py"
     printf '%s  %s\n' "${pin#sha256:}" /tmp/estate-audit.py | sha256sum --check --strict -
     python3 /tmp/estate-audit.py --root .
 ```
@@ -283,10 +282,23 @@ the owner adopts them by decision record:
 
 | Repository | Class | Layer | Band | Canonical language |
 | --- | --- | --- | --- | --- |
-| `larsbx/finite-math-kernels` | kernel | L0 | HARDENED | Mojo |
-| `larsbx/finite-mandelbrot-research` | research | L3 | EXPLORE | Mojo |
+| `larsbx/arithmetic-bicycle-conjecture-research` | research | L3 | EXPLORE | Python |
+| `larsbx/closure-fiber-of-multiplication-research` | research | L3 | EXPLORE | Mojo |
+| `larsbx/finite-dynamics` | research | L3 | EXPLORE | Python |
 | `larsbx/finite-julia-set-research` | research | L3 | EXPLORE | Mojo |
+| `larsbx/finite-mandelbrot-research` | research | L3 | EXPLORE | Mojo |
+| `larsbx/finite-math-kernels` | kernel | L0 | HARDENED | Mojo |
+| `larsbx/giant-fibers-finite-fields-thin-groups` | research | L3 | EXPLORE | Mojo |
 | `larsbx/julia-oracle-lab` | research | L3 | EXPLORE | Julia |
 | `larsbx/langlands-lab` | research | L3 | EXPLORE | Python |
 | `larsbx/mandelbrot-bulbs-and-ford-circles-research` | research | L3 | EXPLORE | Python |
+| `larsbx/math-vizops` | app | L3 | STANDARD | Python |
+| `larsbx/my-math-homelab` | research | L3 | EXPLORE | Python |
+| `larsbx/novelty-lab` | research | L3 | EXPLORE | Python |
+| `larsbx/oracles` | research | L3 | EXPLORE | Python |
+| `larsbx/pisot-substitution-conjecture-research` | research | L3 | EXPLORE | Mojo |
+| `larsbx/pisot-vijayaraghavan-problem-research` | research | L3 | EXPLORE | Python |
+| `larsbx/s-adic-pisot-conjecture-research` | research | L3 | EXPLORE | Mojo |
+| `larsbx/tiling-theory-research` | research | L3 | EXPLORE | Python |
+| `larsbx/vizing-domination-conjecture-research` | research | L3 | EXPLORE | Python |
 | `larsbx/estate-governance` | meta | outside | STANDARD | Python |
