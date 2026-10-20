@@ -30,7 +30,9 @@ python tools/pin_estate.py ../CONSUMER                   # pin rev + audit diges
 python kernel/audit_estate_layout.py --root ../CONSUMER  # must pass; wire the CI step into CI
 ```
 
-The consumer's CI downloads a public, immutable mirror of the audit, verifies its\nSHA-256 against the manifest pin, and runs it without any repository secret (see the contract).
+The consumer's CI downloads the audit from this public repository at the pinned commit,
+verifies its SHA-256 against the manifest pin, and runs it without any repository secret
+(see the contract).
 
 ## Updating consumers after a template change
 
