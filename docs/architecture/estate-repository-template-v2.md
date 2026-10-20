@@ -154,21 +154,23 @@ acceptance_authority = false
 An estate repository may use a completely different language assignment while
 retaining the same planes.
 
-For an oracle repository that owns no acceptance boundary, its canonical entry
-can instead be:
+For an adopter whose kernel does not exist yet, its canonical entry is:
 
 ```toml
 [[language]]
-name = "Julia"
+name = "Mojo"
 authority = "canonical"
-roles = ["kernel", "oracle", "experiment"]
+roles = ["kernel"]
 acceptance_authority = false
 ```
 
-This is Julia Oracle Lab's existing model: its kernel validates registry entries
-and bindings, and its [authority-boundary document](https://github.com/larsbx/julia-oracle-lab/blob/main/docs/AUTHORITY_BOUNDARY.md)
-places every trusted acceptance boundary outside the lab. The rule is independent
-of repository name or language.
+Estate policy: every repository with a canonical kernel declares `true` and
+names its boundary. `false` is reserved for an adopter whose kernel does not exist
+yet; it switches to `true` in the change that lands that kernel. An oracle
+repository still owns a boundary of its own: Julia Oracle Lab's kernel is the
+sole implementation of registry admission, while its oracle results about other
+repositories' claims stay evidence (its [authority-boundary document](https://github.com/larsbx/julia-oracle-lab/blob/main/docs/AUTHORITY_BOUNDARY.md)).
+The rule is independent of repository name or language.
 
 ## The manifest
 
