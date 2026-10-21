@@ -400,3 +400,22 @@ exports = []
 deps = []
 conforms = []
 ci_gate = true
+
+
+[[member]]
+id = "llm-kernel-lab"
+slug = "larsbx/llm-kernel-lab"
+source_commit = "a670e89c1f9bc8bc529bf330a37e88bebe653d4d"
+manifest_blob = "65779c22ec9341e34aab09c705b2b980f2b44b3c"
+class = "research"
+layer = 3
+band = "EXPLORE"
+stage = "candidate"
+canonical_language = "Lean"
+acceptance_authority = true
+governance_rev = "5ea47dec8086eab6a1dad6fd239688d20ea89891"
+inv = []
+exports = []
+deps = []
+conforms = []
+ci_gate = true
