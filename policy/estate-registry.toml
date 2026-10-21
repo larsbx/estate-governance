@@ -262,3 +262,100 @@ exports = []
 deps = []
 conforms = []
 ci_gate = true
+
+
+[[member]]
+id = "closure-fiber-of-multiplication-research"
+slug = "larsbx/closure-fiber-of-multiplication-research"
+source_commit = "cbf4539d35db06a81e6b520ea5cf6a08f5619276"
+manifest_blob = "148561ea1094031d15594f50d35a52533f4aaf0d"
+class = "research"
+layer = 3
+band = "EXPLORE"
+stage = "candidate"
+governance_rev = "5ea47dec8086eab6a1dad6fd239688d20ea89891"
+inv = []
+exports = []
+deps = []
+conforms = []
+ci_gate = true
+
+[[member]]
+id = "giant-fibers-finite-fields-thin-groups"
+slug = "larsbx/giant-fibers-finite-fields-thin-groups"
+source_commit = "32ba7ce8867556118917fc03854c8a65c707fd75"
+manifest_blob = "91626d9edc68b284a1a38776d99eb73a75db5d15"
+class = "research"
+layer = 3
+band = "EXPLORE"
+stage = "candidate"
+governance_rev = "5ea47dec8086eab6a1dad6fd239688d20ea89891"
+inv = []
+exports = []
+deps = []
+conforms = []
+ci_gate = true
+
+[[member]]
+id = "math-vizops"
+slug = "larsbx/math-vizops"
+source_commit = "21750099235a522628eb98746dc45f7a940af5b1"
+manifest_blob = "84de69236f243fa88884ba09dcc0a9f46f05ff29"
+class = "research"
+layer = 3
+band = "EXPLORE"
+stage = "candidate"
+governance_rev = "5ea47dec8086eab6a1dad6fd239688d20ea89891"
+inv = []
+exports = []
+deps = ["finite-math-kernels"]
+conforms = []
+ci_gate = true
+
+[[member]]
+id = "my-math-homelab"
+slug = "larsbx/my-math-homelab"
+source_commit = "b2915558e7c86fc4739f80e364174f594eed0811"
+manifest_blob = "c36d75baefcb879f2718368ffe2b4021f6ea7f60"
+class = "research"
+layer = 3
+band = "EXPLORE"
+stage = "candidate"
+governance_rev = "5ea47dec8086eab6a1dad6fd239688d20ea89891"
+inv = []
+exports = []
+deps = []
+conforms = []
+ci_gate = true
+
+[[member]]
+id = "oracles"
+slug = "larsbx/oracles"
+source_commit = "bacccbc24fc57a228110f71b5cc9d873ab1d94aa"
+manifest_blob = "07219eadedbbea6dec7fb2b8de2c464e27264e2e"
+class = "research"
+layer = 3
+band = "EXPLORE"
+stage = "candidate"
+governance_rev = "5ea47dec8086eab6a1dad6fd239688d20ea89891"
+inv = []
+exports = []
+deps = []
+conforms = []
+ci_gate = true
+
+[[member]]
+id = "tiling-theory-research"
+slug = "larsbx/tiling-theory-research"
+source_commit = "f051e789142e517db12564b37aba8f0cbc8bc878"
+manifest_blob = "3564b5e33970430a1c713c7b3755ae5c8de84911"
+class = "research"
+layer = 3
+band = "EXPLORE"
+stage = "candidate"
+governance_rev = "5ea47dec8086eab6a1dad6fd239688d20ea89891"
+inv = []
+exports = []
+deps = []
+conforms = []
+ci_gate = true
