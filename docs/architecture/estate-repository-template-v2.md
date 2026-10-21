@@ -259,9 +259,15 @@ The audit fails closed on:
 - a pixi workspace or polyglot manifest naming a different repository, or a
   polyglot manifest that does not link to `ESTATE.toml`.
 
-The audit checks one manifest against one tree. The estate-wide checks that need
-every manifest at once (SPEC_estate EA1-EA7: C ∪ D acyclic, layering across
-edges, unique exports and INV prefixes, the stage ledger) are not implemented.
+The repository-local audit checks one manifest against one tree. Estate-wide
+membership and cross-repository invariants are checked separately by
+`kernel/audit_estate_registry.py` over `policy/estate-registry.toml`. That checker
+currently enforces a machine-readable membership snapshot, exact governance-revision
+freshness, an acyclic and layer-respecting code-dependency graph, unique exports,
+unique INV prefixes and multi-program claim namespaces, valid stage-ledger values,
+and the presence of an estate CI gate for every registered member. Conformance
+edges are validated for known endpoints but may be reciprocal; they are not treated
+as code-dependency edges.
 
 ## Pinning
 
