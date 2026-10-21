@@ -18,7 +18,8 @@ def member(data, member_id):
 def test_current_registry_passes():
     summary = audit_estate_registry.validate(load_current())
     assert summary["members"] >= 10
-    assert summary["governance_revision"] == "5ea47dec8086eab6a1dad6fd239688d20ea89891"
+    assert summary["governance_source_commit"] == "0106e9ab7d8b935526f796c291cf8d07a2571d33"
+    assert summary["required_audit_revision"] == "5ea47dec8086eab6a1dad6fd239688d20ea89891"
 
 
 def test_dependency_cycle_fails():
@@ -55,7 +56,7 @@ def test_duplicate_inv_prefix_fails():
 def test_stale_governance_revision_fails():
     data = copy.deepcopy(load_current())
     member(data, "langlands-lab")["governance_rev"] = "0" * 40
-    with pytest.raises(AssertionError, match="governance revision is stale"):
+    with pytest.raises(AssertionError, match="governance audit revision is stale"):
         audit_estate_registry.validate(data)
 
 
