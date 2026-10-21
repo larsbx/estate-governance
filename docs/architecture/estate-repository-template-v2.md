@@ -304,6 +304,7 @@ The table below is a generated projection. Edit the registry, then run
 | `larsbx/giant-fibers-finite-fields-thin-groups` | research | L3 | EXPLORE | Mojo | no |
 | `larsbx/julia-oracle-lab` | research | L3 | EXPLORE | Julia | yes |
 | `larsbx/langlands-lab` | research | L3 | EXPLORE | Python | yes |
+| `larsbx/llm-kernel-lab` | research | L3 | EXPLORE | Lean | yes |
 | `larsbx/mandelbrot-bulbs-and-ford-circles-research` | research | L3 | EXPLORE | Python | yes |
 | `larsbx/math-vizops` | research | L3 | EXPLORE | Python | yes |
 | `larsbx/my-math-homelab` | research | L3 | EXPLORE | Python | yes |
