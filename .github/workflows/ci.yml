@@ -18,5 +18,7 @@ jobs:
         run: python kernel/audit_estate_layout.py
       - name: Audit estate-wide registry invariants
         run: python kernel/audit_estate_registry.py
+      - name: Generated adopter register is current
+        run: python tools/render_adopters.py --check
       - name: Test repository-local and estate-wide governance
         run: python -m pytest
