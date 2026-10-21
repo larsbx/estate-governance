@@ -259,9 +259,15 @@ The audit fails closed on:
 - a pixi workspace or polyglot manifest naming a different repository, or a
   polyglot manifest that does not link to `ESTATE.toml`.
 
-The audit checks one manifest against one tree. The estate-wide checks that need
-every manifest at once (SPEC_estate EA1-EA7: C ∪ D acyclic, layering across
-edges, unique exports and INV prefixes, the stage ledger) are not implemented.
+The repository-local audit checks one manifest against one tree. Estate-wide
+membership and cross-repository invariants are checked separately by
+`kernel/audit_estate_registry.py` over `policy/estate-registry.toml`. That checker
+currently enforces a machine-readable membership snapshot, exact governance-revision
+freshness, an acyclic and layer-respecting code-dependency graph, unique exports,
+unique INV prefixes and multi-program claim namespaces, valid stage-ledger values,
+and the presence of an estate CI gate for every registered member. Conformance
+edges are validated for known endpoints but may be reciprocal; they are not treated
+as code-dependency edges.
 
 ## Pinning
 
@@ -279,28 +285,34 @@ a consumer only through that explicit, reviewable pin bump.
 
 ## Adopters
 
-Proposed estate positions (`decided_by = "proposed"`, stage `candidate`), until
-the owner adopts them by decision record:
+The machine-readable adopter registry is `policy/estate-registry.toml`. It is the
+estate-wide source for membership, exact source snapshots, graph edges, exported
+names, INV ownership, stage state, CI-gate presence and authority models.
 
-| Repository | Class | Layer | Band | Canonical language |
-| --- | --- | --- | --- | --- |
-| `larsbx/arithmetic-bicycle-conjecture-research` | research | L3 | EXPLORE | Python |
-| `larsbx/closure-fiber-of-multiplication-research` | research | L3 | EXPLORE | Mojo |
-| `larsbx/finite-dynamics` | research | L3 | EXPLORE | Python |
-| `larsbx/finite-julia-set-research` | research | L3 | EXPLORE | Mojo |
-| `larsbx/finite-mandelbrot-research` | research | L3 | EXPLORE | Mojo |
-| `larsbx/finite-math-kernels` | kernel | L0 | HARDENED | Mojo |
-| `larsbx/giant-fibers-finite-fields-thin-groups` | research | L3 | EXPLORE | Mojo |
-| `larsbx/julia-oracle-lab` | research | L3 | EXPLORE | Julia |
-| `larsbx/langlands-lab` | research | L3 | EXPLORE | Python |
-| `larsbx/mandelbrot-bulbs-and-ford-circles-research` | research | L3 | EXPLORE | Python |
-| `larsbx/math-vizops` | research | L3 | EXPLORE | Python |
-| `larsbx/my-math-homelab` | research | L3 | EXPLORE | Python |
-| `larsbx/novelty-lab` | research | L3 | EXPLORE | Python |
-| `larsbx/oracles` | research | L3 | EXPLORE | Mojo |
-| `larsbx/pisot-substitution-conjecture-research` | research | L3 | EXPLORE | Mojo |
-| `larsbx/pisot-vijayaraghavan-problem-research` | research | L3 | EXPLORE | Python |
-| `larsbx/s-adic-pisot-conjecture-research` | research | L3 | EXPLORE | Mojo |
-| `larsbx/tiling-theory-research` | research | L3 | EXPLORE | Python |
-| `larsbx/vizing-domination-conjecture-research` | research | L3 | EXPLORE | Python |
-| `larsbx/estate-governance` | meta | outside | STANDARD | Python |
+The table below is a generated projection. Edit the registry, then run
+`python tools/render_adopters.py`.
+
+<!-- generated: estate-adopters -->
+| Repository | Class | Layer | Band | Canonical language | Acceptance authority |
+| --- | --- | ---: | --- | --- | --- |
+| `larsbx/arithmetic-bicycle-conjecture-research` | research | L3 | EXPLORE | Python | yes |
+| `larsbx/closure-fiber-of-multiplication-research` | research | L3 | EXPLORE | Mojo | no |
+| `larsbx/finite-dynamics` | research | L3 | EXPLORE | Python | yes |
+| `larsbx/finite-julia-set-research` | research | L3 | EXPLORE | Mojo | yes |
+| `larsbx/finite-mandelbrot-research` | research | L3 | EXPLORE | Mojo | yes |
+| `larsbx/finite-math-kernels` | kernel | L0 | HARDENED | Mojo | yes |
+| `larsbx/giant-fibers-finite-fields-thin-groups` | research | L3 | EXPLORE | Mojo | no |
+| `larsbx/julia-oracle-lab` | research | L3 | EXPLORE | Julia | yes |
+| `larsbx/langlands-lab` | research | L3 | EXPLORE | Python | yes |
+| `larsbx/mandelbrot-bulbs-and-ford-circles-research` | research | L3 | EXPLORE | Python | yes |
+| `larsbx/math-vizops` | research | L3 | EXPLORE | Python | yes |
+| `larsbx/my-math-homelab` | research | L3 | EXPLORE | Python | yes |
+| `larsbx/novelty-lab` | research | L3 | EXPLORE | Python | yes |
+| `larsbx/oracles` | research | L3 | EXPLORE | Mojo | no |
+| `larsbx/pisot-substitution-conjecture-research` | research | L3 | EXPLORE | Mojo | yes |
+| `larsbx/pisot-vijayaraghavan-problem-research` | research | L3 | EXPLORE | Python | yes |
+| `larsbx/s-adic-pisot-conjecture-research` | research | L3 | EXPLORE | Mojo | yes |
+| `larsbx/tiling-theory-research` | research | L3 | EXPLORE | Python | no |
+| `larsbx/vizing-domination-conjecture-research` | research | L3 | EXPLORE | Python | no |
+| `larsbx/estate-governance` | meta | outside | STANDARD | Python | yes |
+<!-- /generated -->
