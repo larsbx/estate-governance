@@ -279,28 +279,12 @@ a consumer only through that explicit, reviewable pin bump.
 
 ## Adopters
 
-Proposed estate positions (`decided_by = "proposed"`, stage `candidate`), until
-the owner adopts them by decision record:
+The machine-readable adopter registry is `policy/estate-registry.toml`. It is the
+estate-wide source for membership, exact source snapshots, graph edges, exported
+names, INV ownership, stage state, CI-gate presence and authority models.
 
-| Repository | Class | Layer | Band | Canonical language |
-| --- | --- | --- | --- | --- |
-| `larsbx/arithmetic-bicycle-conjecture-research` | research | L3 | EXPLORE | Python |
-| `larsbx/closure-fiber-of-multiplication-research` | research | L3 | EXPLORE | Mojo |
-| `larsbx/finite-dynamics` | research | L3 | EXPLORE | Python |
-| `larsbx/finite-julia-set-research` | research | L3 | EXPLORE | Mojo |
-| `larsbx/finite-mandelbrot-research` | research | L3 | EXPLORE | Mojo |
-| `larsbx/finite-math-kernels` | kernel | L0 | HARDENED | Mojo |
-| `larsbx/giant-fibers-finite-fields-thin-groups` | research | L3 | EXPLORE | Mojo |
-| `larsbx/julia-oracle-lab` | research | L3 | EXPLORE | Julia |
-| `larsbx/langlands-lab` | research | L3 | EXPLORE | Python |
-| `larsbx/mandelbrot-bulbs-and-ford-circles-research` | research | L3 | EXPLORE | Python |
-| `larsbx/math-vizops` | research | L3 | EXPLORE | Python |
-| `larsbx/my-math-homelab` | research | L3 | EXPLORE | Python |
-| `larsbx/novelty-lab` | research | L3 | EXPLORE | Python |
-| `larsbx/oracles` | research | L3 | EXPLORE | Mojo |
-| `larsbx/pisot-substitution-conjecture-research` | research | L3 | EXPLORE | Mojo |
-| `larsbx/pisot-vijayaraghavan-problem-research` | research | L3 | EXPLORE | Python |
-| `larsbx/s-adic-pisot-conjecture-research` | research | L3 | EXPLORE | Mojo |
-| `larsbx/tiling-theory-research` | research | L3 | EXPLORE | Python |
-| `larsbx/vizing-domination-conjecture-research` | research | L3 | EXPLORE | Python |
-| `larsbx/estate-governance` | meta | outside | STANDARD | Python |
+The table below is a generated projection. Edit the registry, then run
+`python tools/render_adopters.py`.
+
+<!-- generated: estate-adopters -->
+<!-- /generated -->
