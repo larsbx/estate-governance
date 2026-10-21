@@ -1,0 +1,264 @@
+version = 1
+schema = "estate-registry-v1"
+governance_revision = "5ea47dec8086eab6a1dad6fd239688d20ea89891"
+
+# This registry is the estate-wide snapshot used for global invariants.
+# Each row names the exact source commit and ESTATE.toml blob that supplied it.
+# Conformance edges may be reciprocal; code dependency edges must remain acyclic.
+
+[[member]]
+id = "estate-governance"
+slug = "larsbx/estate-governance"
+source_commit = "5ea47dec8086eab6a1dad6fd239688d20ea89891"
+manifest_blob = "24c96c438a9cdeb5db1c821c46dae1f0c764f4d9"
+class = "meta"
+layer = -1
+band = "STANDARD"
+stage = "candidate"
+inv = []
+exports = ["estate-repository-v2", "estate.audit", "estate.pin"]
+deps = []
+conforms = []
+ci_gate = true
+
+[[member]]
+id = "finite-math-kernels"
+slug = "larsbx/finite-math-kernels"
+source_commit = "67fe97bf63ae844226fd47af7ca6a09bc5bf722a"
+manifest_blob = "a584b8fec6c7147969a4fb04f3cbbb050d2d2a6c"
+class = "kernel"
+layer = 0
+band = "HARDENED"
+stage = "candidate"
+governance_rev = "5ea47dec8086eab6a1dad6fd239688d20ea89891"
+inv = []
+exports = [
+  "finite_exact",
+  "finite_linear_algebra",
+  "finite_polynomial",
+  "finite_field_orbit",
+  "certified_records",
+  "quadratic_orbit",
+  "rational_dynamics",
+  "substitution_dynamics",
+  "parallel_fold",
+  "mojo_smoke",
+  "proof_records",
+  "projective_limits",
+  "weighted_graph",
+  "finite_graph",
+  "finite_automata",
+  "angle_doubling",
+  "projective",
+  "claim_governance",
+  "vendoring",
+  "references",
+  "oracle_refinement",
+  "rational_dynamics_py",
+  "closed_interval",
+  "root_isolation",
+  "root_isolation_py",
+  "exact_arithmetic_audit",
+  "lexical_audit",
+  "polyglot_envelope",
+  "rational-dynamics-cyclotomic-v1",
+  "typed-proof-graph-normalization-v1",
+  "polyglot-boundary-envelope-v1",
+]
+deps = []
+conforms = ["julia-oracle-lab"]
+ci_gate = true
+
+[[member]]
+id = "finite-mandelbrot-research"
+slug = "larsbx/finite-mandelbrot-research"
+source_commit = "fe9fb0090d933748dac278a9bd631b3744830502"
+manifest_blob = "736620203173d178ff1affe53640d38d33073233"
+class = "research"
+layer = 3
+band = "EXPLORE"
+stage = "candidate"
+governance_rev = "5ea47dec8086eab6a1dad6fd239688d20ea89891"
+inv = []
+exports = []
+deps = ["finite-math-kernels"]
+conforms = []
+ci_gate = true
+
+[[member]]
+id = "finite-julia-set-research"
+slug = "larsbx/finite-julia-set-research"
+source_commit = "5360d1c0611ea49d3101108ec2e6d6083ef9a23d"
+manifest_blob = "9e68c62593758b8a720b88b711c097ea7982b750"
+class = "research"
+layer = 3
+band = "EXPLORE"
+stage = "candidate"
+governance_rev = "5ea47dec8086eab6a1dad6fd239688d20ea89891"
+inv = []
+exports = []
+deps = ["finite-math-kernels"]
+conforms = []
+ci_gate = true
+
+[[member]]
+id = "julia-oracle-lab"
+slug = "larsbx/julia-oracle-lab"
+source_commit = "a14b6fcb4ded88f2657d13e2b8ee112db4172839"
+manifest_blob = "388cc06bb54436117f38d516f323ad7650fbce23"
+class = "research"
+layer = 3
+band = "EXPLORE"
+stage = "candidate"
+governance_rev = "5ea47dec8086eab6a1dad6fd239688d20ea89891"
+inv = []
+exports = ["JuliaOracleLab", "julia-oracle-registry/v1"]
+deps = []
+conforms = ["finite-math-kernels"]
+ci_gate = true
+
+[[member]]
+id = "langlands-lab"
+slug = "larsbx/langlands-lab"
+source_commit = "b63634f7a70d47ac9677250aceff9e2c97573222"
+manifest_blob = "3f507897bf9d57e2f647f43200552e9bdd77a5d5"
+class = "research"
+layer = 3
+band = "EXPLORE"
+stage = "candidate"
+governance_rev = "5ea47dec8086eab6a1dad6fd239688d20ea89891"
+inv = []
+exports = []
+deps = []
+conforms = []
+ci_gate = true
+
+[[member]]
+id = "mandelbrot-bulbs-and-ford-circles-research"
+slug = "larsbx/mandelbrot-bulbs-and-ford-circles-research"
+source_commit = "6a6117680a3b07954c61f546ea409dfb96042b9b"
+manifest_blob = "fb57bf8551a9ee312b25d405a124884a7d2a12b6"
+class = "research"
+layer = 3
+band = "EXPLORE"
+stage = "candidate"
+governance_rev = "5ea47dec8086eab6a1dad6fd239688d20ea89891"
+inv = []
+exports = []
+deps = ["finite-math-kernels"]
+conforms = ["finite-math-kernels"]
+ci_gate = true
+
+[[member]]
+id = "pisot-substitution-conjecture-research"
+slug = "larsbx/pisot-substitution-conjecture-research"
+source_commit = "824a2b9b0297f51b4f7b82dbc2373ee78807381f"
+manifest_blob = "206a8bc7b789006d1176a7ef66604486a36be675"
+class = "research"
+layer = 3
+band = "EXPLORE"
+stage = "candidate"
+governance_rev = "5ea47dec8086eab6a1dad6fd239688d20ea89891"
+inv = []
+exports = []
+deps = ["finite-math-kernels"]
+conforms = []
+ci_gate = true
+
+[[member]]
+id = "novelty-lab"
+slug = "larsbx/novelty-lab"
+source_commit = "60507a53c3c028ea5a68f505f7890b3cf81a6c7d"
+manifest_blob = "addf89671f8b687b079f69f4306687cce839d9a7"
+class = "research"
+layer = 3
+band = "EXPLORE"
+stage = "candidate"
+governance_rev = "5ea47dec8086eab6a1dad6fd239688d20ea89891"
+inv = []
+exports = []
+deps = ["finite-math-kernels"]
+conforms = []
+ci_gate = true
+
+[[member]]
+id = "finite-dynamics"
+slug = "larsbx/finite-dynamics"
+source_commit = "197ba06bb48c619872dcc52a6cfe85559dd6cba7"
+manifest_blob = "896e02df90b56651bd9ffbf9c3f14fb863811d6d"
+class = "research"
+layer = 3
+band = "EXPLORE"
+stage = "candidate"
+governance_rev = "5ea47dec8086eab6a1dad6fd239688d20ea89891"
+inv = []
+exports = []
+deps = []
+conforms = []
+ci_gate = true
+workspace = "multi_program"
+claim_namespaces = ["FM", "FJ", "BFC", "JO"]
+
+[[member]]
+id = "pisot-vijayaraghavan-problem-research"
+slug = "larsbx/pisot-vijayaraghavan-problem-research"
+source_commit = "65ed2693d473ec9f3c58c8641a071a35e3ac9337"
+manifest_blob = "6b6bd9f80fa19e39a6a033a2caae6586d0ea378e"
+class = "research"
+layer = 3
+band = "EXPLORE"
+stage = "candidate"
+governance_rev = "5ea47dec8086eab6a1dad6fd239688d20ea89891"
+inv = []
+exports = []
+deps = []
+conforms = []
+ci_gate = true
+
+[[member]]
+id = "vizing-domination-conjecture-research"
+slug = "larsbx/vizing-domination-conjecture-research"
+source_commit = "272e8789354726b982fa225a4d3720757943902f"
+manifest_blob = "ef3df03f2b0605a9991e5f2f554238aad8ac6714"
+class = "research"
+layer = 3
+band = "EXPLORE"
+stage = "candidate"
+governance_rev = "5ea47dec8086eab6a1dad6fd239688d20ea89891"
+inv = ["INV-VDC"]
+exports = []
+deps = []
+conforms = []
+ci_gate = true
+
+[[member]]
+id = "s-adic-pisot-conjecture-research"
+slug = "larsbx/s-adic-pisot-conjecture-research"
+source_commit = "3f9993a6e5f58c4dd3bfc8991bacf586abe0e621"
+manifest_blob = "335d4ec432ab37ced1006612ff7cba88984e050a"
+class = "research"
+layer = 3
+band = "EXPLORE"
+stage = "candidate"
+governance_rev = "5ea47dec8086eab6a1dad6fd239688d20ea89891"
+inv = []
+exports = []
+deps = ["finite-math-kernels"]
+conforms = []
+ci_gate = true
+
+[[member]]
+id = "arithmetic-bicycle-conjecture-research"
+slug = "larsbx/arithmetic-bicycle-conjecture-research"
+source_commit = "c2fba9ef22153da767c830f3cdfa19b4507c9487"
+manifest_blob = "8bd30963a713e17503c674ad4d1383774ceac3c1"
+class = "research"
+layer = 3
+band = "EXPLORE"
+stage = "candidate"
+governance_rev = "5ea47dec8086eab6a1dad6fd239688d20ea89891"
+inv = ["INV-ABC"]
+exports = []
+deps = []
+conforms = []
+ci_gate = true
