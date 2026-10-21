@@ -16,9 +16,11 @@ def member(data, member_id):
 
 
 def test_current_registry_passes():
-    summary = audit_estate_registry.validate(load_current())
+    data = load_current()
+    summary = audit_estate_registry.validate(data)
     assert summary["members"] >= 10
-    assert summary["governance_source_commit"] == "0106e9ab7d8b935526f796c291cf8d07a2571d33"
+    # The snapshot commit moves with every regeneration; it must name the governance row.
+    assert summary["governance_source_commit"] == data["governance_source_commit"]
     assert summary["required_audit_revision"] == "5ea47dec8086eab6a1dad6fd239688d20ea89891"
 
 

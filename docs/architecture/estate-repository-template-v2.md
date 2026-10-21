@@ -164,13 +164,26 @@ roles = ["kernel"]
 acceptance_authority = false
 ```
 
-Estate policy: every repository with a canonical kernel declares `true` and
+Estate policy ([DR-0002](../decisions/DR-0002-acceptance-authority.md)): every repository with a canonical kernel declares `true` and
 names its boundary. `false` is reserved for an adopter whose kernel does not exist
 yet; it switches to `true` in the change that lands that kernel. An oracle
 repository still owns a boundary of its own: Julia Oracle Lab's kernel is the
 sole implementation of registry admission, while its oracle results about other
 repositories' claims stay evidence (its [authority-boundary document](https://github.com/larsbx/julia-oracle-lab/blob/main/docs/AUTHORITY_BOUNDARY.md)).
 The rule is independent of repository name or language.
+
+A repository with a kernel may also stay at `false` while its own documented
+promotion conditions are unmet; the exception is named here and in its
+`ARCHITECTURE.md`. The audit does not enforce this policy. Current non-accepting
+adopters:
+
+| Repository | Reason | Switches when |
+| --- | --- | --- |
+| `larsbx/closure-fiber-of-multiplication-research` | no kernel yet (placeholder entry point) | its first exact kernel module lands |
+| `larsbx/giant-fibers-finite-fields-thin-groups` | no kernel yet (plans only) | its first exact kernel module lands |
+| `larsbx/oracles` | no kernel yet (no code) | its first kernel lands |
+| `larsbx/tiling-theory-research` | no kernel plane yet (certificate checkers live in `research/` as evidence) | a kernel plane is established |
+| `larsbx/vizing-domination-conjecture-research` | owner-confirmed exception: candidate row-CSP kernel | its five documented promotion conditions are met |
 
 ## The manifest
 
@@ -289,15 +302,25 @@ The machine-readable adopter registry is `policy/estate-registry.toml`. It is th
 estate-wide source for membership, exact source snapshots, graph edges, exported
 names, INV ownership, stage state, CI-gate presence and authority models.
 
-The table below is a generated projection. Edit the registry, then run
-`python tools/render_adopters.py`.
+The registry is generated, never edited by hand: `python tools/snapshot_registry.py`
+derives every row from the member's `ESTATE.toml` at an exact commit of a sibling
+checkout (default `origin/main`), and `--check` reports drift. The table below is a
+generated projection of the registry: run `python tools/render_adopters.py`.
+
+Every `stated` member names its adopting record in `origin.decision`, and the
+estate-wide audit requires that record to exist in `docs/decisions/` with status
+accepted. The owner adopted the listed positions in
+[DR-0001](../decisions/DR-0001-adopt-estate-positions.md); stage stays `candidate`
+until estate CI promotes it. `larsbx/finite-dynamics` is archived by
+[DR-0003](../decisions/DR-0003-archive-finite-dynamics.md). An archived member stays
+listed but releases its claim namespaces, exports and INV prefixes.
 
 <!-- generated: estate-adopters -->
 | Repository | Class | Layer | Band | Canonical language | Acceptance authority |
 | --- | --- | ---: | --- | --- | --- |
 | `larsbx/arithmetic-bicycle-conjecture-research` | research | L3 | EXPLORE | Python | yes |
 | `larsbx/closure-fiber-of-multiplication-research` | research | L3 | EXPLORE | Mojo | no |
-| `larsbx/finite-dynamics` | research | L3 | EXPLORE | Python | yes |
+| `larsbx/finite-dynamics` (archived) | research | L3 | EXPLORE | Python | yes |
 | `larsbx/finite-julia-set-research` | research | L3 | EXPLORE | Mojo | yes |
 | `larsbx/finite-mandelbrot-research` | research | L3 | EXPLORE | Mojo | yes |
 | `larsbx/finite-math-kernels` | kernel | L0 | HARDENED | Mojo | yes |
