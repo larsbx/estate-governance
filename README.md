@@ -7,8 +7,11 @@ consumers check this repository out at a pinned commit instead of vendoring it.
 
 ```text
 policy/ESTATE.template.toml                          manifest template
-kernel/audit_estate_layout.py                        estate audit (canonical, never vendored)
+policy/estate-registry.toml                          estate-wide membership/graph snapshot
+kernel/audit_estate_layout.py                        one-repository audit
+kernel/audit_estate_registry.py                      estate-wide graph/uniqueness/freshness audit
 tools/pin_estate.py                                  pin a consumer to this checkout
+tools/render_adopters.py                             render the contract adopter table
 docs/architecture/estate-repository-template-v2.md   the contract (v1 kept, superseded)
 policy/PROGRAM.template.toml                       child manifest for multi-program repositories
 docs/architecture/multi-program-repository-v1.md    monorepo extension contract
@@ -43,12 +46,15 @@ python tools/pin_estate.py ../CONSUMER                   # re-pin
 
 ## Adopters
 
-The adopter register is the Adopters section of
-`docs/architecture/estate-repository-template-v2.md`.
+`policy/estate-registry.toml` is the machine-readable membership source. The
+Adopters section of `docs/architecture/estate-repository-template-v2.md` is a
+generated projection and CI rejects drift between them.
 
 ## Checks
 
 ```sh
 python kernel/audit_estate_layout.py
+python kernel/audit_estate_registry.py
+python tools/render_adopters.py --check
 python -m pytest
 ```
