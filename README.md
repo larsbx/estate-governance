@@ -12,6 +12,7 @@ kernel/audit_estate_layout.py                        one-repository audit
 kernel/audit_estate_registry.py                      estate-wide graph/uniqueness/freshness audit
 tools/pin_estate.py                                  pin a consumer to this checkout
 tools/snapshot_registry.py                           regenerate the registry from members' manifests
+tools/check_registry_freshness.py                    capture source revisions and check snapshot freshness
 tools/render_adopters.py                             render the contract adopter table
 docs/decisions/                                      owner decision records (DR-nnnn)
 docs/architecture/estate-repository-template-v2.md   the contract (v1 kept, superseded)
@@ -50,7 +51,11 @@ python tools/pin_estate.py ../CONSUMER                   # re-pin
 
 `policy/estate-registry.toml` is the machine-readable membership source, generated
 from members' manifests by `python tools/snapshot_registry.py` (run with sibling
-checkouts; `--check` reports drift). The Adopters section of
+checkouts; `--check` reports drift). CI also checks exact provenance and manifest
+freshness against captured source heads, with the tested commit used for this
+repository. See the [freshness policy and access requirements](docs/architecture/registry-freshness-v1.md).
+Unavailable sources fail the gate; a valid registry alone is insufficient.
+The Adopters section of
 `docs/architecture/estate-repository-template-v2.md` is a generated projection of it,
 and CI rejects drift between them.
 
@@ -61,4 +66,7 @@ python kernel/audit_estate_layout.py
 python kernel/audit_estate_registry.py
 python tools/render_adopters.py --check
 python -m pytest
+
+# Live cross-repository check (a new directory; source access required):
+python tools/check_registry_freshness.py --fetch --sources /tmp/estate-observation-1
 ```

@@ -11,7 +11,7 @@ The machine-readable source of repository structure and authority is
 | policy | `policy/` | manifest/program templates plus the estate-wide member/graph registry |
 | kernel | `kernel/` | canonical repository-local and estate-wide governance audits |
 | conformance | `tests/` | valid baselines and rejecting mutations for both audit scopes |
-| tooling | `tools/` | consumer pinning plus generated adopter-table rendering |
+| tooling | `tools/` | consumer pinning, registry generation/freshness checks and adopter rendering |
 | docs | `docs/` | the base template and multi-program extension contracts |
 
 Consumers never treat governance code as domain authority. Their CI runs the
@@ -23,6 +23,12 @@ snapshots and cross-repository facts, while `kernel/audit_estate_registry.py`
 checks graph direction/acyclicity, global name ownership, governance freshness,
 stage values, and estate-gate presence. Reciprocal conformance is permitted and
 is not confused with a code dependency.
+
+The independent CI freshness job uses `tools/check_registry_freshness.py` to
+acquire immutable member observations, reproduce the exact recorded sources and
+compare their manifest bytes and generated facts with captured `main` heads.
+Its explicit policy, self-reference rule, evidence receipts and access failures
+are defined in [registry freshness v1](docs/architecture/registry-freshness-v1.md).
 
 ## Repository shapes
 

@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import subprocess
 import sys
 import tomllib
@@ -88,22 +89,42 @@ def render(header: dict, rows: list[dict]) -> str:
 
 
 def git(repo: Path, *args: str) -> str:
-    return subprocess.run(["git", "-C", str(repo), *args], check=True, capture_output=True, text=True).stdout
+    return subprocess.run(
+        ["git", "-C", str(repo), *args], check=True, capture_output=True,
+        text=True, timeout=180, env={**os.environ, "GIT_TERMINAL_PROMPT": "0",
+                                   "GIT_NO_REPLACE_OBJECTS": "1"},
+    ).stdout
+
+
+def inputs(repo: Path, commit: str) -> dict:
+    """Object IDs of all inputs used by snapshot(), including CI-gate evidence."""
+    blob = git(repo, "rev-parse", "--verify", f"{commit}:ESTATE.toml").strip()
+    listing = git(repo, "ls-tree", "-r", "-z", "--name-only", commit,
+                  ".github/workflows/").split("\0")
+    workflows = {
+        path: git(repo, "rev-parse", "--verify", f"{commit}:{path}").strip()
+        for path in listing if path
+    }
+    return {"manifest_blob": blob, "workflow_blobs": workflows}
 
 
 def snapshot(repo: Path, ref: str) -> dict:
     """Derive the row for the checkout `repo` at `ref`."""
     commit = git(repo, "rev-parse", f"{ref}^{{commit}}").strip()
-    blob = git(repo, "rev-parse", f"{commit}:ESTATE.toml").strip()
+    evidence = inputs(repo, commit)
     manifest = tomllib.loads(git(repo, "show", f"{commit}:ESTATE.toml"))
-    listing = git(repo, "ls-tree", "--name-only", commit, ".github/workflows/").split()
-    workflows = [git(repo, "show", f"{commit}:{path}") for path in listing]
-    return derive(manifest, commit=commit, blob=blob, ci_gate=has_ci_gate(workflows))
+    workflows = [git(repo, "show", f"{commit}:{path}") for path in evidence["workflow_blobs"]]
+    return derive(manifest, commit=commit, blob=evidence["manifest_blob"], ci_gate=has_ci_gate(workflows))
 
 
 def build(sources: Path, ref: str, registry: Path = REGISTRY) -> str:
     current = tomllib.loads(registry.read_text(encoding="utf-8"))
-    rows = [snapshot(sources / member["id"], ref) for member in current["member"]]
+    rows = []
+    for member in current["member"]:
+        row = snapshot(sources / member["id"], ref)
+        if (row["id"], row["slug"]) != (member["id"], member["slug"]):
+            raise ValueError(f"{member['id']}: source manifest identity disagrees with member")
+        rows.append(row)
     governance = next(row for row in rows if row["id"] == GOVERNANCE_ID)
     header = {"governance_source_commit": governance["source_commit"],
               "required_audit_revision": current["required_audit_revision"]}
@@ -114,14 +135,15 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--sources", type=Path, default=ROOT.parent, help="directory of sibling checkouts")
     parser.add_argument("--ref", default="origin/main", help="ref to snapshot in each checkout")
+    parser.add_argument("--registry", type=Path, default=REGISTRY, help="registry to regenerate or check")
     parser.add_argument("--check", action="store_true", help="report drift, write nothing")
     args = parser.parse_args(argv)
-    expected = build(args.sources, args.ref)
+    expected = build(args.sources, args.ref, args.registry)
     if args.check:
-        drift = REGISTRY.read_text(encoding="utf-8") != expected
+        drift = args.registry.read_text(encoding="utf-8") != expected
         print("estate registry is stale" if drift else "estate registry is current")
         return int(drift)
-    REGISTRY.write_text(expected, encoding="utf-8")
+    args.registry.write_text(expected, encoding="utf-8")
     print("estate registry regenerated")
     return 0
 
