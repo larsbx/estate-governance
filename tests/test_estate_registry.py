@@ -23,7 +23,8 @@ def test_current_registry_passes():
 
 def test_dependency_cycle_fails():
     data = copy.deepcopy(load_current())
-    member(data, "finite-math-kernels")["deps"] = ["finite-mandelbrot-research"]
+    member(data, "novelty-lab")["deps"] = ["langlands-lab"]
+    member(data, "langlands-lab")["deps"] = ["novelty-lab"]
     with pytest.raises(AssertionError, match="code dependency cycle"):
         audit_estate_registry.validate(data)
 
