@@ -164,7 +164,7 @@ roles = ["kernel"]
 acceptance_authority = false
 ```
 
-Estate policy: every repository with a canonical kernel declares `true` and
+Estate policy ([DR-0002](../decisions/DR-0002-acceptance-authority.md)): every repository with a canonical kernel declares `true` and
 names its boundary. `false` is reserved for an adopter whose kernel does not exist
 yet; it switches to `true` in the change that lands that kernel. An oracle
 repository still owns a boundary of its own: Julia Oracle Lab's kernel is the
@@ -304,6 +304,11 @@ names, INV ownership, stage state, CI-gate presence and authority models.
 
 The table below is a generated projection. Edit the registry, then run
 `python tools/render_adopters.py`.
+
+The owner adopted every listed position in
+[DR-0001](../decisions/DR-0001-adopt-estate-positions.md): each manifest sets
+`origin.decided_by = "stated"` and names that record. Stage stays `candidate`
+until estate CI promotes it.
 
 <!-- generated: estate-adopters -->
 | Repository | Class | Layer | Band | Canonical language | Acceptance authority |
