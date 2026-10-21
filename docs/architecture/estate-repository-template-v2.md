@@ -172,6 +172,19 @@ sole implementation of registry admission, while its oracle results about other
 repositories' claims stay evidence (its [authority-boundary document](https://github.com/larsbx/julia-oracle-lab/blob/main/docs/AUTHORITY_BOUNDARY.md)).
 The rule is independent of repository name or language.
 
+A repository with a kernel may also stay at `false` while its own documented
+promotion conditions are unmet; the exception is named here and in its
+`ARCHITECTURE.md`. The audit does not enforce this policy. Current non-accepting
+adopters:
+
+| Repository | Reason | Switches when |
+| --- | --- | --- |
+| `larsbx/closure-fiber-of-multiplication-research` | no kernel yet (placeholder entry point) | its first exact kernel module lands |
+| `larsbx/giant-fibers-finite-fields-thin-groups` | no kernel yet (plans only) | its first exact kernel module lands |
+| `larsbx/oracles` | no kernel yet (no code) | its first kernel lands |
+| `larsbx/tiling-theory-research` | no kernel plane yet (certificate checkers live in `research/` as evidence) | a kernel plane is established |
+| `larsbx/vizing-domination-conjecture-research` | owner-confirmed exception: candidate row-CSP kernel | its five documented promotion conditions are met |
+
 ## The manifest
 
 ```toml
