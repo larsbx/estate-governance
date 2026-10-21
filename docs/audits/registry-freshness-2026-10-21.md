@@ -79,6 +79,14 @@ and the exact proposed head passes both workflow jobs. If a hosted run cannot
 start because of billing or permissions, that is a separate blocker and must
 be recorded as such.
 
+Actual hosted result for proposed head `d2909c0d562c766fdd7c7cef89a5b561d511fbd9`:
+[CI run 39677363145](https://github.com/larsbx/estate-governance/actions/runs/39677363145).
+The `test` job passed all audits, generated rendering and **168 tests**. The
+freshness job captured 17 sources and failed on exactly the four private
+repositories listed above (`could not read Username ... terminal prompts
+disabled`). Receipt upload succeeded. Jobs did execute; this failure is source
+access, not a billing restriction or an unexecuted check.
+
 The connected integration returned 403 when reading main's branch protection;
 this investigation therefore does not claim that the new check is already
 configured as a required status check. Require `test` and `Registry snapshot
