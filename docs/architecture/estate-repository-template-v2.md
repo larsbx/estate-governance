@@ -302,20 +302,25 @@ The machine-readable adopter registry is `policy/estate-registry.toml`. It is th
 estate-wide source for membership, exact source snapshots, graph edges, exported
 names, INV ownership, stage state, CI-gate presence and authority models.
 
-The table below is a generated projection. Edit the registry, then run
-`python tools/render_adopters.py`.
+The registry is generated, never edited by hand: `python tools/snapshot_registry.py`
+derives every row from the member's `ESTATE.toml` at an exact commit of a sibling
+checkout (default `origin/main`), and `--check` reports drift. The table below is a
+generated projection of the registry: run `python tools/render_adopters.py`.
 
-The owner adopted every listed position in
-[DR-0001](../decisions/DR-0001-adopt-estate-positions.md): each manifest sets
-`origin.decided_by = "stated"` and names that record. Stage stays `candidate`
-until estate CI promotes it.
+Every `stated` member names its adopting record in `origin.decision`, and the
+estate-wide audit requires that record to exist in `docs/decisions/` with status
+accepted. The owner adopted the listed positions in
+[DR-0001](../decisions/DR-0001-adopt-estate-positions.md); stage stays `candidate`
+until estate CI promotes it. `larsbx/finite-dynamics` is archived by
+[DR-0003](../decisions/DR-0003-archive-finite-dynamics.md). An archived member stays
+listed but releases its claim namespaces, exports and INV prefixes.
 
 <!-- generated: estate-adopters -->
 | Repository | Class | Layer | Band | Canonical language | Acceptance authority |
 | --- | --- | ---: | --- | --- | --- |
 | `larsbx/arithmetic-bicycle-conjecture-research` | research | L3 | EXPLORE | Python | yes |
 | `larsbx/closure-fiber-of-multiplication-research` | research | L3 | EXPLORE | Mojo | no |
-| `larsbx/finite-dynamics` | research | L3 | EXPLORE | Python | yes |
+| `larsbx/finite-dynamics` (archived) | research | L3 | EXPLORE | Python | yes |
 | `larsbx/finite-julia-set-research` | research | L3 | EXPLORE | Mojo | yes |
 | `larsbx/finite-mandelbrot-research` | research | L3 | EXPLORE | Mojo | yes |
 | `larsbx/finite-math-kernels` | kernel | L0 | HARDENED | Mojo | yes |
