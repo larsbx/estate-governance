@@ -130,10 +130,20 @@ def validate(data: dict) -> dict:
         layer = member.get("layer")
         band = member.get("band")
         stage = member.get("stage")
+        canonical_language = member.get("canonical_language")
+        acceptance_authority = member.get("acceptance_authority")
         require(repo_class in CLASSES, f"{member_id}: unknown class {repo_class!r}")
         require(type(layer) is int, f"{member_id}: layer must be an integer")
         require(band in BANDS, f"{member_id}: unknown band {band!r}")
         require(stage in STAGES, f"{member_id}: unknown stage {stage!r}")
+        require(
+            isinstance(canonical_language, str) and canonical_language,
+            f"{member_id}: canonical_language is required",
+        )
+        require(
+            type(acceptance_authority) is bool,
+            f"{member_id}: acceptance_authority must be Boolean",
+        )
         require(member.get("ci_gate") is True, f"{member_id}: estate CI gate is not recorded as active")
 
         if repo_class == "meta":
@@ -219,6 +229,8 @@ def validate(data: dict) -> dict:
         "exports": len(export_rows),
         "inv_prefixes": len(inv_rows),
         "claim_namespaces": len(namespace_rows),
+        "accepting_members": sum(bool(m["acceptance_authority"]) for m in by_id.values()),
+        "nonaccepting_members": sum(not bool(m["acceptance_authority"]) for m in by_id.values()),
         "stages": {stage: sum(m["stage"] == stage for m in by_id.values()) for stage in STAGES},
     }
 
