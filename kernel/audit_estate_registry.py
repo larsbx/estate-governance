@@ -92,10 +92,15 @@ def validate(data: dict) -> dict:
     require(data.get("version") == 1, "registry version must be 1")
     require(data.get("schema") == "estate-registry-v1", "unknown estate registry schema")
 
-    governance_revision = data.get("governance_revision", "")
+    governance_source_commit = data.get("governance_source_commit", "")
+    required_audit_revision = data.get("required_audit_revision", "")
     require(
-        isinstance(governance_revision, str) and REV.fullmatch(governance_revision),
-        "governance_revision must be a 40-hex commit",
+        isinstance(governance_source_commit, str) and REV.fullmatch(governance_source_commit),
+        "governance_source_commit must be a 40-hex commit",
+    )
+    require(
+        isinstance(required_audit_revision, str) and REV.fullmatch(required_audit_revision),
+        "required_audit_revision must be a 40-hex commit",
     )
 
     members = data.get("member")
@@ -153,9 +158,9 @@ def validate(data: dict) -> dict:
         else:
             require(layer >= 0, f"{member_id}: non-meta layer must be nonnegative")
             require(
-                member.get("governance_rev") == governance_revision,
-                f"{member_id}: governance revision is stale or disagrees with registry "
-                f"({member.get('governance_rev')!r} != {governance_revision})",
+                member.get("governance_rev") == required_audit_revision,
+                f"{member_id}: governance audit revision is stale or disagrees with registry "
+                f"({member.get('governance_rev')!r} != {required_audit_revision})",
             )
 
         inv = _string_list(member, "inv")
@@ -190,8 +195,8 @@ def validate(data: dict) -> dict:
 
     require("estate-governance" in by_id, "registry must contain estate-governance")
     require(
-        by_id["estate-governance"]["source_commit"] == governance_revision,
-        "governance_revision must equal estate-governance source_commit",
+        by_id["estate-governance"]["source_commit"] == governance_source_commit,
+        "governance_source_commit must equal estate-governance source_commit",
     )
 
     _assert_unique(slug_rows, "repository slug")
@@ -223,7 +228,8 @@ def validate(data: dict) -> dict:
 
     return {
         "members": len(by_id),
-        "governance_revision": governance_revision,
+        "governance_source_commit": governance_source_commit,
+        "required_audit_revision": required_audit_revision,
         "code_edges": sum(len(v) for v in graph.values()),
         "conformance_edges": sum(len(m["conforms"]) for m in by_id.values()),
         "exports": len(export_rows),
