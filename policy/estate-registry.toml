@@ -1,6 +1,7 @@
 version = 1
 schema = "estate-registry-v1"
-governance_revision = "5ea47dec8086eab6a1dad6fd239688d20ea89891"
+governance_source_commit = "0106e9ab7d8b935526f796c291cf8d07a2571d33"
+required_audit_revision = "5ea47dec8086eab6a1dad6fd239688d20ea89891"
 
 # This registry is the estate-wide snapshot used for global invariants.
 # Each row names the exact source commit and ESTATE.toml blob that supplied it.
@@ -9,7 +10,7 @@ governance_revision = "5ea47dec8086eab6a1dad6fd239688d20ea89891"
 [[member]]
 id = "estate-governance"
 slug = "larsbx/estate-governance"
-source_commit = "5ea47dec8086eab6a1dad6fd239688d20ea89891"
+source_commit = "0106e9ab7d8b935526f796c291cf8d07a2571d33"
 manifest_blob = "24c96c438a9cdeb5db1c821c46dae1f0c764f4d9"
 class = "meta"
 layer = -1
