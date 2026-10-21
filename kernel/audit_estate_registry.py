@@ -20,10 +20,13 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 REGISTRY = ROOT / "policy" / "estate-registry.toml"
+DECISIONS = ROOT / "docs" / "decisions"
 
 REV = re.compile(r"[0-9a-f]{40}")
 BLOB = re.compile(r"[0-9a-f]{40}")
 INV = re.compile(r"INV-[A-Z0-9][A-Z0-9-]*")
+DECISION = re.compile(r"DR-\d{4}")
+ACCEPTED = re.compile(r"^- \*\*Status:\*\* accepted\s*$", re.M)
 STAGES = ("candidate", "seeded", "incubating", "stable", "frozen", "archived")
 BANDS = ("EXPLORE", "STANDARD", "HARDENED", "LAW")
 CLASSES = {"kernel", "substrate", "platform", "app", "research", "corpus", "meta"}
@@ -41,6 +44,15 @@ def require(condition: object, message: str) -> None:
 def load(path: Path = REGISTRY) -> dict:
     require(path.is_file(), f"missing estate registry: {path}")
     return tomllib.loads(path.read_text(encoding="utf-8"))
+
+
+def accepted_decisions(directory: Path = DECISIONS) -> set[str]:
+    """IDs of decision records in `directory` whose status is accepted."""
+    return {
+        path.name[:7]
+        for path in directory.glob("DR-[0-9][0-9][0-9][0-9]-*.md")
+        if ACCEPTED.search(path.read_text(encoding="utf-8"))
+    }
 
 
 def _string_list(member: dict, key: str) -> list[str]:
@@ -88,7 +100,8 @@ def _dependency_cycle(graph: dict[str, list[str]]) -> list[str] | None:
     return None
 
 
-def validate(data: dict) -> dict:
+def validate(data: dict, decisions: set[str] | None = None) -> dict:
+    decisions = accepted_decisions() if decisions is None else decisions
     require(data.get("version") == 1, "registry version must be 1")
     require(data.get("schema") == "estate-registry-v1", "unknown estate registry schema")
 
@@ -151,6 +164,17 @@ def validate(data: dict) -> dict:
         )
         require(member.get("ci_gate") is True, f"{member_id}: estate CI gate is not recorded as active")
 
+        decided_by = member.get("decided_by")
+        require(decided_by in ("stated", "proposed"), f"{member_id}: decided_by must be stated or proposed")
+        if decided_by == "stated":
+            decision = member.get("decision", "")
+            require(isinstance(decision, str) and DECISION.fullmatch(decision),
+                    f"{member_id}: a stated position must name a decision record (DR-nnnn)")
+            require(decision in decisions,
+                    f"{member_id}: no accepted decision record {decision} in docs/decisions")
+        else:
+            require(stage == "candidate", f"{member_id}: decided_by = proposed caps the stage at candidate")
+
         if repo_class == "meta":
             require(member_id == "estate-governance", "only estate-governance may be class meta")
             require(layer == -1, "estate-governance meta layer must be -1 in the registry")
@@ -163,18 +187,19 @@ def validate(data: dict) -> dict:
                 f"({member.get('governance_rev')!r} != {required_audit_revision})",
             )
 
+        # An archived member keeps its history but releases its names.
+        claims_names = stage != "archived"
         inv = _string_list(member, "inv")
         for prefix in inv:
             require(INV.fullmatch(prefix), f"{member_id}: malformed INV prefix {prefix!r}")
-            inv_rows.append((prefix, member_id))
-
         exports = _string_list(member, "exports")
-        export_rows.extend((name, member_id) for name in exports)
-
         deps = _string_list(member, "deps")
         conforms = _string_list(member, "conforms")
         namespaces = _string_list(member, "claim_namespaces")
-        namespace_rows.extend((name, member_id) for name in namespaces)
+        if claims_names:
+            inv_rows.extend((prefix, member_id) for prefix in inv)
+            export_rows.extend((name, member_id) for name in exports)
+            namespace_rows.extend((name, member_id) for name in namespaces)
 
         workspace = member.get("workspace", "single")
         require(workspace in {"single", "multi_program"}, f"{member_id}: invalid workspace {workspace!r}")

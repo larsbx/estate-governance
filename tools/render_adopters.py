@@ -26,8 +26,9 @@ def render() -> str:
     for member in members:
         layer = "outside" if member["class"] == "meta" else f"L{member['layer']}"
         acceptance = "yes" if member["acceptance_authority"] else "no"
+        archived = " (archived)" if member["stage"] == "archived" else ""
         rows.append(
-            f"| `{member['slug']}` | {member['class']} | {layer} | "
+            f"| `{member['slug']}`{archived} | {member['class']} | {layer} | "
             f"{member['band']} | {member['canonical_language']} | {acceptance} |"
         )
     return "\n".join(rows)
