@@ -287,4 +287,26 @@ The table below is a generated projection. Edit the registry, then run
 `python tools/render_adopters.py`.
 
 <!-- generated: estate-adopters -->
+| Repository | Class | Layer | Band | Canonical language | Acceptance authority |
+| --- | --- | ---: | --- | --- | --- |
+| `larsbx/arithmetic-bicycle-conjecture-research` | research | L3 | EXPLORE | Python | yes |
+| `larsbx/closure-fiber-of-multiplication-research` | research | L3 | EXPLORE | Mojo | no |
+| `larsbx/finite-dynamics` | research | L3 | EXPLORE | Python | yes |
+| `larsbx/finite-julia-set-research` | research | L3 | EXPLORE | Mojo | yes |
+| `larsbx/finite-mandelbrot-research` | research | L3 | EXPLORE | Mojo | yes |
+| `larsbx/finite-math-kernels` | kernel | L0 | HARDENED | Mojo | yes |
+| `larsbx/giant-fibers-finite-fields-thin-groups` | research | L3 | EXPLORE | Mojo | no |
+| `larsbx/julia-oracle-lab` | research | L3 | EXPLORE | Julia | yes |
+| `larsbx/langlands-lab` | research | L3 | EXPLORE | Python | yes |
+| `larsbx/mandelbrot-bulbs-and-ford-circles-research` | research | L3 | EXPLORE | Python | yes |
+| `larsbx/math-vizops` | research | L3 | EXPLORE | Python | yes |
+| `larsbx/my-math-homelab` | research | L3 | EXPLORE | Python | yes |
+| `larsbx/novelty-lab` | research | L3 | EXPLORE | Python | yes |
+| `larsbx/oracles` | research | L3 | EXPLORE | Mojo | no |
+| `larsbx/pisot-substitution-conjecture-research` | research | L3 | EXPLORE | Mojo | yes |
+| `larsbx/pisot-vijayaraghavan-problem-research` | research | L3 | EXPLORE | Python | yes |
+| `larsbx/s-adic-pisot-conjecture-research` | research | L3 | EXPLORE | Mojo | yes |
+| `larsbx/tiling-theory-research` | research | L3 | EXPLORE | Python | no |
+| `larsbx/vizing-domination-conjecture-research` | research | L3 | EXPLORE | Python | no |
+| `larsbx/estate-governance` | meta | outside | STANDARD | Python | yes |
 <!-- /generated -->
