@@ -307,6 +307,12 @@ derives every row from the member's `ESTATE.toml` at an exact commit of a siblin
 checkout (default `origin/main`), and `--check` reports drift. The table below is a
 generated projection of the registry: run `python tools/render_adopters.py`.
 
+CI additionally requires the [registry freshness check](registry-freshness-v1.md):
+each recorded source must reproduce exactly, remain reachable from its observed
+source head, and agree with that head's manifest bytes and generated facts.
+Source access failures are failures, not skipped checks. The policy defines the
+tested-commit exception for the governance repository's self-reference.
+
 Every `stated` member names its adopting record in `origin.decision`, and the
 estate-wide audit requires that record to exist in `docs/decisions/` with status
 accepted. The owner adopted the listed positions in
