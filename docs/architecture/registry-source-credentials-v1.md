@@ -6,6 +6,33 @@ protection, or prove hosted access. The P1 stays open until a real authenticated
 run passes on the exact candidate revision. Domain authority, adoption decisions,
 registry projection and `manifest-current-v1` are unchanged.
 
+## Registration for the dedicated App
+
+Use the personal `larsbx` account to
+[open the prefilled registration](https://github.com/settings/apps/new?name=larsbx-estate-registry-reader&description=Read-only%20estate%20registry%20source%20acquisition&url=https%3A%2F%2Fgithub.com%2Flarsbx%2Festate-governance&public=false&webhook_active=false&contents=read).
+This uses GitHub's documented registration URL parameters; it does not submit
+the form, create an App, grant repository access or configure Actions secrets.
+Review the form before submitting it:
+
+| Setting | Value |
+| --- | --- |
+| App name | `larsbx-estate-registry-reader` (choose another unique name if unavailable) |
+| Homepage | `https://github.com/larsbx/estate-governance` |
+| Availability | Only this account (`public=false`) |
+| Repository permission | Contents: Read-only; Metadata read is mandatory |
+| Other repository/account permissions | No access |
+| Webhooks | Inactive; no events or webhook secret |
+| User authorization/OAuth | Not needed; no callback or setup URL |
+
+After registration, install it on the exact source repositories described below,
+record its App ID, and generate its private key in GitHub's App settings. Complete
+the protected environment setup before storing that key. Keep the key inside
+GitHub's environment-secret entry flow; do not paste it into chat or commit it.
+
+The App registration, installation, key and protected environment are required
+account-administration steps. A connected code-review integration does not
+provide those capabilities or share a signed-in settings-browser session.
+
 ## Least-privilege installation
 
 Create a dedicated GitHub App with **Contents: Read-only** and the mandatory
@@ -102,5 +129,6 @@ commit before approving its first credentialled run. Do not replace the pin
 with the candidate SHA, a branch, an expression from PR data, or `HEAD`.
 
 References: [GitHub App token action](https://github.com/actions/create-github-app-token),
+[registration URL parameters](https://docs.github.com/en/apps/sharing-github-apps/registering-a-github-app-using-url-parameters),
 [installation-token repository access](https://docs.github.com/en/rest/apps/installations#list-repositories-accessible-to-the-app-installation),
 [environment secrets and required reviewers](https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/manage-environments).
