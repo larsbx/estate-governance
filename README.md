@@ -14,6 +14,7 @@ tools/pin_estate.py                                  pin a consumer to this chec
 tools/snapshot_registry.py                           regenerate the registry from members' manifests
 tools/render_adopters.py                             render the contract adopter table
 docs/decisions/                                      owner decision records (DR-nnnn)
+ROADMAP.md                                           what remains, with completion gates
 docs/architecture/estate-repository-template-v2.md   the contract (v1 kept, superseded)
 policy/PROGRAM.template.toml                       child manifest for multi-program repositories
 docs/architecture/multi-program-repository-v1.md    monorepo extension contract
