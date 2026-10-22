@@ -29,8 +29,11 @@ the generated `ci_gate` fact. That fact retains the existing generator's textual
 test for `audit_estate_layout.py`; it does not prove the workflow executes the
 audit successfully or cover branch-protection configuration.
 
-For **estate-governance itself**, use the tested checkout's committed `HEAD`
-(the PR merge commit on `pull_request`) rather than remote `main`. A registry
+For **estate-governance itself**, use the exact proposed PR head (or pushed
+commit) selected by the acceptance workflow rather than remote `main`. The
+credentialled job imports this commit as Git data while its executable checkout
+remains at an immutable, independently reviewed acquisition revision. Local
+commands default to committed `HEAD`. A registry
 cannot contain its own eventual commit ID. A preceding reachable commit with
 identical manifest bytes and generated facts is therefore valid for this row
 too. Uncommitted worktree files are never substituted for committed evidence.
@@ -58,21 +61,40 @@ materializing the required blobs it disables lazy fetching for local replay.
 Git replacement objects are disabled. Four concurrent fetches limit resource
 use. An existing capture directory is rejected rather than treated as a cache.
 
-Public sources are fetched anonymously. CI requests only `contents: read` for
-its own checkout and does not persist its credentials. The repository's
-`GITHUB_TOKEN` is scoped to this repository and does not confer access to other
-private repositories. No cross-repository secret is injected into PR code.
+The hosted acceptance path authenticates every remote member acquisition with
+an installation token explicitly requesting only `contents: read` over the
+registered source repositories. The repository's ordinary `GITHUB_TOKEN` does
+not confer cross-repository private access. No token is persisted by checkout,
+written into Git configuration, or passed to the unprivileged test job. The
+local `check_registry_freshness.py --fetch` command remains an explicit anonymous
+diagnostic; it is **not** the hosted acceptance path.
 If a member becomes private/inaccessible, fails to supply `main` or
 `ESTATE.toml`, has an unavailable revision, or fetches time out, acquisition
 fails and records an incomplete receipt. There is no fallback to stale local
 data, cached registry rows, another branch, or omission of the member.
 
-Private members require an explicit access design before this gate can pass:
-for example an isolated trusted acquisition job with a narrowly scoped GitHub
-App `contents: read` installation over the named members. Fork PRs cannot be
-made green by skipping unavailable evidence, exposing secrets, or using
-`pull_request_target` to execute PR code. This version intentionally provides no
-private-source credential path.
+`registry_source_access.py` verifies the installation's exact repository scope
+before acquiring anything. Missing/invalid credentials or scope produce a
+configuration failure; a failed Git fetch is never retried anonymously. The
+candidate must have the same membership as the trusted acquisition revision.
+Membership changes require updating that reviewed revision and App selection.
+The token is supplied only in process-local, URL-scoped HTTP headers; inherited
+Git configuration, credential helpers, redirects, hooks and trace output are
+disabled. Public receipts suppress transport diagnostics. Only the receipt is
+uploaded; private Git objects and manifest/workflow contents stay on the runner.
+
+Credential release requires the protected `registry-source-read` environment
+and approval of the exact run/workflow by a required reviewer. The acquisition
+code is pinned to a full commit, reads the candidate registry with `git show`,
+and never checks out or executes candidate code. Fork PR acquisition is refused
+and the final acceptance job fails on skipped/cancelled/failed acquisition.
+There is no `pull_request_target` execution or success-on-skip path.
+
+**Configuration is an acceptance prerequisite, not something a workflow file
+can establish.** Do not supply the App key until the environment protections
+described in [source credential setup](registry-source-credentials-v1.md) are
+configured and verified. Do not resolve the private-source P1 until hosted
+authenticated verification succeeds on the exact candidate.
 
 References: [checkout history, credential and private-repository guidance](https://github.com/actions/checkout),
 [GitHub token authentication](https://docs.github.com/en/actions/security-for-github-actions/security-guides/automatic-token-authentication).
@@ -104,16 +126,20 @@ unrelated code commits that `manifest-current-v1` intentionally permits.
 
 ## Evidence and acceptance
 
-The CI job always attempts to upload `observation.json`, including acquisition
-errors, as `registry-source-observation` for 30 days. A successful receipt names
+The acquisition job always attempts to upload its public receipt, including
+configuration and acquisition failures, as `registry-source-observation` for
+30 days. A successful receipt names
 every member, its source revision, observed revision, manifest blobs and
-workflow blobs. Replaying the local capture is deterministic; fetching the
+workflow blobs, the tested revision, verified authentication scope and the
+validation verdict. Missing member fields (including observation time) or
+missing error evidence fail replay. Replaying the local capture is deterministic; fetching the
 immutable revisions again depends on their continued availability at GitHub.
 The receipt is not an independent attestation or a permanent source archive.
 
-Both workflow jobs must succeed for acceptance. The freshness job has no
-`continue-on-error`, secret-dependent skip, or dependency on the test job that
-would hide its result when another gate fails. Branch protection should require
+The test job and final freshness acceptance job must succeed. The latter runs
+with `always()` and requires its acquisition dependency to have succeeded; a
+skip is a failure. It has no `continue-on-error` or dependency on the test job
+that would hide its result when another gate fails. Branch protection should require
 `test` and `Registry snapshot freshness`; writing a workflow does not configure
 those settings. Administrative write access may still bypass operator checks.
 

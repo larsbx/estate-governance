@@ -252,6 +252,21 @@ def test_existing_capture_directory_cannot_be_reused(estate):
         fresh.acquire(data, sources, origins["estate-governance"])
 
 
+@pytest.mark.parametrize("field", ["slug", "ref", "commit", "source_commit", "source_inputs",
+                                  "observed_inputs", "observed_at"])
+def test_incomplete_member_evidence_is_rejected(estate, field):
+    data, _, sources, receipt = capture(estate)
+    del receipt["member"][1][field]
+    assert fresh.check(data, sources, receipt)
+
+
+def test_missing_error_evidence_is_not_a_complete_receipt(estate):
+    data, _, sources, receipt = capture(estate)
+    del receipt["errors"]
+    with pytest.raises(fresh.FreshnessError, match="incomplete"):
+        fresh.check(data, sources, receipt)
+
+
 def test_snapshot_rejects_wrong_repository_identity(estate, tmp_path):
     data, _, sources, _ = capture(estate)
     # Sources must never be silently selected by a colliding directory name.

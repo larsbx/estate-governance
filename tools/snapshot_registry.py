@@ -89,11 +89,20 @@ def render(header: dict, rows: list[dict]) -> str:
 
 
 def git(repo: Path, *args: str) -> str:
-    return subprocess.run(
-        ["git", "-C", str(repo), *args], check=True, capture_output=True,
-        text=True, timeout=180, env={**os.environ, "GIT_TERMINAL_PROMPT": "0",
-                                   "GIT_NO_REPLACE_OBJECTS": "1"},
-    ).stdout
+    try:
+        return subprocess.run(
+            ["git", "-C", str(repo), *args], check=True, capture_output=True,
+            text=True, timeout=180, env={**os.environ, "GIT_TERMINAL_PROMPT": "0",
+                                       "GIT_NO_REPLACE_OBJECTS": "1"},
+        ).stdout
+    except subprocess.CalledProcessError as exc:
+        if os.environ.get("ESTATE_AUTHENTICATED_ACQUISITION") == "1":
+            # Never copy transport diagnostics/trace output into public receipts.
+            # Git's argv contains no token; authentication is process-local env.
+            raise subprocess.CalledProcessError(
+                exc.returncode, exc.cmd, stderr=f"Git exited {exc.returncode}; check source access and revision"
+            ) from None
+        raise
 
 
 def inputs(repo: Path, commit: str) -> dict:

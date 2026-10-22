@@ -37,6 +37,8 @@ def members(data: dict) -> list[dict]:
         raise FreshnessError("registry has no members")
     seen = set()
     for row in rows:
+        if not isinstance(row, dict):
+            raise FreshnessError("invalid registry member")
         member_id = row.get("id", "")
         if not isinstance(member_id, str) or not ID.fullmatch(member_id):
             raise FreshnessError(f"unsafe member id: {member_id!r}")
@@ -57,14 +59,16 @@ def describe_error(exc: Exception) -> str:
     return str(exc)
 
 
-def acquire_member(member: dict, sources: Path, governance: Path) -> dict:
+def acquire_member(member: dict, sources: Path, governance: Path,
+                   governance_revision: str = "HEAD") -> dict:
     member_id, slug = member["id"], member["slug"]
     repo = sources / member_id
     snap.git(sources, "init", "--bare", str(repo))
     if member_id == snap.GOVERNANCE_ID:
         # The tested commit, including a PR merge commit, is the self observation.
         # It is deliberately not the mutable remote main and not the worktree.
-        head = snap.git(governance, "rev-parse", "--verify", "HEAD^{commit}").strip()
+        head = snap.git(governance, "rev-parse", "--verify",
+                        f"{governance_revision}^{{commit}}").strip()
         snap.git(repo, "fetch", "--no-tags", "--no-recurse-submodules",
                  str(governance.resolve()), f"{head}:{REF}")
         selected_ref = "tested HEAD"
@@ -96,7 +100,8 @@ def acquire_member(member: dict, sources: Path, governance: Path) -> dict:
     }
 
 
-def acquire(data: dict, sources: Path, governance: Path) -> dict:
+def acquire(data: dict, sources: Path, governance: Path,
+            governance_revision: str = "HEAD") -> dict:
     rows = members(data)
     # Exclusive creation makes a failed fetch incapable of reusing old sources.
     sources.mkdir(parents=True, exist_ok=False)
@@ -104,7 +109,7 @@ def acquire(data: dict, sources: Path, governance: Path) -> dict:
 
     def fetch(row):
         try:
-            result = acquire_member(row, sources, governance)
+            result = acquire_member(row, sources, governance, governance_revision)
             print(f"captured {row['slug']} at {result['commit']}", flush=True)
             return result, None
         except (OSError, ValueError, KeyError, StopIteration, subprocess.SubprocessError) as exc:
@@ -121,11 +126,12 @@ def acquire(data: dict, sources: Path, governance: Path) -> dict:
     return receipt
 
 
-def check(data: dict, sources: Path, receipt: dict) -> list[str]:
+def check(data: dict, sources: Path, receipt: dict,
+          tested_revision: str | None = None) -> list[str]:
     rows = members(data)
     if (not isinstance(receipt, dict) or type(receipt.get("version")) is not int
             or receipt.get("version") != 1 or receipt.get("policy") != POLICY
-            or receipt.get("complete") is not True or receipt.get("errors")):
+            or receipt.get("complete") is not True or receipt.get("errors") != []):
         raise FreshnessError("source observation is incomplete or has an unsupported policy")
     observations = receipt.get("member", [])
     if (not isinstance(observations, list)
@@ -147,6 +153,12 @@ def check(data: dict, sources: Path, receipt: dict) -> list[str]:
             if not (repo / "HEAD").is_file() or not (repo / "objects").is_dir():
                 raise FreshnessError("missing captured bare repository")
             head = observation["commit"]
+            timestamp = observation.get("observed_at")
+            if not isinstance(timestamp, str) or datetime.fromisoformat(timestamp).utcoffset() != timezone.utc.utcoffset(None):
+                raise FreshnessError("missing or invalid UTC observation time")
+            if (member_id == snap.GOVERNANCE_ID and tested_revision is not None
+                    and head != tested_revision):
+                raise FreshnessError("governance observation disagrees with tested revision")
             expected_ref = "tested HEAD" if member_id == snap.GOVERNANCE_ID else "refs/heads/main"
             if (observation["slug"] != member["slug"] or observation["ref"] != expected_ref
                     or not isinstance(head, str) or not OID.fullmatch(head)):
@@ -184,16 +196,22 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--sources", type=Path, required=True, help="new capture directory, or one to replay")
     parser.add_argument("--registry", type=Path, default=snap.REGISTRY)
     parser.add_argument("--governance", type=Path, default=snap.ROOT, help="full-history tested checkout")
+    parser.add_argument("--registry-revision", help="read registry AND self observation from this exact Git commit")
     parser.add_argument("--fetch", action="store_true", help="capture live sources into a NEW directory")
     args = parser.parse_args(argv)
     try:
-        data = tomllib.loads(args.registry.read_text(encoding="utf-8"))
-        receipt = (acquire(data, args.sources, args.governance) if args.fetch else
+        if args.registry_revision and not OID.fullmatch(args.registry_revision):
+            raise FreshnessError("registry revision must be a full immutable commit ID")
+        data = tomllib.loads(snap.git(args.governance, "show",
+                                     f"{args.registry_revision}:policy/estate-registry.toml")
+                             if args.registry_revision else args.registry.read_text(encoding="utf-8"))
+        receipt = (acquire(data, args.sources, args.governance, args.registry_revision or "HEAD") if args.fetch else
                    json.loads((args.sources / RECEIPT).read_text(encoding="utf-8")))
         if not isinstance(receipt, dict):
             raise FreshnessError("invalid source observation")
         errors = (receipt.get("errors") or ["source observation is incomplete"]
-                  if receipt.get("complete") is not True else check(data, args.sources, receipt))
+                  if receipt.get("complete") is not True else
+                  check(data, args.sources, receipt, args.registry_revision))
         if errors:
             for error in errors:
                 print(f"registry freshness failed: {error}", file=sys.stderr)
