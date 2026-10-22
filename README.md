@@ -55,6 +55,13 @@ checkouts; `--check` reports drift). The Adopters section of
 `docs/architecture/estate-repository-template-v2.md` is a generated projection of it,
 and CI rejects drift between them.
 
+## Periodic contract evidence audits
+
+[DR-0004](docs/decisions/DR-0004-periodic-contract-conformance-audits.md) records
+the estatewide scope, PR/upstream-change triggers and weekly cadence. It separates
+reproducibility from freshness and preserves domain approval and authority boundaries.
+Estatewide orchestration and authenticated private-source coverage remain follow-ups.
+
 ## Checks
 
 ```sh

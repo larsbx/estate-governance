@@ -38,6 +38,15 @@ Status: as of 2026-10-22. Machine-readable state lives in `policy/estate-registr
 | G5 | The decision template rendered from `larsbx/agent-icm` numbers records `D-NNNN`; the audit uses `DR-nnnn`. | template fixed upstream and re-rendered |
 | G6 | The governance row necessarily snapshots the commit before the change that writes it, so `--check` reports it one commit behind after each merge. | snapshot excludes the governance row from drift, or CI regenerates it post-merge |
 
+### Periodic contract evidence audits
+
+DR-0004 records the adopted policy. Implementation remains open: inventory contracts
+and consumers from the estate registry; route PR and upstream-change checks; add a
+weekly authenticated runner and durable coverage/reproducibility/freshness reports.
+Require negative tests and retain explicit approval gates. Coordinate with G1 and
+PR #16; private-source credentials remain a prerequisite, and this policy does not
+claim the scheduled audit is operational.
+
 ### Member migrations
 
 | ID | Item | Done when |
