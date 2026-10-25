@@ -62,6 +62,10 @@ the estatewide scope, PR/upstream-change triggers and weekly cadence. It separat
 reproducibility from freshness and preserves domain approval and authority boundaries.
 Estatewide orchestration and authenticated private-source coverage remain follow-ups.
 
+## Research literature review (advisory)
+
+[The periodic research-literature review protocol](docs/research/periodic-literature-review-protocol.md) records source-quality, cross-repository triage and approval boundaries for a weekly ChatGPT research briefing. This is **not** an estate conformance gate, a literature survey result, or permission to amend source-repository plans without their own review.
+
 ## Checks
 
 ```sh
