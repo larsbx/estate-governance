@@ -15,6 +15,7 @@ tools/snapshot_registry.py                           regenerate the registry fro
 tools/check_registry_freshness.py                    capture source revisions and check snapshot freshness
 tools/render_adopters.py                             render the contract adopter table
 docs/decisions/                                      owner decision records (DR-nnnn)
+ROADMAP.md                                           what remains, with completion gates
 docs/architecture/estate-repository-template-v2.md   the contract (v1 kept, superseded)
 policy/PROGRAM.template.toml                       child manifest for multi-program repositories
 docs/architecture/multi-program-repository-v1.md    monorepo extension contract
@@ -58,6 +59,17 @@ Unavailable sources fail the gate; a valid registry alone is insufficient.
 The Adopters section of
 `docs/architecture/estate-repository-template-v2.md` is a generated projection of it,
 and CI rejects drift between them.
+
+## Periodic contract evidence audits
+
+[DR-0004](docs/decisions/DR-0004-periodic-contract-conformance-audits.md) records
+the estatewide scope, PR/upstream-change triggers and weekly cadence. It separates
+reproducibility from freshness and preserves domain approval and authority boundaries.
+Estatewide orchestration and authenticated private-source coverage remain follow-ups.
+
+## Research literature review (advisory)
+
+[The periodic research-literature review protocol](docs/research/periodic-literature-review-protocol.md) records source-quality, cross-repository triage and approval boundaries for a weekly ChatGPT research briefing. This is **not** an estate conformance gate, a literature survey result, or permission to amend source-repository plans without their own review.
 
 ## Checks
 

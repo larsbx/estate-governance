@@ -149,7 +149,7 @@ ci_gate = true
 [[member]]
 id = "pisot-substitution-conjecture-research"
 slug = "larsbx/pisot-substitution-conjecture-research"
-source_commit = "f988d043008ca9d4433c9fe19fb35f10986c6451"
+source_commit = "785a45b9c6da8ccc50b6ecaab5946fb6204b7b8d"
 manifest_blob = "e050f19016549f3ec8cdc229d581f6b802683c9f"
 class = "research"
 layer = 3
@@ -271,7 +271,7 @@ ci_gate = true
 [[member]]
 id = "arithmetic-bicycle-conjecture-research"
 slug = "larsbx/arithmetic-bicycle-conjecture-research"
-source_commit = "626814d6241db74d8f843ab217ccddfcdd7440ab"
+source_commit = "0b42a37f4346f222d5f6133cbd6ad8a222b7b99b"
 manifest_blob = "0ac96bed996d48ab02d6fe4e82b0f4a8edefb87f"
 class = "research"
 layer = 3
@@ -331,7 +331,7 @@ ci_gate = true
 [[member]]
 id = "math-vizops"
 slug = "larsbx/math-vizops"
-source_commit = "2c715fdb22c80ac4fdf4297b00a521b2b3a444c8"
+source_commit = "ab2bf4a830b98bdc700a04c7b8ef6bbe4d070ef6"
 manifest_blob = "a1e213e5cb68289de205a47972a034ccdb3195d3"
 class = "research"
 layer = 3
