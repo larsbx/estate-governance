@@ -1,6 +1,6 @@
 # Estate governance roadmap
 
-Status: as of 2026-10-22. Machine-readable state lives in `policy/estate-registry.toml`
+Status: original roadmap as of 2026-10-22; CI governance added 2026-11-01. Machine-readable state lives in `policy/estate-registry.toml`
 (generated) and `docs/decisions/`; this file tracks what remains.
 
 ## Invariants
@@ -53,3 +53,25 @@ claim the scheduled audit is operational.
 | --- | --- | --- |
 | M1 | Non-accepting members switch to `acceptance_authority = true`: `closure-fiber-of-multiplication-research`, `giant-fibers-finite-fields-thin-groups`, `oracles` and `tiling-theory-research` when their first kernel lands; `vizing-domination-conjecture-research` when its five promotion conditions are met. | each flips in its kernel-landing change, and the contract's exception table empties |
 | M2 | Transitional layouts with pending migration steps: arithmetic-bicycle (4), closure-fiber (4), giant-fibers (4), my-math-homelab (4), novelty-lab (3), math-vizops (2), oracles (2), tiling-theory (2), vizing-domination (2). | each declares `layout.status = "canonical"` with no pending steps |
+
+### Impact-aware CI policy (2026-11-01)
+
+[DR-0005](docs/decisions/DR-0005-ci-impact-policy-ownership.md) establishes
+this repository as the canonical owner of estate-wide CI selection governance.
+The architecture draft is
+[CI impact governance v1](docs/architecture/ci-impact-governance-v1.md).
+The execution and rollout tracker is [issue #21](https://github.com/larsbx/estate-governance/issues/21).
+
+| ID | Item | Done when |
+| --- | --- | --- |
+| G7 | Publish a versioned, pinned CI impact-policy contract and validator. | Negative conformance tests reject unknown paths, stale sources, malformed graphs and misleading skip receipts. |
+| G8 | Demonstrate a source-revision-correct required gate on the SchoolOps pilot without weakening existing acceptance. | PR and merge-group check evidence is green at the exact head; protected status migration reviewed separately. |
+| G9 | Inventory Biz-kit applications, interfaces and CI consumers. | Dependency closure includes tenancy, identity, ExtensionV1, Dispatch and cross-app changes; accepted consumer plan pinned. |
+| G10 | Extend invalidation to research proof and exact certificate dependencies. | PSC/tiling independent reproductions, inputs, definitions and oracles invalidate the correct downstream obligations. |
+| G11 | Measure the selector against exhaustive, authenticated estate coverage. | Durable source receipts disclose skipped, inaccessible and blocked checks; cost and missed-coverage metrics reported without promoting claims. |
+
+The initial SchoolOps implementation is [PR #28](https://github.com/larsbx/school-ops/pull/28);
+Biz-kit tracks migration in [issue #245](https://github.com/larsbx/biz-kit/issues/245).
+These are consumers. This entry does not modify any pinned governance revision,
+estate member stage, GitHub branch protection, or domain authority. The existing
+private-source and Actions runner blockers (O1, G1, and PR #16) still apply.
