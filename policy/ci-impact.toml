@@ -1,0 +1,91 @@
+# Self-hosting example of the estate-ci-impact-v1 *selection* contract.
+# Validation is mandatory; this file does not execute or authorize test jobs.
+version = 1
+schema = "estate-ci-impact-v1"
+repository = "larsbx/estate-governance"
+
+[selection]
+unmapped = "full"
+full_on = [
+  ".github/**",
+  "ESTATE.toml",
+  "policy/**",
+  "docs/decisions/**",
+  "docs/architecture/**",
+  "pyproject.toml",
+  "tests/**",
+  "kernel/ci_impact_policy.py",
+]
+ignore = [
+  "README.md",
+  "ROADMAP.md",
+  "ARCHITECTURE.md",
+  "docs/audits/**",
+  "docs/research/**",
+]
+
+[[component]]
+id = "layout"
+paths = ["kernel/audit_estate_layout.py"]
+depends_on = []
+
+[[component]]
+id = "registry"
+paths = ["kernel/audit_estate_registry.py"]
+depends_on = ["layout"]
+
+[[component]]
+id = "pin"
+paths = ["tools/pin_estate.py"]
+depends_on = ["layout"]
+
+[[component]]
+id = "snapshot"
+paths = ["tools/snapshot_registry.py"]
+depends_on = ["registry"]
+
+[[component]]
+id = "render"
+paths = ["tools/render_adopters.py"]
+depends_on = ["registry"]
+
+[[component]]
+id = "impact"
+paths = ["kernel/ci_impact_policy.py"]
+depends_on = []
+
+[[suite]]
+id = "governance-policy"
+mode = "always"
+components = ["impact"]
+entrypoints = ["tests/test_ci_impact_policy.py"]
+
+[[suite]]
+id = "layout"
+mode = "affected"
+components = ["layout"]
+entrypoints = ["tests/test_audit_estate_layout.py"]
+
+[[suite]]
+id = "registry"
+mode = "affected"
+components = ["registry"]
+entrypoints = ["tests/test_estate_registry.py"]
+
+[[suite]]
+id = "pin"
+mode = "affected"
+components = ["pin"]
+entrypoints = ["tests/test_pin_estate.py"]
+
+[[suite]]
+id = "snapshot"
+mode = "affected"
+components = ["snapshot"]
+entrypoints = ["tests/test_snapshot_registry.py"]
+
+[[suite]]
+id = "render"
+mode = "affected"
+components = ["render"]
+entrypoints = ["tools/render_adopters.py"]

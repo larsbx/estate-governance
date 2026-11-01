@@ -4,6 +4,8 @@ on:
   pull_request:
   push:
     branches: [main]
+  merge_group:
+  workflow_dispatch:
 
 jobs:
   test:
@@ -20,5 +22,7 @@ jobs:
         run: python kernel/audit_estate_registry.py
       - name: Generated adopter register is current
         run: python tools/render_adopters.py --check
+      - name: Validate versioned impact policy (no selective test execution yet)
+        run: python kernel/ci_impact_policy.py --root . --check
       - name: Test repository-local and estate-wide governance
         run: python -m pytest
