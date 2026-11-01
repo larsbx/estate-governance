@@ -1,6 +1,8 @@
 # Estate-wide change-impact CI governance v1 (proposed contract)
 
-**Status:** architectural specification; not a deployed selector.
+**Status:** architectural specification. A local read-only v1 schema validator and
+selection planner are proposed in the companion implementation PR. They do not
+execute suites or establish estate-wide runtime adoption.
 **Owner:** `larsbx/estate-governance` under [DR-0005](../decisions/DR-0005-ci-impact-policy-ownership.md).
 **Other obligations:** DR-0002 retains domain acceptance authority; DR-0004
 retains contract conformance, provenance, and freshness requirements.

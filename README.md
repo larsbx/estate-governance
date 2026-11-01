@@ -74,3 +74,26 @@ python kernel/audit_estate_registry.py
 python tools/render_adopters.py --check
 python -m pytest
 ```
+
+## Impact-aware CI policy (governance phase 1)
+
+[DR-0005](docs/decisions/DR-0005-ci-impact-policy-ownership.md) places
+estate-wide test-selection governance here, independently of domain-level
+acceptance and proof authority. This repository carries a versioned,
+self-hosting [policy example](policy/ci-impact.toml) and a read-only
+[validator/planner](kernel/ci_impact_policy.py).
+
+```sh
+python kernel/ci_impact_policy.py --root . --check
+python kernel/ci_impact_policy.py --root . --path README.md
+python -m pytest tests/test_ci_impact_policy.py
+```
+
+A plan is **not** an execution or acceptance receipt. Existing CI continues
+to execute the full governance test suite. The new CLI never evaluates a shell
+command from policy data. Unknown source paths and critical governance changes
+select full coverage; invalid policies and unverifiable revisions block.
+
+The [implementation roadmap](https://github.com/larsbx/estate-governance/issues/21)
+tracks independently pinned consumer adoption, research proof dependency
+invalidation, merge-queue check migration and authenticated estate coverage.

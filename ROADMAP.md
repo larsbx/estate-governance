@@ -64,7 +64,7 @@ The execution and rollout tracker is [issue #21](https://github.com/larsbx/estat
 
 | ID | Item | Done when |
 | --- | --- | --- |
-| G7 | Publish a versioned, pinned CI impact-policy contract and validator. | Negative conformance tests reject unknown paths, stale sources, malformed graphs and misleading skip receipts. |
+| G7 | Publish a versioned, pinned CI impact-policy contract and validator (implementation PR pending). | Negative conformance tests reject unknown paths, stale sources, malformed graphs and misleading skip receipts; exact-head CI succeeds. |
 | G8 | Demonstrate a source-revision-correct required gate on the SchoolOps pilot without weakening existing acceptance. | PR and merge-group check evidence is green at the exact head; protected status migration reviewed separately. |
 | G9 | Inventory Biz-kit applications, interfaces and CI consumers. | Dependency closure includes tenancy, identity, ExtensionV1, Dispatch and cross-app changes; accepted consumer plan pinned. |
 | G10 | Extend invalidation to research proof and exact certificate dependencies. | PSC/tiling independent reproductions, inputs, definitions and oracles invalidate the correct downstream obligations. |
