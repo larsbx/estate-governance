@@ -1,0 +1,318 @@
+{
+  "schema": "estate.formal-evidence.v1",
+  "status": "passed",
+  "started_at_utc": "2026-11-20T10:37:36.758229+00:00",
+  "evidence_only": true,
+  "domain_acceptance_authority": false,
+  "implementation_correspondence": "unproved",
+  "hosted_job_conclusion_included": false,
+  "scope": "abstract formal-evidence lifecycle; not the Python auditor or estate-wide coverage",
+  "source_digest_encoding": "SHA-256 of sorted path/bytes/sha256 records, compact JSON with sorted keys",
+  "excluded_directories": [
+    ".git",
+    ".lake",
+    ".pytest_cache",
+    "__pycache__",
+    "build",
+    "dist",
+    "formal/evidence",
+    "node_modules"
+  ],
+  "excluded_suffixes": [
+    ".ilean",
+    ".olean",
+    ".pyc"
+  ],
+  "commands": [
+    {
+      "name": "lean-version",
+      "command": [
+        "/workspace/scratch/6773324ddc0c/toolchain/lean-4.34.1-linux/bin/lean",
+        "--version"
+      ],
+      "command_sha256": "80c9162a747af570bba5d0b1ba62631994d819a148d246cb3eb1c9db7eb1d11c",
+      "cwd": "/workspace/scratch/a402432e12bc/estate-governance",
+      "started_at_utc": "2026-11-20T10:37:36.808317+00:00",
+      "exit_code": 0,
+      "finished_at_utc": "2026-11-20T10:37:37.278900+00:00",
+      "log": "lean-version.log",
+      "log_sha256": "355a9a028f81641782d75d6e6b58dec70f29d2f61238a9e271690259d9bf5680"
+    },
+    {
+      "name": "quint-version",
+      "command": [
+        "/workspace/scratch/a402432e12bc/estate-governance/formal/quint/node_modules/.bin/quint",
+        "--version"
+      ],
+      "command_sha256": "df75355864f62e8fbb1fe609b29a87b0fa37fe27d45ff2a211fca43d19011dfa",
+      "cwd": "/workspace/scratch/a402432e12bc/estate-governance",
+      "started_at_utc": "2026-11-20T10:37:37.279793+00:00",
+      "exit_code": 0,
+      "finished_at_utc": "2026-11-20T10:37:38.216691+00:00",
+      "log": "quint-version.log",
+      "log_sha256": "88dc89b23d1eb296b577d2cd6b8fd2a8013d9d499299cdb24578106eb5b4f59c"
+    },
+    {
+      "name": "node-version",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "--version"
+      ],
+      "command_sha256": "49474f5b5e66f0794abcac2f2459021edc60f742957a98880b1e0c607c97502b",
+      "cwd": "/workspace/scratch/a402432e12bc/estate-governance",
+      "started_at_utc": "2026-11-20T10:37:38.217982+00:00",
+      "exit_code": 0,
+      "finished_at_utc": "2026-11-20T10:37:38.228657+00:00",
+      "log": "node-version.log",
+      "log_sha256": "4409d3bfa08b82f385bd424eeda65fc63b756129f0e89e82df77f1fecafccc14"
+    },
+    {
+      "name": "lean-build",
+      "command": [
+        "/workspace/scratch/6773324ddc0c/toolchain/lean-4.34.1-linux/bin/lean",
+        "-o",
+        "/tmp/estate-formal-8_ye_bge/EstateFormal.olean",
+        "EstateFormal.lean"
+      ],
+      "command_sha256": "ab7f683469f4c8dd21d9011a7ad7eb37eb6e367c96b5a8aabcb35d5e8d8f1274",
+      "cwd": "/tmp/estate-formal-8_ye_bge",
+      "started_at_utc": "2026-11-20T10:37:39.007440+00:00",
+      "lean_path": "/tmp/estate-formal-8_ye_bge",
+      "exit_code": 0,
+      "finished_at_utc": "2026-11-20T10:37:50.914637+00:00",
+      "log": "lean-build.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "lean-axiom-audit",
+      "command": [
+        "/workspace/scratch/6773324ddc0c/toolchain/lean-4.34.1-linux/bin/lean",
+        "Audit.lean"
+      ],
+      "command_sha256": "eccd4b0164bf562a618f361a01316bfac39cc72e705839e5b5f44d195a692d51",
+      "cwd": "/tmp/estate-formal-8_ye_bge",
+      "started_at_utc": "2026-11-20T10:37:50.915784+00:00",
+      "lean_path": "/tmp/estate-formal-8_ye_bge",
+      "exit_code": 0,
+      "finished_at_utc": "2026-11-20T10:38:50.167671+00:00",
+      "log": "lean-axiom-audit.log",
+      "log_sha256": "fd1b92081e8fe855c0034a1fc0f62cae582aebf469daf6f06c46967451f48b3c"
+    },
+    {
+      "name": "quint-typecheck",
+      "command": [
+        "/workspace/scratch/a402432e12bc/estate-governance/formal/quint/node_modules/.bin/quint",
+        "typecheck",
+        "EstateFormal.qnt"
+      ],
+      "command_sha256": "021947a0048689827c51d2cdc8057ebc829d477dd9ead79df43ddfb6100714b1",
+      "cwd": "/workspace/scratch/a402432e12bc/estate-governance/formal/quint",
+      "started_at_utc": "2026-11-20T10:38:50.176863+00:00",
+      "exit_code": 0,
+      "finished_at_utc": "2026-11-20T10:38:51.646338+00:00",
+      "log": "quint-typecheck.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "quint-tests",
+      "command": [
+        "/workspace/scratch/a402432e12bc/estate-governance/formal/quint/node_modules/.bin/quint",
+        "test",
+        "EstateFormal.qnt",
+        "--backend=typescript",
+        "--max-samples=1",
+        "--seed=20261120"
+      ],
+      "command_sha256": "5502294f3db1308daa85e7531e0e6b906c11707fc014fc9f4d1580002b9b5377",
+      "cwd": "/workspace/scratch/a402432e12bc/estate-governance/formal/quint",
+      "started_at_utc": "2026-11-20T10:38:51.647162+00:00",
+      "exit_code": 0,
+      "finished_at_utc": "2026-11-20T10:38:53.063561+00:00",
+      "log": "quint-tests.log",
+      "log_sha256": "d41d355b779799e505dd09dc4869cfa649ae9189f8d215f0fd7efbed58469e09"
+    },
+    {
+      "name": "quint-bounded-run",
+      "command": [
+        "/workspace/scratch/a402432e12bc/estate-governance/formal/quint/node_modules/.bin/quint",
+        "run",
+        "EstateFormal.qnt",
+        "--backend=typescript",
+        "--invariant=safety",
+        "--max-samples=1000",
+        "--max-steps=40",
+        "--seed=20261120",
+        "--verbosity=1"
+      ],
+      "command_sha256": "d0fd66b1860818c8fb7318ea0be1de297c146f50e5fdc5d35a3ca259e6d7b787",
+      "cwd": "/workspace/scratch/a402432e12bc/estate-governance/formal/quint",
+      "started_at_utc": "2026-11-20T10:38:53.123579+00:00",
+      "exit_code": 0,
+      "finished_at_utc": "2026-11-20T10:38:58.071946+00:00",
+      "log": "quint-bounded-run.log",
+      "log_sha256": "f62dd09cbf95354d3cf85aaa1c2537acfb76ef20a5fe26e92ca134831b8bbae3"
+    },
+    {
+      "name": "quint-negative-control",
+      "command": [
+        "/workspace/scratch/a402432e12bc/estate-governance/formal/quint/node_modules/.bin/quint",
+        "run",
+        "EstateFormal.qnt",
+        "--backend=typescript",
+        "--step=unsafeStep",
+        "--invariant=safety",
+        "--max-samples=1",
+        "--max-steps=1",
+        "--seed=20261120",
+        "--verbosity=2",
+        "--out-itf",
+        "/workspace/scratch/a402432e12bc/estate-governance/formal/evidence/quint-negative.itf.json"
+      ],
+      "command_sha256": "6d14310f26795981bb22373980318053eb61b9df4e96d36fb840d7b857731daf",
+      "cwd": "/workspace/scratch/a402432e12bc/estate-governance/formal/quint",
+      "started_at_utc": "2026-11-20T10:38:58.073223+00:00",
+      "exit_code": 1,
+      "finished_at_utc": "2026-11-20T10:38:59.127200+00:00",
+      "log": "quint-negative-control.log",
+      "log_sha256": "f37bfb420ceaadd8eb5383bd7cb079268f441f992ca802488b176caf5b06d55c"
+    }
+  ],
+  "source_tree_sha256": "47f2814bf2c038fba31620c8bc2e60bde157ea4f8c56fcba0be08e9a5e40e2ad",
+  "source_manifest": "source-manifest.json",
+  "policy_sha256": "9c5e8bcf1de8c18e7d294761197bfeef63777bd43b68fc83dd4129f4ce0aa1c4",
+  "declared_inputs": [
+    "ESTATE.toml",
+    "docs/formalization.md",
+    "formal/lean/Audit.lean",
+    "formal/lean/EstateFormal.lean",
+    "formal/lean/lean-toolchain",
+    "formal/quint/EstateFormal.qnt",
+    "formal/quint/package-lock.json",
+    "formal/quint/package.json",
+    "kernel/audit_estate_layout.py",
+    "tools/check_formal.py"
+  ],
+  "formalization": {
+    "scope": "docs/formalization.md",
+    "gate": "tools/check_formal.py",
+    "implementation_paths": [
+      "kernel/audit_estate_layout.py",
+      "tools/check_formal.py"
+    ],
+    "lean": {
+      "sources": [
+        "formal/lean/EstateFormal.lean",
+        "formal/lean/Audit.lean"
+      ],
+      "toolchain": "leanprover/lean4:v4.34.1",
+      "obligations": [
+        "EstateFormal.ready_requires_both",
+        "EstateFormal.stale_lean_source_not_ready",
+        "EstateFormal.stale_quint_policy_not_ready",
+        "EstateFormal.revise_source_invalidates",
+        "EstateFormal.revise_policy_invalidates",
+        "EstateFormal.transition_preserves_verified",
+        "EstateFormal.reachable_verified_requires_both",
+        "EstateFormal.transition_preserves_authority",
+        "EstateFormal.reachable_preserves_authority"
+      ]
+    },
+    "quint": {
+      "sources": [
+        "formal/quint/EstateFormal.qnt"
+      ],
+      "toolchain": "@informalsystems/quint@0.33.1",
+      "obligations": [
+        "safety",
+        "missingEvidenceTest",
+        "bothChecksTest",
+        "singleLaneTest",
+        "staleSourceTest",
+        "stalePolicyTest",
+        "failedResultTest",
+        "queuedResultTest",
+        "authorityPreservedTest"
+      ]
+    }
+  },
+  "toolchains": {
+    "lean": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+    "quint": "0.33.1",
+    "node": "v24.22.3",
+    "quint_backend": "typescript",
+    "files": [
+      {
+        "tool": "lean",
+        "path": "/workspace/scratch/6773324ddc0c/toolchain/lean-4.34.1-linux/bin/lean",
+        "sha256": "e8baaa71855a616dc351028f3ad2200051b0671f423a1696a100e809302d5550"
+      },
+      {
+        "tool": "quint_cli",
+        "path": "/workspace/scratch/a402432e12bc/estate-governance/formal/quint/node_modules/.bin/quint",
+        "sha256": "952a50a28932282528b5c9b86ac5542405d85da4f80876aabe8cb8c7d5a6d0e8"
+      },
+      {
+        "tool": "node",
+        "path": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "sha256": "acbe4b8d9153b841ed0697cbfc4f93e767386620edb745ab9358306c0a6f31aa"
+      }
+    ]
+  },
+  "lean": {
+    "status": "passed",
+    "required_theorems": [
+      "EstateFormal.initial_safe",
+      "EstateFormal.nonpassed_lean_not_ready",
+      "EstateFormal.nonpassed_quint_not_ready",
+      "EstateFormal.reachable_preserves_authority",
+      "EstateFormal.reachable_verified_requires_both",
+      "EstateFormal.ready_requires_both",
+      "EstateFormal.ready_requires_same_policy",
+      "EstateFormal.ready_requires_same_source",
+      "EstateFormal.record_lean_invalidates",
+      "EstateFormal.record_quint_invalidates",
+      "EstateFormal.revise_policy_invalidates",
+      "EstateFormal.revise_source_invalidates",
+      "EstateFormal.stale_lean_source_not_ready",
+      "EstateFormal.stale_quint_policy_not_ready",
+      "EstateFormal.transition_preserves_authority",
+      "EstateFormal.transition_preserves_verified",
+      "EstateFormal.verification_does_not_grant_authority"
+    ],
+    "required_theorem_axioms": [],
+    "namespace_support_axiom_allowlist": [
+      "propext"
+    ],
+    "compiled_model_sha256": "e2b616ecacda2c4cfccc37314e32c71677bdca6da1dabbb1158a80d12bfa434f"
+  },
+  "quint": {
+    "status": "passed",
+    "deterministic_tests": [
+      "authorityPreservedTest",
+      "bothChecksTest",
+      "failedResultTest",
+      "missingEvidenceTest",
+      "queuedResultTest",
+      "recoveryRequiresBothFreshResultsTest",
+      "singleLaneTest",
+      "stalePolicyTest",
+      "staleSourceTest"
+    ],
+    "invariant": "safety",
+    "backend": "typescript",
+    "seed": "20261120",
+    "max_samples": 1000,
+    "max_steps": 40,
+    "unbounded_proof": false,
+    "negative_control": {
+      "step": "unsafeStep",
+      "expected_exit_code": 1,
+      "trace": "quint-negative.itf.json",
+      "sha256": "24001c112cbfa1601d66678a5f8d15c0db8ab25d92cd5059b923a901f3b047e3",
+      "witnessed": true
+    }
+  },
+  "tool_executables_unchanged": true,
+  "source_unchanged": true,
+  "finished_at_utc": "2026-11-20T10:38:59.545333+00:00"
+}

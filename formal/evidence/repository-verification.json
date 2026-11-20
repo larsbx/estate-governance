@@ -1,0 +1,107 @@
+{
+  "schema": "estate.repository-verification.v1",
+  "status": "passed",
+  "started_at_utc": "2026-11-20T10:39:27.968005+00:00",
+  "source_tree_sha256": "47f2814bf2c038fba31620c8bc2e60bde157ea4f8c56fcba0be08e9a5e40e2ad",
+  "base_revision": "bd731398b567cfe523667fc8e23a96d299067141",
+  "hosted_results_included": false,
+  "checks": [
+    {
+      "name": "python-conformance",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "-m",
+        "pytest"
+      ],
+      "started_at_utc": "2026-11-20T10:39:27.973897+00:00",
+      "finished_at_utc": "2026-11-20T10:39:29.973490+00:00",
+      "exit_code": 0,
+      "status": "passed",
+      "log": "python-conformance.log",
+      "log_sha256": "d89379bf28e6edfcdb43aabddf6b9b6298d31248eb34b453d74369b2fc94f8af"
+    },
+    {
+      "name": "manifest-audit",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "kernel/audit_estate_layout.py"
+      ],
+      "started_at_utc": "2026-11-20T10:39:29.973913+00:00",
+      "finished_at_utc": "2026-11-20T10:39:30.056084+00:00",
+      "exit_code": 0,
+      "status": "passed",
+      "log": "manifest-audit.log",
+      "log_sha256": "edc2e4a78ec03066d692602116a7b93f51e0e5aa339968365f6ae89761f07ebe"
+    },
+    {
+      "name": "registry-audit",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "kernel/audit_estate_registry.py"
+      ],
+      "started_at_utc": "2026-11-20T10:39:30.056418+00:00",
+      "finished_at_utc": "2026-11-20T10:39:30.139035+00:00",
+      "exit_code": 0,
+      "status": "passed",
+      "log": "registry-audit.log",
+      "log_sha256": "ecbfb7d2fec2d4a64fa1e50a63f8eb4b6a39dc451868eaac32625b8a807b2fd9"
+    },
+    {
+      "name": "historical-table",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "tools/render_adopters.py",
+        "--check"
+      ],
+      "started_at_utc": "2026-11-20T10:39:30.139476+00:00",
+      "finished_at_utc": "2026-11-20T10:39:30.189922+00:00",
+      "exit_code": 0,
+      "status": "passed",
+      "log": "historical-table.log",
+      "log_sha256": "7bdf2eab6e913f43194ab12a173b4d2095e475e5f174b24101982d9b646e48d0"
+    },
+    {
+      "name": "impact-policy",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "kernel/ci_impact_policy.py",
+        "--root",
+        ".",
+        "--check"
+      ],
+      "started_at_utc": "2026-11-20T10:39:30.190407+00:00",
+      "finished_at_utc": "2026-11-20T10:39:30.250742+00:00",
+      "exit_code": 0,
+      "status": "passed",
+      "log": "impact-policy.log",
+      "log_sha256": "bf7d3f14449f7d40d670a82b7916eb68e3bb99e150aa3af6c7fb8d2635954911"
+    },
+    {
+      "name": "whitespace",
+      "command": [
+        "git",
+        "diff",
+        "--cached",
+        "--check"
+      ],
+      "started_at_utc": "2026-11-20T10:39:30.251213+00:00",
+      "finished_at_utc": "2026-11-20T10:39:30.263523+00:00",
+      "exit_code": 0,
+      "status": "passed",
+      "log": "whitespace.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "formal-evidence",
+      "status": "passed",
+      "collection": "Validated the separately executed local gate receipt and its logs; did not rerun the gate in this collector",
+      "receipt": "results.json",
+      "receipt_sha256": "00e53790aee9295603468cd6a39a65205288d33984867be8185a08ae70c8d339",
+      "gate_started_at_utc": "2026-11-20T10:37:36.758229+00:00",
+      "gate_finished_at_utc": "2026-11-20T10:38:59.545333+00:00"
+    }
+  ],
+  "python_tests_passed": 303,
+  "formal_declared_inputs_covered": 10,
+  "finished_at_utc": "2026-11-20T10:39:30.270872+00:00"
+}

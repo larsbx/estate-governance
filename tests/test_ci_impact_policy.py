@@ -49,7 +49,7 @@ def test_repository_policy_is_valid(policy):
     (lambda p: p["suite"][0].update(entrypoints=["missing_test.py"]), "missing or escaping entrypoint"),
     (lambda p: p["suite"][0].update(entrypoints=["../../etc/passwd"]), "unsafe or unsupported"),
     (lambda p: p["suite"][1].update(components=["unknown"]), "unknown component"),
-    (lambda p: p["suite"][0].update(mode="affected"), "at least one always-run"),
+    (lambda p: [suite.update(mode="affected") for suite in p["suite"]], "at least one always-run"),
     (lambda p: p["suite"].append(copy.deepcopy(p["suite"][0])), "duplicate suite"),
 ])
 def test_invalid_mutations_are_rejected(policy, mutation, error):
@@ -62,8 +62,8 @@ def test_docs_only_selects_preflight_and_explains_skips(policy):
     model = checked(policy)
     result = impact.plan(policy, model, ["README.md", "docs/audits/example.md"])
     assert result["decision"] == "preflight-only"
-    assert result["selected_suites"] == ["governance-policy"]
-    assert len(result["skipped_suites"]) == len(model["suites"]) - 1
+    assert result["selected_suites"] == ["formal", "governance-policy"]
+    assert len(result["skipped_suites"]) == len(model["suites"]) - 2
     assert result["source_coverage"] == "local-only"
     assert result["verdict"] == "selection-plan-only"
 
@@ -73,13 +73,13 @@ def test_transitive_reverse_dependencies(policy):
     assert result["decision"] == "targeted"
     assert result["dependency_closure"] == ["layout", "pin", "registry", "render", "snapshot"]
     assert result["selected_suites"] == [
-        "governance-policy", "layout", "pin", "registry", "render", "snapshot"
+        "formal", "governance-policy", "layout", "pin", "registry", "render", "snapshot"
     ]
 
 
 def test_single_change_selects_affected_plus_always(policy):
     result = impact.plan(policy, checked(policy), ["tools/pin_estate.py"])
-    assert result["selected_suites"] == ["governance-policy", "pin"]
+    assert result["selected_suites"] == ["formal", "governance-policy", "pin"]
 
 
 @pytest.mark.parametrize("paths", [
@@ -89,6 +89,10 @@ def test_single_change_selects_affected_plus_always(policy):
     ["policy/ci-impact.toml"],
     [".github/workflows/ci.yml"],
     ["tests/test_ci_impact_policy.py"],
+    ["formal/lean/EstateFormal.lean"],
+    ["formal/quint/EstateFormal.qnt"],
+    ["tools/check_formal.py"],
+    ["docs/formalization.md"],
 ])
 def test_critical_or_unknown_changes_force_full(policy, paths):
     model = checked(policy)
@@ -104,7 +108,7 @@ def test_explicit_full_and_empty_delta(policy):
     full = impact.plan(policy, model, [], force_full=True)
     assert full["selected_suites"] == sorted(model["suites"])
     empty = impact.plan(policy, model, [])
-    assert empty["selected_suites"] == ["governance-policy"]
+    assert empty["selected_suites"] == ["formal", "governance-policy"]
 
 
 @pytest.mark.parametrize("bad", [
@@ -143,5 +147,5 @@ def test_main_plan_is_non_authoritative(capsys, tmp_path):
     receipt = json.loads(output.read_text(encoding="utf-8"))
     assert receipt["tested_revision"] is None
     assert receipt["policy_digest"].startswith("sha256:")
-    assert receipt["selected_suites"] == ["governance-policy"]
+    assert receipt["selected_suites"] == ["formal", "governance-policy"]
     assert receipt["verdict"] == "selection-plan-only"

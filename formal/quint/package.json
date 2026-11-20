@@ -1,0 +1,9 @@
+{
+  "name": "estate-formal-evidence",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Pinned Quint evidence lifecycle model for estate governance v3",
+  "dependencies": {
+    "@informalsystems/quint": "0.33.1"
+  }
+}

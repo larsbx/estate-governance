@@ -1,24 +1,24 @@
-# estate-repository-v2 manifest template: SPEC_estate v0.1 §3 plus the layout.
+# estate-repository-v3 manifest template.
 #
-# Copy to the consumer root as ESTATE.toml, fill it in, keep only applicable
-# planes, then run tools/pin_estate.py against the consumer to set the
-# estate-governance rev and pin (and the pins of vendored deps). Never
-# hand-edit a pin or the stage.
-version = 2
-template = "estate-repository-v2"
+# Fill in identity, real implementation/formal sources, scope, and executable gate.
+# Example paths are unfinished obligations, not evidence of compliance.
+# Run tools/pin_estate.py from the chosen governance checkout to set the
+# estate-governance rev and auditor digest. Do not hand-edit pins or stage.
+version = 3
+template = "estate-repository-v3"
 
 [repo]
 id = "REPOSITORY"
 slug = "OWNER/REPOSITORY"
 class = "research"            # kernel | substrate | platform | app | research | corpus
-layer = 3                     # the class default; otherwise set override = "DR-nnnn"
-band = "EXPLORE"              # the class default; otherwise set override = "DR-nnnn"
-stage = "candidate"           # written by estate CI only
+layer = 3
+band = "EXPLORE"
+stage = "candidate"
 inv = []
 default_branch = "main"
 
 [origin]
-decided_by = "proposed"       # stated | proposed
+decided_by = "proposed"
 chats = []
 artifacts = []
 
@@ -30,127 +30,78 @@ pin = "sha256:0000000000000000000000000000000000000000000000000000000000000000"
 [exports]
 names = []
 
-[layout]
-status = "transitional"
+[authority]
+acceptance_authority = false
+
+# If this repository owns acceptance/effect boundaries, set the Boolean to true
+# and declare every boundary. Implementation entries are existing files and may
+# use any language or combination of languages.
+#
+# [[boundary]]
+# id = "domain-admission"
+# implementation = ["src/implementation"]
+# contract = "docs/boundary-contract.md"
+
+[formalization]
+scope = "docs/formalization.md"
+gate = "tools/check_formal.py"
+implementation_paths = ["src/implementation"]
+
+[formalization.lean]
+sources = ["formal/lean/Boundary.lean"]
+toolchain = "leanprover/lean4:v4.34.1"
+obligations = ["Boundary.acceptance_requires_evidence"]
+
+[formalization.quint]
+sources = ["formal/quint/boundary.qnt"]
+toolchain = "@informalsystems/quint@0.33.1"
+obligations = ["evidenceGateInv", "validTraceTest"]
 
 [principles]
-ordering = ["authority", "domain", "language"]
+ordering = ["authority", "domain"]
+disagreement = "fail_closed"
 empty_silos = "forbidden"
-cross_language_disagreement = "fail_closed"
 generated_surfaces = "derived_only"
 vendor_code = "non_local"
 experimental_code = "non_authoritative"
 
-# Keep only applicable planes. Add current/current_globs while transitional.
-
-[[plane]]
-id = "policy"
-target = "policy"
-authority = "governance"
-required = true
-current = ["ESTATE.toml"]
-
-[[plane]]
-id = "kernel"
-target = "kernel"
-authority = "canonical_executable"
-required = false
-
-[[plane]]
-id = "proof"
-target = "proof"
-authority = "claim_state"
-required = false
-
-[[plane]]
-id = "reference"
-target = "reference"
-authority = "non_authoritative_reference"
-required = false
-
-[[plane]]
-id = "oracles"
-target = "oracles"
-authority = "non_authoritative_oracle"
-required = false
-
-[[plane]]
-id = "experiments"
-target = "experiments"
-authority = "non_authoritative_experiment"
-required = false
-
-[[plane]]
-id = "schemas"
-target = "schemas"
-authority = "contract"
-required = false
-
-[[plane]]
-id = "conformance"
-target = "conformance"
-authority = "evidence"
-required = false
-
-[[plane]]
-id = "vendor"
-target = "vendor"
-authority = "pinned_external"
-required = false
-
-[[plane]]
-id = "tooling"
-target = "tools"
-authority = "repository_tooling"
-required = false
-
-[[plane]]
-id = "docs"
-target = "docs"
-authority = "exposition"
-required = false
-
-[[language]]
-name = "PRIMARY_LANGUAGE"
-authority = "canonical"
-roles = ["kernel"]
-# Explicit Boolean: true when this repository owns acceptance/effect boundaries;
-# false when it owns none (for example, an oracle registry/validation kernel).
-# Describe the boundaries or their absence in ARCHITECTURE.md or a linked document.
-acceptance_authority = true
+# A plane inventory is optional. Do not create empty directories to satisfy one.
+# If planes are declared, map actual paths; a canonical inventory must completely
+# map visible top-level directories under the contract's build-artifact exemptions.
+#
+# [layout]
+# status = "transitional"
+#
+# [[plane]]
+# id = "implementation"
+# target = "src"
+# authority = "canonical_executable"
+# required = true
+# current = ["src"]
 
 [migration]
 mode = "boundary_first"
 mass_move = false
 next = []
 
-# Optional multi-program extension. Omit for the default single-program shape.
+# Optional multi-program extension; see multi-program-repository-v2.md.
 #
 # [workspace]
 # mode = "multi_program"
 #
-# [[plane]]
-# id = "programs"
-# target = "programs"
-# authority = "program_collection"
-# required = true
-# current = ["programs"]
-#
-# [[plane]]
-# id = "shared"
-# target = "shared"
-# authority = "shared_component_collection"
-# required = true
-# current = ["shared"]
+# [[program]]
+# id = "first-program"
+# root = "programs/first-program"
+# manifest = "PROGRAM.toml"
+# claim_namespace = "FIRST"
 #
 # [[program]]
-# id = "finite-dynamics"
-# root = "programs/finite-dynamics"
+# id = "second-program"
+# root = "programs/second-program"
 # manifest = "PROGRAM.toml"
-# claim_namespace = "FD"
-# canonical_language = "Mojo"
+# claim_namespace = "SECOND"
 #
 # [[shared_component]]
-# id = "finite-math-kernels"
-# root = "shared/finite-math-kernels"
-# consumers = ["finite-dynamics"]
+# id = "shared-core"
+# root = "shared/shared-core"
+# consumers = ["first-program", "second-program"]

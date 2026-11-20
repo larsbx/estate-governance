@@ -1,0 +1,242 @@
+[
+  {
+    "path": ".github/workflows/ci.yml",
+    "bytes": 857,
+    "sha256": "a1d73d5712a9733f5e4143a3702a9a22315f8bca45d5e7ee4af770b38908591a"
+  },
+  {
+    "path": ".github/workflows/formal.yml",
+    "bytes": 2314,
+    "sha256": "cc442d63c0bfd51e5a44426c6d77f890d0cabcbbac35d39a89aa7d3fc9b3706d"
+  },
+  {
+    "path": ".gitignore",
+    "bytes": 88,
+    "sha256": "a9da4064ed24c6d611f327391c94ae4dea69632994a9cad3bf29ef2d750518a3"
+  },
+  {
+    "path": "ARCHITECTURE.md",
+    "bytes": 4362,
+    "sha256": "b7954df3845aea435adacf2897bed609dd9599315643b40c4fdcfe91605f545e"
+  },
+  {
+    "path": "ESTATE.toml",
+    "bytes": 3014,
+    "sha256": "9c5e8bcf1de8c18e7d294761197bfeef63777bd43b68fc83dd4129f4ce0aa1c4"
+  },
+  {
+    "path": "README.md",
+    "bytes": 6332,
+    "sha256": "7ea716278abf1892aca1b4c390f79600c86900ed45ec9085f2709eea182504b0"
+  },
+  {
+    "path": "ROADMAP.md",
+    "bytes": 7201,
+    "sha256": "8646b7f3f0f4a648663b1498561f6a73f08e6a3fad9b37416b46b67cdc2515eb"
+  },
+  {
+    "path": "docs/architecture/ci-impact-governance-v1.md",
+    "bytes": 8259,
+    "sha256": "93f7ef37974a6e74f72a2afd8f52c3f7ed1053cf016edf32310cb5baa8722ba4"
+  },
+  {
+    "path": "docs/architecture/estate-repository-template-v1.md",
+    "bytes": 7533,
+    "sha256": "b8c63f08c488ebd7036c533db40bf95d59c9e42b2520ccd881c5a1cf96b6b0e8"
+  },
+  {
+    "path": "docs/architecture/estate-repository-template-v2.md",
+    "bytes": 17738,
+    "sha256": "6fb74f213c254d517e4d1a6ce3ccb771160d2560c44c81b95bb681c4af4c3fdc"
+  },
+  {
+    "path": "docs/architecture/estate-repository-template-v3.md",
+    "bytes": 13036,
+    "sha256": "0a90141131a81287bdd5e868aa1101e6522e16e8ad7bce9455e7cf899ff41da6"
+  },
+  {
+    "path": "docs/architecture/multi-program-repository-v1.md",
+    "bytes": 3620,
+    "sha256": "a4d6581111f5c94c6d294e3ae01d10f6bd9c16d9857e33dacaef2baa6f07073f"
+  },
+  {
+    "path": "docs/architecture/multi-program-repository-v2.md",
+    "bytes": 4306,
+    "sha256": "a7772647f500909753601b1b947c70a131d5a4bd8b6abf3446f886f0186e9f8e"
+  },
+  {
+    "path": "docs/audits/acceptance-authority-2026-10-05.json",
+    "bytes": 6380,
+    "sha256": "2a17de77548b40aef7067127df5c7d44e84848f9b3356ea3c2e84514a015d35f"
+  },
+  {
+    "path": "docs/audits/acceptance-authority-2026-10-05.md",
+    "bytes": 5926,
+    "sha256": "79bb22cc4f15f799a99e4682492bedbce28b7abb6ded702460338fe0a443c77c"
+  },
+  {
+    "path": "docs/decisions/DR-0001-adopt-estate-positions.md",
+    "bytes": 4557,
+    "sha256": "e20f7d4f63fe59cbf4f07908da0cf6cf3de2273ca45c3c854632c1d1ade84a45"
+  },
+  {
+    "path": "docs/decisions/DR-0002-acceptance-authority.md",
+    "bytes": 3803,
+    "sha256": "e396a619943592ff61591ce05f59b7dbec07e64799ae8677f8e50b2a52efda79"
+  },
+  {
+    "path": "docs/decisions/DR-0003-archive-finite-dynamics.md",
+    "bytes": 2562,
+    "sha256": "4658969bba30b6b769da8a5849e30e35bd675e4bdeaadfb6c7ca64a9469d2c25"
+  },
+  {
+    "path": "docs/decisions/DR-0004-periodic-contract-conformance-audits.md",
+    "bytes": 5358,
+    "sha256": "4f346889bf9590407d6f592acc03566f1d28c49ac9ed32bc32b17637c61801ad"
+  },
+  {
+    "path": "docs/decisions/DR-0005-ci-impact-policy-ownership.md",
+    "bytes": 3591,
+    "sha256": "f19c462eb9cd980b331f8e2ea87ec75d21a05a051ce95fe2ffb29ae5d99b2fe0"
+  },
+  {
+    "path": "docs/decisions/DR-0006-language-independent-formalization.md",
+    "bytes": 5606,
+    "sha256": "4a4854010fd2d3c0bb3ab4930fef5bd37e90cf7546b4567f6c918ac68c8d3d5e"
+  },
+  {
+    "path": "docs/formalization.md",
+    "bytes": 7046,
+    "sha256": "9ceb72f56f6a63d10eb5e4fe9782e94f354a589e370ac2f9e9753f643de8cc1b"
+  },
+  {
+    "path": "docs/research/periodic-literature-review-protocol.md",
+    "bytes": 9481,
+    "sha256": "920e01c013fcdc586120671373b75badb16deed989334ac6bb40479757d83b5f"
+  },
+  {
+    "path": "formal/lean/Audit.lean",
+    "bytes": 2479,
+    "sha256": "827c9b33d6a57658c39f41ee723d6188a0c919d95fe802d975639cf0a36e7a23"
+  },
+  {
+    "path": "formal/lean/EstateFormal.lean",
+    "bytes": 5730,
+    "sha256": "889362d1cce6ed41e9edbc55604b8691ea0d5003c670a4a7ca1cfc6c1287ab85"
+  },
+  {
+    "path": "formal/lean/lean-toolchain",
+    "bytes": 25,
+    "sha256": "d5edba4e4b8faad9c1baeadb265716d20d03be4d1a2647dc5e35b0c0325bea7b"
+  },
+  {
+    "path": "formal/quint/EstateFormal.qnt",
+    "bytes": 4338,
+    "sha256": "6266e83e7620c255f3b4f37288d976d2e928a7cf3a13408002e13e0705652de7"
+  },
+  {
+    "path": "formal/quint/package-lock.json",
+    "bytes": 31026,
+    "sha256": "5bf58f044f3e76a3bb0b8c490622aca57ddabaae5c2738ab8f501cd559e7f087"
+  },
+  {
+    "path": "formal/quint/package.json",
+    "bytes": 227,
+    "sha256": "9f11895066970ccbd016f44008ba56aeedfa554cbb5a4fe281e5515efd35d302"
+  },
+  {
+    "path": "kernel/audit_estate_layout.py",
+    "bytes": 29645,
+    "sha256": "c931b9e20388148aa706a2da0ebd78a02a69a707ae5bc60518344cdf10674cb0"
+  },
+  {
+    "path": "kernel/audit_estate_registry.py",
+    "bytes": 19306,
+    "sha256": "5fceb3faea8cbd1cf120767837b9069f9b0aa86541d3187b93ba2c156984939b"
+  },
+  {
+    "path": "kernel/ci_impact_policy.py",
+    "bytes": 13116,
+    "sha256": "04147f5154a3160f12a5dfbca5d7876d84bec85fcf4f2528ecea557606190868"
+  },
+  {
+    "path": "policy/ESTATE.template.toml",
+    "bytes": 2899,
+    "sha256": "1a2f04423549c02ed7f42e88d79fd45538a53c0b7001d358c4186eecfac654bb"
+  },
+  {
+    "path": "policy/PROGRAM.template.toml",
+    "bytes": 630,
+    "sha256": "22c46713810feb5dab27d1d7bcf13a9c5482832357d0f52fdda289d37ce956ba"
+  },
+  {
+    "path": "policy/ci-impact.toml",
+    "bytes": 2077,
+    "sha256": "6ed46574fb83a95ae45f3704723bec3c324eb784f525b7e08436bd33cbd3f55a"
+  },
+  {
+    "path": "policy/estate-registry.toml",
+    "bytes": 11816,
+    "sha256": "e555d1abfd27423797fe3f1a813e53e8fe313e6a1fc1a751ceb595201f7d5054"
+  },
+  {
+    "path": "pyproject.toml",
+    "bytes": 319,
+    "sha256": "8d208fe93dc88642d76789a74f4d4eabbd8215d001af16e7d10786a1e183b26d"
+  },
+  {
+    "path": "tests/test_audit_estate_layout.py",
+    "bytes": 21122,
+    "sha256": "af58e2c4af7e415d429000cad478547dedb20d796e26973dab95ee01d32faa89"
+  },
+  {
+    "path": "tests/test_check_formal.py",
+    "bytes": 3733,
+    "sha256": "cd306bb30c86008aacdefa9a6023a9ff0b948431ea44956de0c0101f2a2a14fb"
+  },
+  {
+    "path": "tests/test_ci_impact_policy.py",
+    "bytes": 6351,
+    "sha256": "3878395a9950c51624e651c965e90b017f48c3048fa4c8af21887550fe99648b"
+  },
+  {
+    "path": "tests/test_estate_registry.py",
+    "bytes": 8861,
+    "sha256": "be1fdb0866619054e98b11972fae06829017cd314486c14fc4975e3c1fab9a5f"
+  },
+  {
+    "path": "tests/test_estate_v3.py",
+    "bytes": 11001,
+    "sha256": "30c39a6ce629187c056e3a7732a6fba4fda285f3a0da2fe7d809e6b4da12d1d5"
+  },
+  {
+    "path": "tests/test_pin_estate.py",
+    "bytes": 3898,
+    "sha256": "fc0c9e9f6644f93337922259218c468d15373bfc69a7bfb4539f4828b6276d17"
+  },
+  {
+    "path": "tests/test_snapshot_registry.py",
+    "bytes": 16318,
+    "sha256": "8a0dd1aecccba5a4a34b25a27e006694d2af697fade7e9a5d6061ab3fbd9f458"
+  },
+  {
+    "path": "tools/check_formal.py",
+    "bytes": 16831,
+    "sha256": "105f513bef73331f9c7379e9c38f841cfa47c43f28a7a180edcc7c6f316e6c9f"
+  },
+  {
+    "path": "tools/pin_estate.py",
+    "bytes": 5053,
+    "sha256": "a17c3d5a0d72410d6c4689153c9778e1d53ad2cb85d885430760f8fddc1e5d6d"
+  },
+  {
+    "path": "tools/render_adopters.py",
+    "bytes": 4070,
+    "sha256": "90745dbee4f3d59f554ef2faa446024270ee48744e27a429ba55a1b4ff6fa564"
+  },
+  {
+    "path": "tools/snapshot_registry.py",
+    "bytes": 12664,
+    "sha256": "c26e3933d7b383038f7231b5889b3cb2f281273e7748cfd5d1516f20091e1926"
+  }
+]

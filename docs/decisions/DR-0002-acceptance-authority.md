@@ -1,5 +1,7 @@
 # DR-0002 — Every estate repository with a kernel holds acceptance authority over a named boundary
 
+> **V3 supersession (2026-11-20).** [DR-0006](DR-0006-language-independent-formalization.md) replaces the language-ownership and automatic kernel-authority promotion rules for explicit v3 adopters. This decision remains the historical v2 record; its distinction between domain acceptance and mathematical proof is retained.
+
 - **Status:** accepted
 - **Date:** 2026-10-21
 - **Decides for:** the estate

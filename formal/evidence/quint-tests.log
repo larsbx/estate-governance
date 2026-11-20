@@ -1,0 +1,13 @@
+
+  EstateFormal
+    ok missingEvidenceTest passed 1 test(s)
+    ok bothChecksTest passed 1 test(s)
+    ok singleLaneTest passed 1 test(s)
+    ok staleSourceTest passed 1 test(s)
+    ok stalePolicyTest passed 1 test(s)
+    ok failedResultTest passed 1 test(s)
+    ok queuedResultTest passed 1 test(s)
+    ok authorityPreservedTest passed 1 test(s)
+    ok recoveryRequiresBothFreshResultsTest passed 1 test(s)
+
+  9 passing (25ms)
