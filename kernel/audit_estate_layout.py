@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
-"""Validate a repository's estate manifest, ESTATE.toml (estate-repository-v2).
+"""Validate a repository's estate manifest (v3, with explicit legacy v2 replay).
 
 The manifest carries SPEC_estate v0.1 §3 (identity, class, layer, band,
 stage, origin, code and conformance edges, exports) and this template's
-in-repository layout (authority planes, languages, migration queue).
+in-repository boundaries, formalization declarations and optional layout.
+V2 retains its historical language rules. V3 never derives authority from a
+programming language and requires both Lean and Quint formalization declarations.
+This is a static manifest audit: the declared formal gate must also execute.
 
 Canonical and only copy: larsbx/estate-governance, kernel/audit_estate_layout.py.
 Consumers do not vendor it (SPEC_estate §5). Their CI checks this repository
@@ -32,7 +35,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = "ESTATE.toml"
-TEMPLATE = "estate-repository-v2"
+TEMPLATE = "estate-repository-v3"
+TEMPLATES = {2: "estate-repository-v2", 3: TEMPLATE}
 
 GOVERNANCE_REPOSITORY = "larsbx/estate-governance"
 GOVERNANCE_ID = GOVERNANCE_REPOSITORY.split("/")[1]
@@ -60,7 +64,8 @@ DECISION = re.compile(r"DR-\d{4}")
 #: directory, which Julia coverage tooling writes at the root).
 UNTRACKED = re.compile(r"\..*|__pycache__|.*\.egg-info|build|dist|coverage")
 
-CONTRACT = "docs/architecture/estate-repository-template-v2.md"
+CONTRACTS = {version: f"docs/architecture/estate-repository-template-v{version}.md"
+             for version in TEMPLATES}
 
 ALLOWED_PLANE_AUTHORITIES = frozenset({
     "program_collection",
@@ -134,8 +139,11 @@ def vendored_digest(root: Path, repository: str) -> str:
 
 
 def validate_repo(data: dict) -> dict:
-    require(data.get("version") == 2, "ESTATE.toml version must be 2")
-    require(data.get("template") == TEMPLATE, f"ESTATE.toml template must be {TEMPLATE}")
+    version = data.get("version")
+    require(type(version) is int and version in TEMPLATES,
+            "ESTATE.toml version must be 2 (legacy) or 3")
+    template = TEMPLATES[version]
+    require(data.get("template") == template, f"ESTATE.toml template must be {template}")
     repo = data.get("repo", {})
     rid, slug, cls = repo.get("id", ""), repo.get("slug", ""), repo.get("class")
     require(re.fullmatch(r"[a-z0-9][a-z0-9._-]*", rid), "repo.id must be a lowercase repository name")
@@ -249,14 +257,15 @@ def validate_program_workspace(data: dict, root: Path) -> None:
         return
 
     require(len(programs) >= 2, "a multi_program workspace requires at least two [[program]] entries")
-    planes = data.get("plane", [])
-    program_plane = next((p for p in planes if p.get("target") == "programs"), None)
-    require(program_plane and program_plane.get("authority") == "program_collection",
-            "a multi_program workspace requires a programs plane with program_collection authority")
-    if components:
-        shared_plane = next((p for p in planes if p.get("target") == "shared"), None)
-        require(shared_plane and shared_plane.get("authority") == "shared_component_collection",
-                "shared components require a shared plane with shared_component_collection authority")
+    if data["version"] == 2:
+        planes = data.get("plane", [])
+        program_plane = next((p for p in planes if p.get("target") == "programs"), None)
+        require(program_plane and program_plane.get("authority") == "program_collection",
+                "a multi_program workspace requires a programs plane with program_collection authority")
+        if components:
+            shared_plane = next((p for p in planes if p.get("target") == "shared"), None)
+            require(shared_plane and shared_plane.get("authority") == "shared_component_collection",
+                    "shared components require a shared plane with shared_component_collection authority")
 
     program_ids: set[str] = set()
     roots: set[str] = set()
@@ -273,6 +282,9 @@ def validate_program_workspace(data: dict, root: Path) -> None:
         require(root_text not in roots, f"duplicate program root: {root_text}")
         roots.add(root_text)
         require((root / program_root).is_dir(), f"program {program_id}: missing root {root_text}")
+        if data["version"] == 3:
+            require((root / program_root).resolve().is_relative_to(root.resolve()),
+                    f"program {program_id}: root escapes repository through a symlink")
 
         manifest_name = program.get("manifest", "PROGRAM.toml")
         require(manifest_name == "PROGRAM.toml",
@@ -280,6 +292,9 @@ def validate_program_workspace(data: dict, root: Path) -> None:
         manifest_path = root / program_root / manifest_name
         require(manifest_path.is_file(),
                 f"program {program_id}: missing manifest {root_text}/{manifest_name}")
+        if data["version"] == 3:
+            require(manifest_path.resolve().is_relative_to((root / program_root).resolve()),
+                    f"program {program_id}: child manifest escapes its program root")
         manifest = tomllib.loads(manifest_path.read_text(encoding="utf-8"))
         identity = manifest.get("program", {})
         require(identity.get("id") == program_id,
@@ -291,9 +306,10 @@ def validate_program_workspace(data: dict, root: Path) -> None:
         require(namespace not in namespaces, f"duplicate program claim_namespace: {namespace}")
         namespaces.add(namespace)
 
-        language = program.get("canonical_language", "")
-        require(isinstance(language, str) and language,
-                f"program {program_id}: canonical_language is required")
+        if data["version"] == 2:
+            language = program.get("canonical_language", "")
+            require(isinstance(language, str) and language,
+                    f"program {program_id}: canonical_language is required")
 
     component_ids: set[str] = set()
     for component in components:
@@ -312,6 +328,9 @@ def validate_program_workspace(data: dict, root: Path) -> None:
         roots.add(root_text)
         require((root / component_root).is_dir(),
                 f"shared_component {component_id}: missing root {root_text}")
+        if data["version"] == 3:
+            require((root / component_root).resolve().is_relative_to(root.resolve()),
+                    f"shared_component {component_id}: root escapes repository through a symlink")
 
         consumers = component.get("consumers", [])
         require(isinstance(consumers, list) and consumers,
@@ -323,14 +342,31 @@ def validate_program_workspace(data: dict, root: Path) -> None:
 
 def validate_principles(data: dict) -> None:
     principles = data.get("principles", {})
-    require(principles.get("ordering") == ["authority", "domain", "language"],
-            "principles.ordering must be authority, domain, language")
-    require(principles.get("cross_language_disagreement") == "fail_closed",
-            "cross-language disagreement must fail closed")
+    if data["version"] == 2:
+        require(principles.get("ordering") == ["authority", "domain", "language"],
+                "principles.ordering must be authority, domain, language")
+        require(principles.get("cross_language_disagreement") == "fail_closed",
+                "cross-language disagreement must fail closed")
+    else:
+        require(principles.get("ordering") == ["authority", "domain"],
+                "v3 principles.ordering must be authority, domain")
+        require(principles.get("disagreement") == "fail_closed", "disagreement must fail closed")
+        for field, expected in (("generated_surfaces", "derived_only"),
+                                ("vendor_code", "non_local"),
+                                ("experimental_code", "non_authoritative")):
+            require(principles.get(field) == expected, f"principles.{field} must be {expected}")
     require(principles.get("empty_silos") == "forbidden", "empty silos must be forbidden")
 
 
 def validate_planes(data: dict, root: Path) -> None:
+    if data["version"] == 3:
+        require(isinstance(data.get("plane", []), list)
+                and all(isinstance(plane, dict) for plane in data.get("plane", [])),
+                "v3 plane inventory must be an array of tables")
+        require(isinstance(data.get("layout", {}), dict), "v3 layout must be a table")
+        if not data.get("plane"):
+            require(not data.get("layout"), "v3 layout claims require an explicit plane inventory")
+            return
     require(data.get("layout", {}).get("status") in {"transitional", "canonical"},
             "layout.status must be transitional or canonical")
     planes = data.get("plane", [])
@@ -359,7 +395,7 @@ def validate_planes(data: dict, root: Path) -> None:
             require(glob.glob(str(root / pattern), recursive=True),
                     f"plane {plane_id}: current_globs pattern matches nothing: {pattern}")
 
-    for mandatory in ("kernel", "policy"):
+    for mandatory in (("kernel", "policy") if data["version"] == 2 else ()):
         require(mandatory in ids, f"{mandatory} plane is required for this template")
 
     if data["layout"]["status"] == "canonical":
@@ -414,7 +450,7 @@ def validate_languages(data: dict) -> None:
     # boundary; true makes its canonical language the sole acceptance authority.
 
 
-def validate_workspaces(slug: str, root: Path) -> None:
+def validate_workspaces(slug: str, root: Path, version: int = 2) -> None:
     workspace = root / "pixi.toml"
     if workspace.is_file():
         expected = slug.split("/", 1)[1]
@@ -426,9 +462,82 @@ def validate_workspaces(slug: str, root: Path) -> None:
         pdata = tomllib.loads(polyglot.read_text(encoding="utf-8"))
         require(pdata.get("repository") == slug, f"polyglot.manifest.toml repository disagrees with {MANIFEST}")
         require(pdata.get("estate", {}).get("manifest") == MANIFEST, f"polyglot.manifest.toml must link to {MANIFEST}")
-        if (root / "oracles/julia").exists():
+        if version == 2 and (root / "oracles/julia").exists():
             require("Julia" in pdata.get("authority", {}).get("supporting_languages", []),
                     "Julia oracle lane exists but polyglot supporting_languages omits Julia")
+
+
+def declared_file(root: Path, value: object, field: str, suffix: str | None = None) -> Path:
+    """Resolve an owned contract input without following a path outside the repository."""
+    require(isinstance(value, str) and value and not any(c in value for c in ("\\", "\0", "\n", "\r")),
+            f"{field} must be a repository-relative file path")
+    path = Path(value)
+    require(not path.is_absolute() and ".." not in path.parts and path.as_posix() == value,
+            f"{field} must be a normalized repository-relative file path")
+    candidate = root / path
+    require(candidate.resolve().is_relative_to(root.resolve()), f"{field} escapes the repository")
+    require(not candidate.is_symlink() and candidate.is_file(), f"{field}: missing owned file {value}")
+    require(candidate.stat().st_size > 0, f"{field}: empty file is not an artifact: {value}")
+    if suffix is not None:
+        require(path.suffix == suffix, f"{field} must name a {suffix} source")
+    return candidate
+
+
+def nonempty_strings(value: object, field: str) -> list[str]:
+    require(isinstance(value, list) and value
+            and all(isinstance(item, str) and item.strip() == item and item for item in value),
+            f"{field} must be a nonempty string list")
+    require(len(value) == len(set(value)), f"{field} must not contain duplicates")
+    return value
+
+
+def validate_authority(data: dict, root: Path) -> None:
+    authority = data.get("authority", {})
+    require(isinstance(authority, dict) and type(authority.get("acceptance_authority")) is bool,
+            "authority.acceptance_authority must be an explicit boolean")
+    boundaries = data.get("boundary", [])
+    require(isinstance(boundaries, list) and all(isinstance(b, dict) for b in boundaries),
+            "boundary must be an array of named boundaries")
+    require(bool(boundaries) == authority["acceptance_authority"],
+            "acceptance_authority must agree with the presence of named accepting boundaries")
+    seen: set[str] = set()
+    for boundary in boundaries:
+        name = boundary.get("id", "")
+        require(isinstance(name, str) and PROGRAM_ID.fullmatch(name), "boundary.id must be lowercase and stable")
+        require(name not in seen, f"duplicate boundary: {name}")
+        seen.add(name)
+        declared_file(root, boundary.get("contract"), f"boundary {name}.contract")
+        for path in nonempty_strings(boundary.get("implementation"), f"boundary {name}.implementation"):
+            declared_file(root, path, f"boundary {name}.implementation")
+
+
+def validate_formalization(data: dict, root: Path) -> None:
+    """Check required declarations and artifacts; never pretend to execute or prove them."""
+    formal = data.get("formalization", {})
+    require(isinstance(formal, dict) and formal, "v3 requires Lean and Quint formalization")
+    declared_file(root, formal.get("scope"), "formalization.scope")
+    declared_file(root, formal.get("gate"), "formalization.gate")
+    for path in nonempty_strings(formal.get("implementation_paths"), "formalization.implementation_paths"):
+        declared_file(root, path, "formalization.implementation_paths")
+    patterns = {
+        "lean": (".lean", r"leanprover/lean4:(?:v\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?|nightly-\d{4}-\d{2}-\d{2})"),
+        "quint": (".qnt", r"@informalsystems/quint@\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?"),
+    }
+    for lane, (suffix, toolchain_pattern) in patterns.items():
+        entry = formal.get(lane, {})
+        require(isinstance(entry, dict) and entry, f"formalization.{lane} is required")
+        require(isinstance(entry.get("toolchain"), str)
+                and re.fullmatch(toolchain_pattern, entry["toolchain"]),
+                f"formalization.{lane}.toolchain must be an exact toolchain version")
+        for path in nonempty_strings(entry.get("sources"), f"formalization.{lane}.sources"):
+            declared_file(root, path, f"formalization.{lane}.sources", suffix)
+        obligations = nonempty_strings(entry.get("obligations"), f"formalization.{lane}.obligations")
+        require(all(re.fullmatch(r"[A-Za-z_][A-Za-z0-9_'.]*", obligation) for obligation in obligations),
+                f"formalization.{lane}.obligations must name declarations or properties")
+        require("enabled" not in entry and "required" not in entry and "status" not in entry,
+                f"formalization.{lane}: flags cannot disable or certify a required formal lane")
+    require("required" not in formal and "enabled" not in formal and "status" not in formal,
+            "formalization flags cannot disable or certify required execution")
 
 
 def validate(data: dict, root: Path = ROOT) -> None:
@@ -437,12 +546,16 @@ def validate(data: dict, root: Path = ROOT) -> None:
     validate_principles(data)
     validate_program_workspace(data, root)
     validate_planes(data, root)
-    validate_languages(data)
-    entrypoints = ["ARCHITECTURE.md"] + ([CONTRACT] if repo["slug"] == GOVERNANCE_REPOSITORY else [])
+    if data["version"] == 2:
+        validate_languages(data)
+    else:
+        validate_authority(data, root)
+        validate_formalization(data, root)
+    entrypoints = ["ARCHITECTURE.md"] + ([CONTRACTS[data["version"]]] if repo["slug"] == GOVERNANCE_REPOSITORY else [])
     for required in entrypoints:
         require((root / required).is_file(), f"missing architecture entrypoint: {required}")
     validate_edges(data, repo, root)
-    validate_workspaces(repo["slug"], root)
+    validate_workspaces(repo["slug"], root, data["version"])
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -450,11 +563,15 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--root", type=Path, default=ROOT, help="repository root (default: this checkout)")
     root = parser.parse_args(argv).root.resolve()
     try:
-        validate(load(root / MANIFEST), root)
-    except (AssertionError, tomllib.TOMLDecodeError) as exc:
+        data = load(root / MANIFEST)
+        validate(data, root)
+    except (AssertionError, tomllib.TOMLDecodeError, OSError, TypeError, ValueError, AttributeError) as exc:
         print(f"estate audit failed: {exc}", file=sys.stderr)
         return 1
-    print("estate audit passed")
+    if data["version"] == 3:
+        print("estate v3 manifest audit passed; Lean and Quint execution remains a separate required gate")
+    else:
+        print("estate audit passed (legacy v2; no v3 formalization compliance is established)")
     return 0
 
 

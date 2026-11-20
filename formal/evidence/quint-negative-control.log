@@ -1,0 +1,31 @@
+An example execution:
+
+[State 0]
+{
+  s:
+    {
+      domainAuthority: false,
+      lean: { policy: 0, result: "missing", source: 0 },
+      policy: 0,
+      quint: { policy: 0, result: "missing", source: 0 },
+      source: 0,
+      verified: false
+    }
+}
+
+[State 1]
+{
+  s:
+    {
+      domainAuthority: false,
+      lean: { policy: 0, result: "missing", source: 0 },
+      policy: 0,
+      quint: { policy: 0, result: "missing", source: 0 },
+      source: 0,
+      verified: true
+    }
+}
+
+[violation] Found an issue (13ms at 77 traces/second).
+Use --verbosity=3 to show executions.
+error: Invariant violated

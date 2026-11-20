@@ -1,0 +1,59 @@
+name: Formal evidence
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  merge_group:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  formal:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Invalidate historical formal receipt before setup
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          output = Path("formal/evidence")
+          output.mkdir(parents=True, exist_ok=True)
+          (output / "results.json").write_text(json.dumps({
+              "schema": "estate.formal-evidence.v1", "status": "running",
+              "phase": "toolchain_setup", "evidence_only": True,
+              "domain_acceptance_authority": False,
+              "implementation_correspondence": "unproved"
+          }, indent=2) + "\n")
+          PY
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 24.22.3
+      - name: Install pinned Quint dependency graph
+        run: npm --prefix formal/quint ci --ignore-scripts --no-audit --no-fund
+      - name: Install pinned Lean toolchain
+        run: |
+          set -eu
+          curl --fail --silent --show-error --location --proto '=https' --tlsv1.2 \
+            -o "$RUNNER_TEMP/elan.tar.gz" https://github.com/leanprover/elan/releases/download/v4.1.2/elan-x86_64-unknown-linux-gnu.tar.gz
+          tar xzf "$RUNNER_TEMP/elan.tar.gz" -C "$RUNNER_TEMP" elan-init
+          "$RUNNER_TEMP/elan-init" -y --no-modify-path --default-toolchain none
+          "$HOME/.elan/bin/elan" toolchain install leanprover/lean4:v4.34.1
+          "$HOME/.elan/bin/elan" default leanprover/lean4:v4.34.1
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Execute both formal lanes and source-bound receipt checks
+        run: python3 tools/check_formal.py
+      - name: Preserve formal evidence and counterexample witness
+        if: ${{ always() }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: estate-formal-evidence
+          path: formal/evidence/
+          if-no-files-found: error
+          retention-days: 30

@@ -6,6 +6,10 @@ read from a sibling checkout (``<sources>/<member id>``) at ``--ref``. Only the
 member list and the header revisions are carried over from the current
 registry. With --check, writes nothing and exits 1 when the registry would change.
 
+Use --schema estate-registry-v2 and explicit --audit-revision TEMPLATE=SHA
+values when preparing a mixed v2/v3 adoption snapshot. This is a projection of
+declarations; it does not run or certify Lean/Quint formalization evidence.
+
 Usage: snapshot_registry.py [--sources DIR] [--ref REF] [--check]
 """
 
@@ -19,6 +23,9 @@ import tomllib
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "kernel"))
+import audit_estate_registry as registry_audit  # noqa: E402
+
 REGISTRY = ROOT / "policy" / "estate-registry.toml"
 GOVERNANCE_ID = "estate-governance"
 HEADER = """version = 1
@@ -33,6 +40,11 @@ required_audit_revision = {required_audit_revision}
 ORDER = ("id", "slug", "source_commit", "manifest_blob", "class", "layer", "band", "stage",
          "canonical_language", "acceptance_authority", "decided_by", "decision", "governance_rev",
          "inv", "exports", "deps", "conforms", "ci_gate", "workspace", "claim_namespaces")
+ORDER_V2 = ("id", "slug", "source_commit", "manifest_blob", "manifest_version", "template",
+            "class", "layer", "band", "stage", "canonical_language", "acceptance_authority",
+            "boundaries", "decided_by", "decision", "governance_rev", "inv", "exports", "deps",
+            "conforms", "ci_gate", "formalization_status", *registry_audit.FORMAL_FIELDS,
+            "workspace", "claim_namespaces")
 
 
 def unique(values) -> list[str]:
@@ -43,20 +55,60 @@ def has_ci_gate(workflows: list[str]) -> bool:
     return any("audit_estate_layout.py" in text for text in workflows)
 
 
-def derive(manifest: dict, *, commit: str, blob: str, ci_gate: bool) -> dict:
+def derive(manifest: dict, *, commit: str, blob: str, ci_gate: bool,
+           registry_version: int = 1) -> dict:
     """The registry row a manifest at `commit` (blob `blob`) implies."""
+    if type(registry_version) is not int or registry_version not in registry_audit.REGISTRY_SCHEMAS:
+        raise ValueError("unsupported registry version")
+    if not isinstance(commit, str) or registry_audit.REV.fullmatch(commit) is None \
+            or not isinstance(blob, str) or registry_audit.BLOB.fullmatch(blob) is None:
+        raise ValueError("source commit and manifest blob must be exact 40-hex identities")
+    version = manifest.get("version")
+    if type(version) is not int or version not in registry_audit.MANIFEST_TEMPLATES:
+        raise ValueError("unsupported source manifest version")
+    template = registry_audit.MANIFEST_TEMPLATES[version]
+    if manifest.get("template") != template:
+        raise ValueError("source manifest version and template disagree")
+    if version == 3 and registry_version != 2:
+        raise ValueError("v3 manifests require explicit estate-registry-v2 adoption")
     repo, origin = manifest["repo"], manifest.get("origin", {})
-    canonical = next(x for x in manifest["language"] if x.get("authority") == "canonical")
     deps = manifest.get("dep", [])
     governance = next((d for d in deps if d.get("id") == GOVERNANCE_ID), None)
     meta = repo["class"] == "meta"
     row = {
         "id": repo["id"], "slug": repo["slug"], "source_commit": commit, "manifest_blob": blob,
         "class": repo["class"], "layer": -1 if meta else repo["layer"], "band": repo["band"],
-        "stage": repo["stage"], "canonical_language": canonical["name"],
-        "acceptance_authority": canonical["acceptance_authority"],
+        "stage": repo["stage"],
         "decided_by": origin.get("decided_by"),
     }
+    if registry_version == 2:
+        row.update(manifest_version=version, template=template, formalization_status="not_evaluated")
+    if version == 2:
+        canonical = [x for x in manifest.get("language", []) if x.get("authority") == "canonical"]
+        if len(canonical) != 1:
+            raise ValueError("historical v2 manifest must name exactly one canonical language")
+        row.update(canonical_language=canonical[0]["name"],
+                   acceptance_authority=canonical[0]["acceptance_authority"])
+    else:
+        authority = manifest.get("authority", {})
+        formalization = manifest.get("formalization", {})
+        if not isinstance(authority, dict) or not isinstance(formalization, dict):
+            raise ValueError("v3 authority and formalization declarations must be tables")
+        if {"required", "enabled", "status"}.intersection(formalization):
+            raise ValueError("v3 formalization flags cannot disable or certify required execution")
+        row.update(acceptance_authority=authority.get("acceptance_authority"),
+                   boundaries=manifest.get("boundary", []),
+                   formalization_scope=formalization.get("scope"),
+                   formalization_gate=formalization.get("gate"),
+                   implementation_paths=formalization.get("implementation_paths"))
+        for lane in ("lean", "quint"):
+            declaration = formalization.get(lane, {})
+            if not isinstance(declaration, dict):
+                raise ValueError(f"v3 {lane} formalization declaration must be a table")
+            if {"required", "enabled", "status"}.intersection(declaration):
+                raise ValueError(f"v3 {lane} flags cannot disable or certify a required formal lane")
+            for key in ("sources", "toolchain", "obligations"):
+                row[f"{lane}_{key}"] = declaration.get(key)
     if origin.get("decision"):
         row["decision"] = origin["decision"]
     if governance:
@@ -71,18 +123,39 @@ def derive(manifest: dict, *, commit: str, blob: str, ci_gate: bool) -> dict:
     if manifest.get("workspace", {}).get("mode", "single") != "single":
         row["workspace"] = manifest["workspace"]["mode"]
         row["claim_namespaces"] = [p["claim_namespace"] for p in manifest.get("program", [])]
+    registry_audit.validate_member_contract(row, registry_version)
     return row
 
 
 def toml_value(value) -> str:
+    if isinstance(value, dict):
+        return "{ " + ", ".join(f"{json.dumps(k)} = {toml_value(v)}" for k, v in value.items()) + " }"
+    if isinstance(value, list) and any(isinstance(item, dict) for item in value):
+        return "[" + ", ".join(toml_value(item) for item in value) + "]"
     return json.dumps(value) if not isinstance(value, bool) else str(value).lower()
 
 
 def render(header: dict, rows: list[dict]) -> str:
-    out = [HEADER.format(**{k: json.dumps(v) for k, v in header.items()})]
+    version = header.get("version", 1)
+    if type(version) is int and version == 1:
+        out = [HEADER.format(**{k: json.dumps(v) for k, v in header.items()})]
+        order = ORDER
+    elif type(version) is int and version == 2:
+        out = [
+            'version = 2\nschema = "estate-registry-v2"\n'
+            f'governance_source_commit = {toml_value(header["governance_source_commit"])}\n'
+            f'required_audit_revisions = {toml_value(dict(sorted(header["required_audit_revisions"].items())))}\n\n'
+            '# Generated by tools/snapshot_registry.py; do not edit rows by hand.\n'
+            '# Each row names its exact source commit, manifest blob and contract version.\n'
+            '# Formalization declarations do not establish executed or current compliance.\n'
+        ]
+        order = ORDER_V2
+    else:
+        raise ValueError("unsupported registry version")
     for row in rows:
+        registry_audit.validate_member_contract(row, version)
         out.append("[[member]]")
-        out += [f"{key} = {toml_value(row[key])}" for key in ORDER if key in row]
+        out += [f"{key} = {toml_value(row[key])}" for key in order if key in row]
         out.append("")
     return "\n".join(out)
 
@@ -91,22 +164,45 @@ def git(repo: Path, *args: str) -> str:
     return subprocess.run(["git", "-C", str(repo), *args], check=True, capture_output=True, text=True).stdout
 
 
-def snapshot(repo: Path, ref: str) -> dict:
+def snapshot(repo: Path, ref: str, *, registry_version: int = 1) -> dict:
     """Derive the row for the checkout `repo` at `ref`."""
     commit = git(repo, "rev-parse", f"{ref}^{{commit}}").strip()
     blob = git(repo, "rev-parse", f"{commit}:ESTATE.toml").strip()
     manifest = tomllib.loads(git(repo, "show", f"{commit}:ESTATE.toml"))
     listing = git(repo, "ls-tree", "--name-only", commit, ".github/workflows/").split()
     workflows = [git(repo, "show", f"{commit}:{path}") for path in listing]
-    return derive(manifest, commit=commit, blob=blob, ci_gate=has_ci_gate(workflows))
+    return derive(manifest, commit=commit, blob=blob, ci_gate=has_ci_gate(workflows),
+                  registry_version=registry_version)
 
 
-def build(sources: Path, ref: str, registry: Path = REGISTRY) -> str:
+def build(sources: Path, ref: str, registry: Path = REGISTRY, *, schema: str | None = None,
+          audit_revisions: dict[str, str] | None = None) -> str:
     current = tomllib.loads(registry.read_text(encoding="utf-8"))
-    rows = [snapshot(sources / member["id"], ref) for member in current["member"]]
+    current_version = registry_audit.registry_version(current)
+    if schema is None:
+        version = current_version
+    else:
+        matching = [v for v, name in registry_audit.REGISTRY_SCHEMAS.items() if name == schema]
+        if not matching:
+            raise ValueError("unknown estate registry schema")
+        version = matching[0]
+    rows = [snapshot(sources / member["id"], ref, registry_version=version)
+            for member in current["member"]]
     governance = next(row for row in rows if row["id"] == GOVERNANCE_ID)
-    header = {"governance_source_commit": governance["source_commit"],
-              "required_audit_revision": current["required_audit_revision"]}
+    header = {"governance_source_commit": governance["source_commit"]}
+    if version == 1:
+        if audit_revisions:
+            raise ValueError("--audit-revision requires explicit estate-registry-v2 selection")
+        if current_version != 1:
+            raise ValueError("registry-v2 cannot be implicitly downgraded")
+        header["required_audit_revision"] = current["required_audit_revision"]
+    else:
+        revisions = ({registry_audit.MANIFEST_TEMPLATES[2]: current["required_audit_revision"]}
+                     if current_version == 1 else dict(current["required_audit_revisions"]))
+        revisions.update(audit_revisions or {})
+        header.update(version=2, required_audit_revisions=revisions)
+    registry_audit.validate({"version": version, "schema": registry_audit.REGISTRY_SCHEMAS[version],
+                             **header, "member": rows})
     return render(header, rows)
 
 
@@ -114,14 +210,31 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--sources", type=Path, default=ROOT.parent, help="directory of sibling checkouts")
     parser.add_argument("--ref", default="origin/main", help="ref to snapshot in each checkout")
+    parser.add_argument("--registry", type=Path, default=REGISTRY,
+                        help="registry snapshot to read and update")
+    parser.add_argument("--schema", choices=list(registry_audit.REGISTRY_SCHEMAS.values()),
+                        help="explicit output registry contract; defaults to the input contract")
+    parser.add_argument("--audit-revision", action="append", default=[], metavar="TEMPLATE=SHA",
+                        help="required auditor revision for a registry-v2 manifest template")
     parser.add_argument("--check", action="store_true", help="report drift, write nothing")
     args = parser.parse_args(argv)
-    expected = build(args.sources, args.ref)
+    revisions = {}
+    for value in args.audit_revision:
+        template, separator, revision = value.partition("=")
+        if not separator or template in revisions:
+            parser.error("--audit-revision needs one unique TEMPLATE=SHA per template")
+        revisions[template] = revision
+    try:
+        expected = build(args.sources, args.ref, args.registry, schema=args.schema,
+                         audit_revisions=revisions)
+    except (AssertionError, ValueError, KeyError, tomllib.TOMLDecodeError, subprocess.CalledProcessError) as error:
+        print(f"estate snapshot failed: {error}", file=sys.stderr)
+        return 1
     if args.check:
-        drift = REGISTRY.read_text(encoding="utf-8") != expected
+        drift = args.registry.read_text(encoding="utf-8") != expected
         print("estate registry is stale" if drift else "estate registry is current")
         return int(drift)
-    REGISTRY.write_text(expected, encoding="utf-8")
+    args.registry.write_text(expected, encoding="utf-8")
     print("estate registry regenerated")
     return 0
 

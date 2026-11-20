@@ -1,5 +1,7 @@
 # Multi-program research repository contract
 
+> **Legacy extension.** V3 repositories use [multi-program contract v2](multi-program-repository-v2.md), which removes the canonical-language requirement. This document retains the recorded v2-root contract for historical replay.
+
 Status: additive extension to estate-repository-v2.
 
 ## Decision

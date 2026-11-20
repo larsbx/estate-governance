@@ -15,6 +15,9 @@ full_on = [
   "pyproject.toml",
   "tests/**",
   "kernel/ci_impact_policy.py",
+  "formal/**",
+  "tools/check_formal.py",
+  "docs/formalization.md",
 ]
 ignore = [
   "README.md",
@@ -54,11 +57,22 @@ id = "impact"
 paths = ["kernel/ci_impact_policy.py"]
 depends_on = []
 
+[[component]]
+id = "formal"
+paths = ["formal/**", "tools/check_formal.py", "docs/formalization.md"]
+depends_on = []
+
 [[suite]]
 id = "governance-policy"
 mode = "always"
 components = ["impact"]
 entrypoints = ["tests/test_ci_impact_policy.py"]
+
+[[suite]]
+id = "formal"
+mode = "always"
+components = ["formal"]
+entrypoints = ["tools/check_formal.py"]
 
 [[suite]]
 id = "layout"

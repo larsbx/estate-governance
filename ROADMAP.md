@@ -1,77 +1,107 @@
 # Estate governance roadmap
 
-Status: original roadmap as of 2026-10-22; CI governance added 2026-11-01. Machine-readable state lives in `policy/estate-registry.toml`
-(generated) and `docs/decisions/`; this file tracks what remains.
+Updated for the owner's 2026-11-20 standards revision.
+[DR-0006](docs/decisions/DR-0006-language-independent-formalization.md) replaces
+mandatory language-role assignments with explicit boundaries and requires Lean
+and Quint formalization. Recorded membership remains in the generated registry;
+this roadmap does not assert that every consumer has migrated.
 
-## Invariants
+## Current invariants
 
-1. Every member passes `kernel/audit_estate_layout.py` at the governance revision it pins; a template change reaches a member only through a reviewed pin bump.
-2. The registry is generated from members' manifests (`tools/snapshot_registry.py`), never hand-edited.
-3. Every `stated` position names an accepted decision record; `proposed` caps the stage at `candidate`.
-4. A repository with a kernel holds acceptance authority over a named boundary (DR-0002); the exceptions are listed in the contract.
-5. Kernel acceptance never yields `proved`; theorem status stays with proof records.
+1. Members are judged under their declared manifest version and exact governance
+   pin. A new central contract does not silently update a consumer.
+2. Implementation languages are unrestricted. Authority belongs to named
+   boundaries, not a language or directory.
+3. V3 requires both real Lean and Quint artifacts, scoped obligations, pinned
+   toolchains, a CI execution gate, and source-bound evidence.
+4. Static audit validity is distinct from completed formal verification.
+5. Registry snapshots are generated from exact sources. A historical snapshot is
+   not a fresh inventory or evidence of present formal compliance.
+6. Membership, stage, authority changes, and required-check migrations remain
+   explicit decisions.
 
-## Done (2026-10-20 to 2026-10-22)
+## Current implementation
 
-- All 20 original members adopted `estate-repository-v2`, pinned to `5ea47de`, with CI fetching the audit directly from this repository at the pinned revision.
-- Positions adopted by the owner (DR-0001); acceptance-authority policy recorded (DR-0002); `finite-dynamics` archived, superseded by `my-math-homelab` (DR-0003).
-- Registry generated from manifests; estate-wide audit checks decision records, the `proposed` cap and archived-name release. `llm-kernel-lab` registered.
+The v3 change supplies the language-independent manifest contract and static
+audit rules, templates, scoped Lean/Quint governance artifacts, and a formal
+execution gate. Its [scope document](docs/formalization.md) identifies the actual
+model claims and correspondence limits. Local and hosted results must be read
+from their exact-source receipts and workflow runs, not inferred from this list.
 
-## Open
+The existing CI impact-policy validator/planner is implemented and remains
+read-only. It does not execute selected consumer tests, replace required status
+contexts, or establish estate-wide selective execution.
 
-### Owner actions
+## Formalization and consumer adoption
 
-| ID | Item | Done when |
+| ID | Obligation | Completion evidence |
 | --- | --- | --- |
-| O1 | GitHub Actions never assigns a runner for the private members (`giant-fibers-finite-fields-thin-groups`, `closure-fiber-of-multiplication-research`, `oracles`): check Settings → Billing → Actions minutes and spending limit. `finite-julia-set-research` (public) has had no runner since 2026-10-20 despite workflows identical to green members: check its Settings → Actions. | every member's estate gate runs green on `main` |
-| O2 | Archive the `larsbx/finite-dynamics` GitHub repository (left open by DR-0003). | repository archived on GitHub |
-| O3 | `llm-kernel-lab` is `proposed`: adopt or amend its position by decision record. | it names an accepted DR |
+| F1 | Adopt v3 in estate-governance itself | Static audit, conformance tests, Lean replay/axiom audit, Quint checks, and source-bound receipt at the reviewed revision |
+| F2 | Inventory current consumer manifests and formal artifacts | Exact-source assessment distinguishing v2 legacy, v3 declarations, executed checks, gaps, and inaccessible sources |
+| F3 | Migrate Lean-Goose | Real scoped Lean proofs and Quint model/gate, honest implementation correspondence, passing local and applicable hosted evidence, reviewed v3 pin change |
+| F4 | Migrate each remaining consumer | Repository-specific boundary declarations, both formal lanes, executable CI gate, actual evidence, and explicit adopted revision |
+| F5 | Strengthen implementation correspondence | Named refinements or equivalent evidence connecting each formal scope to actual runtime code; assumptions and uncovered behavior remain visible |
+| F6 | Generate mixed-version registry adoption records | Version-aware source derivation, no relabeling of historical declarations as execution success, and reviewed exact-source registry updates |
 
-### Governance engineering
+Lean-Goose's existing native Lean differential checker does not discharge F3's
+Lean proof obligation or provide Quint formalization. No consumer migration is
+claimed by the central policy revision.
 
-| ID | Item | Done when |
+The former G3 goal of enforcing language-linked authority promotion and M1 goal
+of automatically flipping non-accepting kernels are **superseded by DR-0006**.
+Do not implement those obsolete goals.
+
+## Governance engineering
+
+| ID | Obligation | Completion evidence |
 | --- | --- | --- |
-| G1 | Registry drift is checked only locally: `snapshot_registry.py --check` needs sibling checkouts. Add a scheduled workflow that checks out every member (private members need a read token) and runs it. | drift fails a scheduled CI run |
-| G2 | No estate CI writes `stage`, and no stage ledger exists; every member stays at `candidate` (or `archived`). | promotion rules and a ledger exist, and the audit verifies them |
-| G3 | DR-0002 is not enforced: the layout audit accepts `acceptance_authority = false` without a named exception. Enforcing it changes the pinned audit, so every member needs a pin bump. | audit rejects an unlisted non-accepting kernel, and all members are re-pinned |
-| G4 | `finite-math-kernels/policy/estate-audits/` (mirrors for `0833929`, `63b5605`, `f5fe90d`) is no longer read by any gate. | mirror removed in `finite-math-kernels` with its provenance regenerated |
-| G5 | The decision template rendered from `larsbx/agent-icm` numbers records `D-NNNN`; the audit uses `DR-nnnn`. | template fixed upstream and re-rendered |
-| G6 | The governance row necessarily snapshots the commit before the change that writes it, so `--check` reports it one commit behind after each merge. | snapshot excludes the governance row from drift, or CI regenerates it post-merge |
+| G1 | Authenticated current estate coverage and registry drift checks | A scheduled runner obtains every in-scope source, reports inaccessible members, and detects drift against exact snapshots |
+| G2 | Stage-promotion rules and a durable stage ledger | Explicit rules, source-bound ledger entries, and audit enforcement; formal success alone does not promote stage |
+| G4 | Review obsolete downstream auditor mirrors | Remove unused copies only in the affected consumer change, preserving provenance and its pinned execution path |
+| G5 | Reconcile decision-template identifiers with the DR-nnnn contract | Upstream template correction and reviewed regenerated consumers |
+| G6 | Resolve the governance self-snapshot lag | A documented generation policy avoids calling the inevitable predecessor snapshot current without evidence |
 
-### Periodic contract evidence audits
+These are remaining obligations, not claims of current operational coverage.
 
-DR-0004 records the adopted policy. Implementation remains open: inventory contracts
-and consumers from the estate registry; route PR and upstream-change checks; add a
-weekly authenticated runner and durable coverage/reproducibility/freshness reports.
-Require negative tests and retain explicit approval gates. Coordinate with G1 and
-PR #16; private-source credentials remain a prerequisite, and this policy does not
-claim the scheduled audit is operational.
+## Periodic contract evidence audits
 
-### Member migrations
+[DR-0004](docs/decisions/DR-0004-periodic-contract-conformance-audits.md) preserves
+the periodic audit policy. Remaining work includes current contract/consumer
+inventory, PR/upstream-change routing, authenticated scheduled execution, and
+durable coverage, reproducibility, and freshness reports. Coordinate with G1.
 
-| ID | Item | Done when |
+Historical runner and private-source access problems were recorded in the earlier
+roadmap. Recheck their current state during the inventory; do not carry an old
+queue state forward as a present result. Missing credentials, inaccessible
+repositories, and unassigned runners remain explicit coverage gaps.
+
+## Impact-aware CI
+
+[DR-0005](docs/decisions/DR-0005-ci-impact-policy-ownership.md) keeps estate-wide
+selection governance here. The [architecture](docs/architecture/ci-impact-governance-v1.md)
+and [issue #21](https://github.com/larsbx/estate-governance/issues/21) track rollout.
+
+| ID | Obligation | Completion evidence |
 | --- | --- | --- |
-| M1 | Non-accepting members switch to `acceptance_authority = true`: `closure-fiber-of-multiplication-research`, `giant-fibers-finite-fields-thin-groups`, `oracles` and `tiling-theory-research` when their first kernel lands; `vizing-domination-conjecture-research` when its five promotion conditions are met. | each flips in its kernel-landing change, and the contract's exception table empties |
-| M2 | Transitional layouts with pending migration steps: arithmetic-bicycle (4), closure-fiber (4), giant-fibers (4), my-math-homelab (4), novelty-lab (3), math-vizops (2), oracles (2), tiling-theory (2), vizing-domination (2). | each declares `layout.status = "canonical"` with no pending steps |
+| G7 | Preserve versioned selector validation and fail-closed coverage | Negative tests reject malformed graphs, stale/unknown source identities, and misleading skip claims; formal inputs cannot silently lose coverage |
+| G8 | Demonstrate exact-source required gates in the SchoolOps pilot | Relevant PR/merge-group execution succeeds and any protected-context migration is reviewed |
+| G9 | Complete Biz-kit interface/dependency coverage | Tenancy, identity, ExtensionV1, Dispatch, and cross-app changes map to accepted source-specific suites |
+| G10 | Connect proof/model/certificate dependencies to invalidation | Changes to Lean, Quint, definitions, inputs, generators, or independent oracles invalidate the correct downstream obligations |
+| G11 | Compare selected execution with exhaustive authenticated coverage | Durable receipts expose selected, skipped, blocked, and inaccessible checks with missed-coverage measurements |
 
-### Impact-aware CI policy (2026-11-01)
+The [SchoolOps pilot](https://github.com/larsbx/school-ops/pull/28) and
+[Biz-kit migration issue](https://github.com/larsbx/biz-kit/issues/245) are consumer
+work, not alternate estate policy authorities. Their present state must be
+inspected before reporting completion.
 
-[DR-0005](docs/decisions/DR-0005-ci-impact-policy-ownership.md) establishes
-this repository as the canonical owner of estate-wide CI selection governance.
-The architecture draft is
-[CI impact governance v1](docs/architecture/ci-impact-governance-v1.md).
-The execution and rollout tracker is [issue #21](https://github.com/larsbx/estate-governance/issues/21).
+## Historical record
 
-| ID | Item | Done when |
-| --- | --- | --- |
-| G7 | Publish a versioned, pinned CI impact-policy contract and validator (implementation PR pending). | Negative conformance tests reject unknown paths, stale sources, malformed graphs and misleading skip receipts; exact-head CI succeeds. |
-| G8 | Demonstrate a source-revision-correct required gate on the SchoolOps pilot without weakening existing acceptance. | PR and merge-group check evidence is green at the exact head; protected status migration reviewed separately. |
-| G9 | Inventory Biz-kit applications, interfaces and CI consumers. | Dependency closure includes tenancy, identity, ExtensionV1, Dispatch and cross-app changes; accepted consumer plan pinned. |
-| G10 | Extend invalidation to research proof and exact certificate dependencies. | PSC/tiling independent reproductions, inputs, definitions and oracles invalidate the correct downstream obligations. |
-| G11 | Measure the selector against exhaustive, authenticated estate coverage. | Durable source receipts disclose skipped, inaccessible and blocked checks; cost and missed-coverage metrics reported without promoting claims. |
+The original members adopted v2 through DR-0001, with the former boundary policy
+in DR-0002 and finite-dynamics archival decision in DR-0003. The committed registry
+retains its recorded identities and stages. Decisions and historical results stay
+available; they are not proof of current source freshness or v3 compliance.
 
-The initial SchoolOps implementation is [PR #28](https://github.com/larsbx/school-ops/pull/28);
-Biz-kit tracks migration in [issue #245](https://github.com/larsbx/biz-kit/issues/245).
-These are consumers. This entry does not modify any pinned governance revision,
-estate member stage, GitHub branch protection, or domain authority. The existing
-private-source and Actions runner blockers (O1, G1, and PR #16) still apply.
+Outstanding ownership/archival and proposed-membership questions should be checked
+against current repository state and decision records during F2. No archival,
+membership change, bulk pin bump, or branch-protection change is performed by this
+roadmap revision.

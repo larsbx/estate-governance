@@ -1,5 +1,7 @@
 # Estate repository template v2
 
+> **Legacy contract.** New adoption uses [estate-repository-v3](estate-repository-template-v3.md) under [DR-0006](../decisions/DR-0006-language-independent-formalization.md). The language and automatic kernel-authority rules below describe v2 only. They remain available for pinned historical replay; the generated table is a historical registry projection, not v3 formalization evidence.
+
 Status: reusable estate architecture contract. Canonical source: `larsbx/estate-governance`.
 Supersedes: `estate-repository-template-v1.md`.
 

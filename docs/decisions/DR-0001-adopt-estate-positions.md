@@ -1,5 +1,7 @@
 # DR-0001 — The owner adopts the proposed estate position of every estate repository
 
+> **V3 supersession (2026-11-20).** [DR-0006](DR-0006-language-independent-formalization.md) removes the requirement for a new estate decision solely to change an implementation-language assignment in a v3 adopter. The class, layer, band, and INV position decisions below remain in force. The recorded language column is historical, not a v3 implementation mandate.
+
 - **Status:** accepted
 - **Date:** 2026-10-21
 - **Decides for:** the estate (all 20 repositories below)

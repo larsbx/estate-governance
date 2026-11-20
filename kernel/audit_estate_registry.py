@@ -30,6 +30,18 @@ ACCEPTED = re.compile(r"^- \*\*Status:\*\* accepted\s*$", re.M)
 STAGES = ("candidate", "seeded", "incubating", "stable", "frozen", "archived")
 BANDS = ("EXPLORE", "STANDARD", "HARDENED", "LAW")
 CLASSES = {"kernel", "substrate", "platform", "app", "research", "corpus", "meta"}
+REGISTRY_SCHEMAS = {1: "estate-registry-v1", 2: "estate-registry-v2"}
+MANIFEST_TEMPLATES = {2: "estate-repository-v2", 3: "estate-repository-v3"}
+BOUNDARY_ID = re.compile(r"[a-z0-9][a-z0-9._-]*")
+FORMAL_TOOLCHAINS = {
+    "lean": r"leanprover/lean4:(?:v\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?|nightly-\d{4}-\d{2}-\d{2})",
+    "quint": r"@informalsystems/quint@\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?",
+}
+FORMAL_FIELDS = (
+    "formalization_scope", "formalization_gate", "implementation_paths",
+    "lean_sources", "lean_toolchain", "lean_obligations",
+    "quint_sources", "quint_toolchain", "quint_obligations",
+)
 
 
 def fail(message: str) -> None:
@@ -44,6 +56,99 @@ def require(condition: object, message: str) -> None:
 def load(path: Path = REGISTRY) -> dict:
     require(path.is_file(), f"missing estate registry: {path}")
     return tomllib.loads(path.read_text(encoding="utf-8"))
+
+
+def registry_version(data: dict) -> int:
+    version = data.get("version")
+    require(type(version) is int and version in REGISTRY_SCHEMAS,
+            "registry version must be 1 or 2")
+    require(data.get("schema") == REGISTRY_SCHEMAS[version], "unknown estate registry schema")
+    return version
+
+
+def _declared_path(value: object, label: str) -> None:
+    require(isinstance(value, str) and value and not value.startswith("/")
+            and "\\" not in value and not any(c in value for c in "\x00\r\n")
+            and all(part not in ("", ".", "..") for part in value.split("/")),
+            f"{label} must be a relative declared source path")
+
+
+def _declaration_list(value: object, label: str) -> list[str]:
+    require(isinstance(value, list) and value
+            and all(isinstance(item, str) and item and item.strip() == item for item in value),
+            f"{label} must be a nonempty string list")
+    require(len(value) == len(set(value)), f"{label} must not contain duplicates")
+    return value
+
+
+def validate_member_contract(member: dict, version: int) -> tuple[int, str]:
+    """Validate declarations only; neither registry version verifies execution evidence."""
+    member_id = member.get("id", "<unknown>")
+    if version == 1:
+        manifest_version = member.get("manifest_version", 2)
+        template = member.get("template", MANIFEST_TEMPLATES[2])
+        require(type(manifest_version) is int and manifest_version == 2
+                and template == MANIFEST_TEMPLATES[2],
+                f"{member_id}: v3 manifests require estate-registry-v2")
+        require("formalization_status" not in member,
+                f"{member_id}: formalization declarations require estate-registry-v2")
+    else:
+        manifest_version = member.get("manifest_version")
+        require(type(manifest_version) is int and manifest_version in MANIFEST_TEMPLATES,
+                f"{member_id}: unsupported manifest_version")
+        template = member.get("template")
+        require(template == MANIFEST_TEMPLATES[manifest_version],
+                f"{member_id}: manifest version and template disagree")
+        require(member.get("formalization_status") == "not_evaluated",
+                f"{member_id}: registry declarations must mark formalization not_evaluated")
+
+    require(type(member.get("acceptance_authority")) is bool,
+            f"{member_id}: acceptance_authority must be Boolean")
+    if manifest_version == 2:
+        language = member.get("canonical_language")
+        require(isinstance(language, str) and language,
+                f"{member_id}: canonical_language is required for historical v2 manifests")
+        require(not any(field in member for field in FORMAL_FIELDS) and "boundaries" not in member,
+                f"{member_id}: v2 rows cannot claim v3 boundary or formal declarations")
+        return manifest_version, template
+
+    require("canonical_language" not in member,
+            f"{member_id}: v3 authority must not be derived from canonical_language")
+    boundaries = member.get("boundaries")
+    require(isinstance(boundaries, list), f"{member_id}: v3 boundaries must be a list")
+    require(bool(boundaries) == member["acceptance_authority"],
+            f"{member_id}: named boundary presence must agree with acceptance_authority")
+    identifiers = set()
+    for boundary in boundaries:
+        require(isinstance(boundary, dict) and set(boundary) == {"id", "implementation", "contract"},
+                f"{member_id}: malformed boundary declaration")
+        identifier = boundary["id"]
+        require(isinstance(identifier, str) and BOUNDARY_ID.fullmatch(identifier),
+                f"{member_id}: boundary id must be lowercase and stable")
+        require(identifier not in identifiers, f"{member_id}: duplicate boundary id")
+        identifiers.add(identifier)
+        _declared_path(boundary["contract"], f"{member_id}: boundary {identifier}.contract")
+        for path in _declaration_list(boundary["implementation"],
+                                      f"{member_id}: boundary {identifier}.implementation"):
+            _declared_path(path, f"{member_id}: boundary {identifier}.implementation")
+    for field in ("formalization_scope", "formalization_gate"):
+        _declared_path(member.get(field), f"{member_id}: {field}")
+    for field in ("implementation_paths", "lean_sources", "quint_sources"):
+        paths = _declaration_list(member.get(field), f"{member_id}: {field}")
+        for path in paths:
+            _declared_path(path, f"{member_id}: {field}")
+            if field in ("lean_sources", "quint_sources"):
+                suffix = ".lean" if field == "lean_sources" else ".qnt"
+                require(Path(path).suffix == suffix, f"{member_id}: {field} must name {suffix} sources")
+    for lane in ("lean", "quint"):
+        toolchain = member.get(f"{lane}_toolchain")
+        require(isinstance(toolchain, str) and re.fullmatch(FORMAL_TOOLCHAINS[lane], toolchain),
+                f"{member_id}: {lane}_toolchain must declare an exact version")
+        obligations = _declaration_list(member.get(f"{lane}_obligations"),
+                                         f"{member_id}: {lane}_obligations")
+        require(all(re.fullmatch(r"[A-Za-z_][A-Za-z0-9_'.]*", name) for name in obligations),
+                f"{member_id}: {lane}_obligations must name declarations or properties")
+    return manifest_version, template
 
 
 def accepted_decisions(directory: Path = DECISIONS) -> set[str]:
@@ -102,19 +207,30 @@ def _dependency_cycle(graph: dict[str, list[str]]) -> list[str] | None:
 
 def validate(data: dict, decisions: set[str] | None = None) -> dict:
     decisions = accepted_decisions() if decisions is None else decisions
-    require(data.get("version") == 1, "registry version must be 1")
-    require(data.get("schema") == "estate-registry-v1", "unknown estate registry schema")
+    version = registry_version(data)
 
     governance_source_commit = data.get("governance_source_commit", "")
-    required_audit_revision = data.get("required_audit_revision", "")
     require(
         isinstance(governance_source_commit, str) and REV.fullmatch(governance_source_commit),
         "governance_source_commit must be a 40-hex commit",
     )
-    require(
-        isinstance(required_audit_revision, str) and REV.fullmatch(required_audit_revision),
-        "required_audit_revision must be a 40-hex commit",
-    )
+    if version == 1:
+        required_audit_revision = data.get("required_audit_revision", "")
+        require(isinstance(required_audit_revision, str) and REV.fullmatch(required_audit_revision),
+                "required_audit_revision must be a 40-hex commit")
+        require("required_audit_revisions" not in data,
+                "per-template audit revisions require estate-registry-v2")
+        required_audit_revisions = {MANIFEST_TEMPLATES[2]: required_audit_revision}
+    else:
+        require("required_audit_revision" not in data,
+                "estate-registry-v2 requires per-template audit revisions")
+        required_audit_revisions = data.get("required_audit_revisions")
+        require(isinstance(required_audit_revisions, dict) and required_audit_revisions,
+                "required_audit_revisions must be a nonempty per-template table")
+        for template, revision in required_audit_revisions.items():
+            require(template in MANIFEST_TEMPLATES.values(), "unknown auditor manifest template")
+            require(isinstance(revision, str) and REV.fullmatch(revision),
+                    f"{template}: required audit revision must be 40-hex")
 
     members = data.get("member")
     require(isinstance(members, list) and members, "registry needs at least one [[member]]")
@@ -148,20 +264,14 @@ def validate(data: dict, decisions: set[str] | None = None) -> dict:
         layer = member.get("layer")
         band = member.get("band")
         stage = member.get("stage")
-        canonical_language = member.get("canonical_language")
-        acceptance_authority = member.get("acceptance_authority")
         require(repo_class in CLASSES, f"{member_id}: unknown class {repo_class!r}")
         require(type(layer) is int, f"{member_id}: layer must be an integer")
         require(band in BANDS, f"{member_id}: unknown band {band!r}")
         require(stage in STAGES, f"{member_id}: unknown stage {stage!r}")
-        require(
-            isinstance(canonical_language, str) and canonical_language,
-            f"{member_id}: canonical_language is required",
-        )
-        require(
-            type(acceptance_authority) is bool,
-            f"{member_id}: acceptance_authority must be Boolean",
-        )
+        manifest_version, template = validate_member_contract(member, version)
+        require(template in required_audit_revisions,
+                f"{member_id}: no required audit revision for {template}")
+        required_audit_revision = required_audit_revisions[template]
         require(member.get("ci_gate") is True, f"{member_id}: estate CI gate is not recorded as active")
 
         decided_by = member.get("decided_by")
@@ -210,6 +320,8 @@ def validate(data: dict, decisions: set[str] | None = None) -> dict:
 
         by_id[member_id] = {
             **member,
+            "manifest_version": manifest_version,
+            "template": template,
             "deps": deps,
             "conforms": conforms,
             "exports": exports,
@@ -251,10 +363,9 @@ def validate(data: dict, decisions: set[str] | None = None) -> dict:
     cycle = _dependency_cycle(graph)
     require(cycle is None, "code dependency cycle: " + " -> ".join(cycle or []))
 
-    return {
+    summary = {
         "members": len(by_id),
         "governance_source_commit": governance_source_commit,
-        "required_audit_revision": required_audit_revision,
         "code_edges": sum(len(v) for v in graph.values()),
         "conformance_edges": sum(len(m["conforms"]) for m in by_id.values()),
         "exports": len(export_rows),
@@ -264,6 +375,16 @@ def validate(data: dict, decisions: set[str] | None = None) -> dict:
         "nonaccepting_members": sum(not bool(m["acceptance_authority"]) for m in by_id.values()),
         "stages": {stage: sum(m["stage"] == stage for m in by_id.values()) for stage in STAGES},
     }
+    if version == 1:
+        summary["required_audit_revision"] = required_audit_revisions[MANIFEST_TEMPLATES[2]]
+    else:
+        summary["required_audit_revisions"] = required_audit_revisions
+        summary["manifest_versions"] = {
+            str(v): sum(m["manifest_version"] == v for m in by_id.values())
+            for v in MANIFEST_TEMPLATES
+        }
+        summary["formalization_evidence"] = "not_evaluated"
+    return summary
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -286,6 +407,8 @@ def main(argv: list[str] | None = None) -> int:
             f"{summary['members']} members, "
             f"{summary['code_edges']} code edges, "
             f"{summary['conformance_edges']} conformance edges"
+            + ("; declarations only, formalization not evaluated"
+               if summary.get("formalization_evidence") == "not_evaluated" else "")
         )
     return 0
 
