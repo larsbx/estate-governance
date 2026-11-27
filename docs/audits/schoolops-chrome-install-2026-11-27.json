@@ -1,0 +1,1408 @@
+{
+  "format": "schoolops-scoped-audit-2026-11-27",
+  "format_status": "Advisory observation record; not a normative estate-wide receipt schema or an authorization.",
+  "compiled_at_utc": "2026-11-27T15:54:30Z",
+  "observation_date_client": "2026-11-27",
+  "client_timezone": "America/New_York",
+  "scope": {
+    "repository": "larsbx/school-ops",
+    "topics": [
+      "Chrome installation and self-hosted release",
+      "G8 impact-aware CI pilot"
+    ],
+    "estate_wide_coverage": false,
+    "source_repository_mutations": false,
+    "deployment_acceptance": "not_established"
+  },
+  "governance_context": {
+    "repository": "larsbx/estate-governance",
+    "observed_main_commit": "b851c92fceb88c8e6f4604664cf975b567ade161",
+    "contract": "estate-repository-v3",
+    "historical_registry_path": "policy/estate-registry.toml",
+    "historical_registry_schema": "estate-registry-v1",
+    "historical_registry_member_count": 21,
+    "historical_registry_sha256": "e555d1abfd27423797fe3f1a813e53e8fe313e6a1fc1a751ceb595201f7d5054",
+    "schoolops_registered_member": false,
+    "schoolops_root_estate_manifest_present": false,
+    "membership_or_stage_promotion": false,
+    "v3_adoption_established": false,
+    "G8": "partial_remains_open",
+    "F2_G1_estate_wide_inventory_completed": false
+  },
+  "chrome_release_observations": {
+    "schema_version": 1,
+    "observed_at": "2026-11-27T15:48:41Z",
+    "repository": "larsbx/school-ops",
+    "audit_mode": "Read-only SchoolOps source and connected GitHub observations. Estate audit publication is separate; no SchoolOps code, policy, workflow or deployment changes were made.",
+    "main": {
+      "sha": "09ba1b0a963413d057c2fcaa51861e151f565c74",
+      "commit_url": "https://github.com/larsbx/school-ops/commit/09ba1b0a963413d057c2fcaa51861e151f565c74",
+      "committed_at": "2026-11-27T09:25:13Z",
+      "tree": "eb85cee239aef8c080dcc858760d27bbc4bb1888",
+      "guard_tree": "0f89949e7610a6556a872d84922ae5982cfdd6bb",
+      "guard_config_placeholder": "approved-site.invalid"
+    },
+    "pull_requests": [
+      {
+        "number": 46,
+        "url": "https://github.com/larsbx/school-ops/pull/46",
+        "title": "Smooth Chrome extension and enterprise policy setup",
+        "state": "closed",
+        "merged": true,
+        "draft": false,
+        "head_sha": "b53542506919b4122d8b79d1f31dabcc2016ddd8",
+        "merge_commit_sha": "74238738bde087e1da42c2859a3cf6610969b217",
+        "created_at": "2026-11-11T00:28:49Z",
+        "updated_at": "2026-11-11T01:54:31Z",
+        "merged_at": "2026-11-11T01:53:37Z"
+      },
+      {
+        "number": 48,
+        "url": "https://github.com/larsbx/school-ops/pull/48",
+        "title": "Reproducible self-hosted CRX release handoff with Lean and Quint verification",
+        "state": "closed",
+        "merged": true,
+        "draft": false,
+        "head_sha": "547b118aac9f366fc8366c9ac83579a21cb84d57",
+        "merge_commit_sha": "7b359a2f3dc2f8c7d9d9b31667e25d0fd9fe57e8",
+        "created_at": "2026-11-11T09:22:34Z",
+        "updated_at": "2026-11-11T15:25:09Z",
+        "merged_at": "2026-11-11T15:25:08Z"
+      },
+      {
+        "number": 53,
+        "url": "https://github.com/larsbx/school-ops/pull/53",
+        "title": "Shorten YouTube Guard guides and move development details to .llm.txt",
+        "state": "open",
+        "merged": false,
+        "draft": false,
+        "head_sha": "f07451cee7e8a9b9bb6435fefbe63089af4cded4",
+        "merge_commit_sha": null,
+        "created_at": "2026-11-12T20:45:52Z",
+        "updated_at": "2026-11-12T20:47:27Z",
+        "merged_at": null
+      }
+    ],
+    "source_identity": [
+      {
+        "left": "ac04819ca07f4f63ee1657c2beaa714c8a61dd08",
+        "right": "09ba1b0a963413d057c2fcaa51861e151f565c74",
+        "scope": "entire repository tree",
+        "git_tree": "eb85cee239aef8c080dcc858760d27bbc4bb1888",
+        "verified_by": "git rev-parse <revision>^{tree}; exact equality",
+        "meaning": "Nov 27 release verification is recorded at its actual PR head; its complete source tree is identical to current main. This is not a new main workflow run."
+      },
+      {
+        "left": "547b118aac9f366fc8366c9ac83579a21cb84d57",
+        "right": "09ba1b0a963413d057c2fcaa51861e151f565c74",
+        "scope": "tools/browser/site_scoped_youtube_guard",
+        "git_tree": "0f89949e7610a6556a872d84922ae5982cfdd6bb",
+        "verified_by": "git rev-parse <revision>:tools/browser/site_scoped_youtube_guard; exact equality",
+        "meaning": "The current Chrome component is the final merged PR #48 code. Repository-wide state has changed."
+      },
+      {
+        "left": "f07451cee7e8a9b9bb6435fefbe63089af4cded4",
+        "right": "09ba1b0a963413d057c2fcaa51861e151f565c74",
+        "scope": "tools/browser/site_scoped_youtube_guard",
+        "left_git_tree": "8d2fa237f6517b6fac8951b6f4d1e5d839a3c9aa",
+        "right_git_tree": "0f89949e7610a6556a872d84922ae5982cfdd6bb",
+        "differences": "Only six documentation files (.md/.txt), including added .llm.txt; executable component files identical. The browser workflow blob is identical.",
+        "meaning": "The latest browser run is on still-open PR #53. It supports identical executable guard code but is not current-main CI and does not mean those docs were merged."
+      }
+    ],
+    "source_blobs": [
+      {
+        "path": "tools/browser/site_scoped_youtube_guard/README.md",
+        "git_blob": "72e68d7b19f4f6943cb46c2282033c4423c7b7d4",
+        "sha256": "3a93b8558ceced97f7dba285100e80f461cb7a89cd61ef9fcd87d960054f2357",
+        "revision": "09ba1b0a963413d057c2fcaa51861e151f565c74",
+        "url": "https://github.com/larsbx/school-ops/blob/09ba1b0a963413d057c2fcaa51861e151f565c74/tools/browser/site_scoped_youtube_guard/README.md"
+      },
+      {
+        "path": "tools/browser/site_scoped_youtube_guard/RELEASE.md",
+        "git_blob": "96a5ba27834e8aec71843cd9b0d481ed76740e14",
+        "sha256": "a99e1ce81ac752e22e62017562a6b6b553ce9d1e568ced1eb78131192c9173cf",
+        "revision": "09ba1b0a963413d057c2fcaa51861e151f565c74",
+        "url": "https://github.com/larsbx/school-ops/blob/09ba1b0a963413d057c2fcaa51861e151f565c74/tools/browser/site_scoped_youtube_guard/RELEASE.md"
+      },
+      {
+        "path": "tools/browser/site_scoped_youtube_guard/release_core.py",
+        "git_blob": "27df130dddb74e85943c46a2eb3c93ed4d3b2967",
+        "sha256": "890f3a68c5259cfd8573993f7e7a13697bf3ed6f61096bcafdb3c4bf59c3067c",
+        "revision": "09ba1b0a963413d057c2fcaa51861e151f565c74",
+        "url": "https://github.com/larsbx/school-ops/blob/09ba1b0a963413d057c2fcaa51861e151f565c74/tools/browser/site_scoped_youtube_guard/release_core.py"
+      },
+      {
+        "path": "tools/browser/site_scoped_youtube_guard/installer_core.py",
+        "git_blob": "25087e6163faa3bec8733da9ab004b133386a3d3",
+        "sha256": "3f0d927bca24fdb23ca0965a15c1ffdbf8f53346d6d019be182689d4aabf9e88",
+        "revision": "09ba1b0a963413d057c2fcaa51861e151f565c74",
+        "url": "https://github.com/larsbx/school-ops/blob/09ba1b0a963413d057c2fcaa51861e151f565c74/tools/browser/site_scoped_youtube_guard/installer_core.py"
+      },
+      {
+        "path": "tools/browser/site_scoped_youtube_guard/platform_policy.py",
+        "git_blob": "2b27e6451914c991fd6029e1170e346eee84dd12",
+        "sha256": "db61e800c7e3942e7ceb71724c84544794d6b44596736f42b15f00acbc0f649c",
+        "revision": "09ba1b0a963413d057c2fcaa51861e151f565c74",
+        "url": "https://github.com/larsbx/school-ops/blob/09ba1b0a963413d057c2fcaa51861e151f565c74/tools/browser/site_scoped_youtube_guard/platform_policy.py"
+      },
+      {
+        "path": "tools/browser/site_scoped_youtube_guard/config.json",
+        "git_blob": "f5fe3d21eb9ede2ba6e5b6f22c16636469a862cb",
+        "sha256": "7804302bfcd57f0ee59618732e333c464602cc54bb52e42869de8aef22ea30fd",
+        "revision": "09ba1b0a963413d057c2fcaa51861e151f565c74",
+        "url": "https://github.com/larsbx/school-ops/blob/09ba1b0a963413d057c2fcaa51861e151f565c74/tools/browser/site_scoped_youtube_guard/config.json"
+      },
+      {
+        "path": ".github/workflows/youtube-guard-native.yml",
+        "git_blob": "ee4028b33f8d97626f483e844d78146e6dfa3a50",
+        "sha256": "6c0331f6e642eca42cb553455af3586ac861cf1aa8f4b9fe4c954fbb781f1050",
+        "revision": "09ba1b0a963413d057c2fcaa51861e151f565c74",
+        "url": "https://github.com/larsbx/school-ops/blob/09ba1b0a963413d057c2fcaa51861e151f565c74/.github/workflows/youtube-guard-native.yml"
+      },
+      {
+        "path": ".github/workflows/youtube-guard-release.yml",
+        "git_blob": "3714147d3d4e0699470499dfb50ba66b94398a1a",
+        "sha256": "c584f0814ca9d8b6faf02aab677e52904cb6a71341bc1742fdf35d4bd9174396",
+        "revision": "09ba1b0a963413d057c2fcaa51861e151f565c74",
+        "url": "https://github.com/larsbx/school-ops/blob/09ba1b0a963413d057c2fcaa51861e151f565c74/.github/workflows/youtube-guard-release.yml"
+      },
+      {
+        "path": ".github/workflows/youtube-guard-browser.yml",
+        "git_blob": "97f95b0a1e67c63dbd6c5f9ee4da37cc7130bd25",
+        "sha256": "43a9fba43ad78adad499aa0f5bea4d6541b20bb6ff0c3d108a5795e924ec9c55",
+        "revision": "09ba1b0a963413d057c2fcaa51861e151f565c74",
+        "url": "https://github.com/larsbx/school-ops/blob/09ba1b0a963413d057c2fcaa51861e151f565c74/.github/workflows/youtube-guard-browser.yml"
+      }
+    ],
+    "ci_snapshots": [
+      {
+        "id": 42933442712,
+        "url": "https://github.com/larsbx/school-ops/actions/runs/42933442712",
+        "name": "SchoolOps YouTube Guard native wizard bundles",
+        "workflow_path": ".github/workflows/youtube-guard-native.yml",
+        "head_sha": "b53542506919b4122d8b79d1f31dabcc2016ddd8",
+        "event": "pull_request",
+        "attempt": 1,
+        "status": "completed",
+        "conclusion": "success",
+        "created_at": "2026-11-11T00:42:22Z",
+        "updated_at": "2026-11-11T01:14:05Z",
+        "jobs": null
+      },
+      {
+        "id": 42933442665,
+        "url": "https://github.com/larsbx/school-ops/actions/runs/42933442665",
+        "name": "YouTube guard browser acceptance",
+        "workflow_path": ".github/workflows/youtube-guard-browser.yml",
+        "head_sha": "b53542506919b4122d8b79d1f31dabcc2016ddd8",
+        "event": "pull_request",
+        "attempt": 1,
+        "status": "completed",
+        "conclusion": "success",
+        "created_at": "2026-11-11T00:42:22Z",
+        "updated_at": "2026-11-11T00:56:45Z",
+        "jobs": null
+      },
+      {
+        "id": 42933442741,
+        "url": "https://github.com/larsbx/school-ops/actions/runs/42933442741",
+        "name": "Exercise bank",
+        "workflow_path": ".github/workflows/exercise-bank.yml",
+        "head_sha": "b53542506919b4122d8b79d1f31dabcc2016ddd8",
+        "event": "pull_request",
+        "attempt": 1,
+        "status": "completed",
+        "conclusion": "success",
+        "created_at": "2026-11-11T00:42:22Z",
+        "updated_at": "2026-11-11T01:21:35Z",
+        "jobs": null
+      },
+      {
+        "id": 42933442744,
+        "url": "https://github.com/larsbx/school-ops/actions/runs/42933442744",
+        "name": "Source archiver",
+        "workflow_path": ".github/workflows/archive-source.yml",
+        "head_sha": "b53542506919b4122d8b79d1f31dabcc2016ddd8",
+        "event": "pull_request",
+        "attempt": 1,
+        "status": "completed",
+        "conclusion": "success",
+        "created_at": "2026-11-11T00:42:22Z",
+        "updated_at": "2026-11-11T01:22:39Z",
+        "jobs": null
+      },
+      {
+        "id": 43042241458,
+        "url": "https://github.com/larsbx/school-ops/actions/runs/43042241458",
+        "name": "SchoolOps self-hosted CRX release verification",
+        "workflow_path": ".github/workflows/youtube-guard-release.yml",
+        "head_sha": "547b118aac9f366fc8366c9ac83579a21cb84d57",
+        "event": "pull_request",
+        "attempt": 1,
+        "status": "completed",
+        "conclusion": "success",
+        "created_at": "2026-11-11T14:49:40Z",
+        "updated_at": "2026-11-11T15:12:13Z",
+        "jobs": [
+          {
+            "id": 130596804073,
+            "url": "https://github.com/larsbx/school-ops/actions/runs/43042241458/job/130596804073",
+            "name": "Disposable CRX and HTTPS acceptance (ubuntu-24.04)",
+            "status": "completed",
+            "conclusion": "success",
+            "failed_or_cancelled_steps": []
+          },
+          {
+            "id": 130596804525,
+            "url": "https://github.com/larsbx/school-ops/actions/runs/43042241458/job/130596804525",
+            "name": "Lean and Quint release verification",
+            "status": "completed",
+            "conclusion": "success",
+            "failed_or_cancelled_steps": []
+          },
+          {
+            "id": 130596804657,
+            "url": "https://github.com/larsbx/school-ops/actions/runs/43042241458/job/130596804657",
+            "name": "Disposable CRX and HTTPS acceptance (windows-2025)",
+            "status": "completed",
+            "conclusion": "success",
+            "failed_or_cancelled_steps": []
+          },
+          {
+            "id": 130596804852,
+            "url": "https://github.com/larsbx/school-ops/actions/runs/43042241458/job/130596804852",
+            "name": "Disposable CRX and HTTPS acceptance (macos-15)",
+            "status": "completed",
+            "conclusion": "success",
+            "failed_or_cancelled_steps": []
+          }
+        ]
+      },
+      {
+        "id": 43042241698,
+        "url": "https://github.com/larsbx/school-ops/actions/runs/43042241698",
+        "name": "SchoolOps YouTube Guard native wizard bundles",
+        "workflow_path": ".github/workflows/youtube-guard-native.yml",
+        "head_sha": "547b118aac9f366fc8366c9ac83579a21cb84d57",
+        "event": "pull_request",
+        "attempt": 1,
+        "status": "completed",
+        "conclusion": "failure",
+        "created_at": "2026-11-11T14:49:40Z",
+        "updated_at": "2026-11-11T15:19:48Z",
+        "jobs": [
+          {
+            "id": 130596804971,
+            "url": "https://github.com/larsbx/school-ops/actions/runs/43042241698/job/130596804971",
+            "name": "Unsigned native wizard (ubuntu-24.04)",
+            "status": "completed",
+            "conclusion": "failure",
+            "failed_or_cancelled_steps": [
+              "Install Linux virtual-display dependencies"
+            ]
+          },
+          {
+            "id": 130596805475,
+            "url": "https://github.com/larsbx/school-ops/actions/runs/43042241698/job/130596805475",
+            "name": "Unsigned native wizard (windows-2025)",
+            "status": "completed",
+            "conclusion": "success",
+            "failed_or_cancelled_steps": []
+          },
+          {
+            "id": 130596805489,
+            "url": "https://github.com/larsbx/school-ops/actions/runs/43042241698/job/130596805489",
+            "name": "Unsigned native wizard (macos-15)",
+            "status": "completed",
+            "conclusion": "success",
+            "failed_or_cancelled_steps": []
+          }
+        ]
+      },
+      {
+        "id": 43042241550,
+        "url": "https://github.com/larsbx/school-ops/actions/runs/43042241550",
+        "name": "YouTube guard browser acceptance",
+        "workflow_path": ".github/workflows/youtube-guard-browser.yml",
+        "head_sha": "547b118aac9f366fc8366c9ac83579a21cb84d57",
+        "event": "pull_request",
+        "attempt": 1,
+        "status": "completed",
+        "conclusion": "failure",
+        "created_at": "2026-11-11T14:49:40Z",
+        "updated_at": "2026-11-11T15:11:38Z",
+        "jobs": [
+          {
+            "id": 130596806950,
+            "url": "https://github.com/larsbx/school-ops/actions/runs/43042241550/job/130596806950",
+            "name": "chrome-fixtures",
+            "status": "completed",
+            "conclusion": "failure",
+            "failed_or_cancelled_steps": [
+              "Run npx playwright-core install --with-deps chromium"
+            ]
+          }
+        ]
+      },
+      {
+        "id": 43042241389,
+        "url": "https://github.com/larsbx/school-ops/actions/runs/43042241389",
+        "name": "Exercise bank",
+        "workflow_path": ".github/workflows/exercise-bank.yml",
+        "head_sha": "547b118aac9f366fc8366c9ac83579a21cb84d57",
+        "event": "pull_request",
+        "attempt": 1,
+        "status": "completed",
+        "conclusion": "failure",
+        "created_at": "2026-11-11T14:49:40Z",
+        "updated_at": "2026-11-11T15:19:25Z",
+        "jobs": [
+          {
+            "id": 130596805125,
+            "url": "https://github.com/larsbx/school-ops/actions/runs/43042241389/job/130596805125",
+            "name": "Impact plan",
+            "status": "completed",
+            "conclusion": "failure",
+            "failed_or_cancelled_steps": [
+              "Self-test the selection policy"
+            ]
+          },
+          {
+            "id": 130612381506,
+            "url": "https://github.com/larsbx/school-ops/actions/runs/43042241389/job/130612381506",
+            "name": "Exercise bank required gate",
+            "status": "completed",
+            "conclusion": "failure",
+            "failed_or_cancelled_steps": [
+              "Require successful selection and all selected tests"
+            ]
+          },
+          {
+            "id": 130612382652,
+            "url": "https://github.com/larsbx/school-ops/actions/runs/43042241389/job/130612382652",
+            "name": "validate",
+            "status": "completed",
+            "conclusion": "skipped"
+          }
+        ]
+      },
+      {
+        "id": 43048170207,
+        "url": "https://github.com/larsbx/school-ops/actions/runs/43048170207",
+        "name": "SchoolOps YouTube Guard native wizard bundles",
+        "workflow_path": ".github/workflows/youtube-guard-native.yml",
+        "head_sha": "7b359a2f3dc2f8c7d9d9b31667e25d0fd9fe57e8",
+        "event": "push",
+        "attempt": 1,
+        "status": "completed",
+        "conclusion": "failure",
+        "created_at": "2026-11-11T15:25:13Z",
+        "updated_at": "2026-11-11T15:35:49Z",
+        "jobs": [
+          {
+            "id": 130617662908,
+            "url": "https://github.com/larsbx/school-ops/actions/runs/43048170207/job/130617662908",
+            "name": "Unsigned native wizard (windows-2025)",
+            "status": "completed",
+            "conclusion": "success",
+            "failed_or_cancelled_steps": []
+          },
+          {
+            "id": 130617663435,
+            "url": "https://github.com/larsbx/school-ops/actions/runs/43048170207/job/130617663435",
+            "name": "Unsigned native wizard (ubuntu-24.04)",
+            "status": "completed",
+            "conclusion": "failure",
+            "failed_or_cancelled_steps": [
+              "Install Linux virtual-display dependencies"
+            ]
+          },
+          {
+            "id": 130617663507,
+            "url": "https://github.com/larsbx/school-ops/actions/runs/43048170207/job/130617663507",
+            "name": "Unsigned native wizard (macos-15)",
+            "status": "completed",
+            "conclusion": "success",
+            "failed_or_cancelled_steps": []
+          }
+        ]
+      },
+      {
+        "id": 43048169768,
+        "url": "https://github.com/larsbx/school-ops/actions/runs/43048169768",
+        "name": "SchoolOps self-hosted CRX release verification",
+        "workflow_path": ".github/workflows/youtube-guard-release.yml",
+        "head_sha": "7b359a2f3dc2f8c7d9d9b31667e25d0fd9fe57e8",
+        "event": "push",
+        "attempt": 1,
+        "status": "completed",
+        "conclusion": "failure",
+        "created_at": "2026-11-11T15:25:12Z",
+        "updated_at": "2026-11-11T15:45:42Z",
+        "jobs": [
+          {
+            "id": 130617661384,
+            "url": "https://github.com/larsbx/school-ops/actions/runs/43048169768/job/130617661384",
+            "name": "Lean and Quint release verification",
+            "status": "completed",
+            "conclusion": "success",
+            "failed_or_cancelled_steps": []
+          },
+          {
+            "id": 130617661702,
+            "url": "https://github.com/larsbx/school-ops/actions/runs/43048169768/job/130617661702",
+            "name": "Disposable CRX and HTTPS acceptance (ubuntu-24.04)",
+            "status": "completed",
+            "conclusion": "success",
+            "failed_or_cancelled_steps": []
+          },
+          {
+            "id": 130617661945,
+            "url": "https://github.com/larsbx/school-ops/actions/runs/43048169768/job/130617661945",
+            "name": "Disposable CRX and HTTPS acceptance (windows-2025)",
+            "status": "completed",
+            "conclusion": "success",
+            "failed_or_cancelled_steps": []
+          },
+          {
+            "id": 130617662701,
+            "url": "https://github.com/larsbx/school-ops/actions/runs/43048169768/job/130617662701",
+            "name": "Disposable CRX and HTTPS acceptance (macos-15)",
+            "status": "completed",
+            "conclusion": "cancelled"
+          }
+        ]
+      },
+      {
+        "id": 43303535201,
+        "url": "https://github.com/larsbx/school-ops/actions/runs/43303535201",
+        "name": "YouTube guard browser acceptance",
+        "workflow_path": ".github/workflows/youtube-guard-browser.yml",
+        "head_sha": "f07451cee7e8a9b9bb6435fefbe63089af4cded4",
+        "event": "pull_request",
+        "attempt": 1,
+        "status": "completed",
+        "conclusion": "success",
+        "created_at": "2026-11-12T20:45:56Z",
+        "updated_at": "2026-11-12T22:27:39Z",
+        "jobs": [
+          {
+            "id": 131480678945,
+            "url": "https://github.com/larsbx/school-ops/actions/runs/43303535201/job/131480678945",
+            "name": "chrome-fixtures",
+            "status": "completed",
+            "conclusion": "success",
+            "failed_or_cancelled_steps": []
+          }
+        ]
+      },
+      {
+        "id": 45973079227,
+        "url": "https://github.com/larsbx/school-ops/actions/runs/45973079227",
+        "name": "SchoolOps self-hosted CRX release verification",
+        "workflow_path": ".github/workflows/youtube-guard-release.yml",
+        "head_sha": "ac04819ca07f4f63ee1657c2beaa714c8a61dd08",
+        "event": "pull_request",
+        "attempt": 1,
+        "status": "completed",
+        "conclusion": "success",
+        "created_at": "2026-11-27T09:21:49Z",
+        "updated_at": "2026-11-27T09:22:54Z",
+        "jobs": [
+          {
+            "id": 140418017016,
+            "url": "https://github.com/larsbx/school-ops/actions/runs/45973079227/job/140418017016",
+            "name": "Lean and Quint release verification",
+            "status": "completed",
+            "conclusion": "success",
+            "failed_or_cancelled_steps": []
+          },
+          {
+            "id": 140418017489,
+            "url": "https://github.com/larsbx/school-ops/actions/runs/45973079227/job/140418017489",
+            "name": "Disposable CRX and HTTPS acceptance (windows-2025)",
+            "status": "completed",
+            "conclusion": "success",
+            "failed_or_cancelled_steps": []
+          },
+          {
+            "id": 140418017571,
+            "url": "https://github.com/larsbx/school-ops/actions/runs/45973079227/job/140418017571",
+            "name": "Disposable CRX and HTTPS acceptance (macos-15)",
+            "status": "completed",
+            "conclusion": "success",
+            "failed_or_cancelled_steps": []
+          },
+          {
+            "id": 140418017622,
+            "url": "https://github.com/larsbx/school-ops/actions/runs/45973079227/job/140418017622",
+            "name": "Disposable CRX and HTTPS acceptance (ubuntu-24.04)",
+            "status": "completed",
+            "conclusion": "success",
+            "failed_or_cancelled_steps": []
+          }
+        ]
+      },
+      {
+        "id": 45973560922,
+        "url": "https://github.com/larsbx/school-ops/actions/runs/45973560922",
+        "name": "Exercise bank",
+        "workflow_path": ".github/workflows/exercise-bank.yml",
+        "head_sha": "09ba1b0a963413d057c2fcaa51861e151f565c74",
+        "event": "push",
+        "attempt": 1,
+        "status": "completed",
+        "conclusion": "success",
+        "created_at": "2026-11-27T09:25:16Z",
+        "updated_at": "2026-11-27T09:26:06Z",
+        "jobs": [
+          {
+            "id": 140419614121,
+            "url": "https://github.com/larsbx/school-ops/actions/runs/45973560922/job/140419614121",
+            "name": "Impact plan",
+            "status": "completed",
+            "conclusion": "success",
+            "failed_or_cancelled_steps": []
+          },
+          {
+            "id": 140419761924,
+            "url": "https://github.com/larsbx/school-ops/actions/runs/45973560922/job/140419761924",
+            "name": "validate (3.11)",
+            "status": "completed",
+            "conclusion": "success",
+            "failed_or_cancelled_steps": []
+          },
+          {
+            "id": 140419761959,
+            "url": "https://github.com/larsbx/school-ops/actions/runs/45973560922/job/140419761959",
+            "name": "validate (3.13)",
+            "status": "completed",
+            "conclusion": "success",
+            "failed_or_cancelled_steps": []
+          },
+          {
+            "id": 140419761964,
+            "url": "https://github.com/larsbx/school-ops/actions/runs/45973560922/job/140419761964",
+            "name": "validate (3.12)",
+            "status": "completed",
+            "conclusion": "success",
+            "failed_or_cancelled_steps": []
+          },
+          {
+            "id": 140419947321,
+            "url": "https://github.com/larsbx/school-ops/actions/runs/45973560922/job/140419947321",
+            "name": "Exercise bank required gate",
+            "status": "completed",
+            "conclusion": "success",
+            "failed_or_cancelled_steps": []
+          }
+        ]
+      },
+      {
+        "id": 45973560817,
+        "url": "https://github.com/larsbx/school-ops/actions/runs/45973560817",
+        "name": "Source archiver",
+        "workflow_path": ".github/workflows/archive-source.yml",
+        "head_sha": "09ba1b0a963413d057c2fcaa51861e151f565c74",
+        "event": "push",
+        "attempt": 1,
+        "status": "completed",
+        "conclusion": "success",
+        "created_at": "2026-11-27T09:25:16Z",
+        "updated_at": "2026-11-27T09:25:26Z",
+        "jobs": null
+      }
+    ],
+    "interpretation": {
+      "pr46": "The PR #46 body retains a Nov 11 queued snapshot, but all four workflows at its final b535425 head completed successfully. PR #46 merged Nov 11 01:53:37Z; queued state is obsolete.",
+      "pr48_body": "The all-five-green claim in PR #48's body is explicitly scoped to earlier head 1f691dbbfe4373f925cee4bb1603a5bc05a87785. Actual final head is 547b118aac9f366fc8366c9ac83579a21cb84d57 after the server-readable staging change; it must not inherit earlier all-green wording.",
+      "pr48_finalhead_failures": [
+        {
+          "run_id": 43042241698,
+          "job_id": 130596804971,
+          "cause": "Ubuntu package-install DNS failure resolving azure.archive.ubuntu.com; failed Install Linux virtual-display dependencies after Python tests passed. Linux native build/GUI checks did not execute. Windows and macOS native jobs passed.",
+          "classification": "external dependency-fetch failure; required Linux native evidence absent for this revision"
+        },
+        {
+          "run_id": 43042241550,
+          "job_id": 130596806950,
+          "cause": "Playwright --with-deps installation failed on Ubuntu archive/security mirror DNS. Browser fixture/packer steps were skipped.",
+          "classification": "external dependency-fetch failure, not a demonstrated rule failure"
+        },
+        {
+          "run_id": 43042241389,
+          "job_id": 130596805125,
+          "cause": "Impact-plan self-test raised ValueError: unregistered test modules: ['tests/test_factorio_practice.py'].",
+          "classification": "historical CI suite-registration defect; current-main impact and full Python validation subsequently pass"
+        }
+      ],
+      "latest_native": {
+        "run_id": 43048170207,
+        "head_sha": "7b359a2f3dc2f8c7d9d9b31667e25d0fd9fe57e8",
+        "created_at": "2026-11-11T15:25:13Z",
+        "job_id": 130617663435,
+        "cause": "Ubuntu failed to resolve azure.archive.ubuntu.com when installing Tk/display dependencies after 168 Python tests ran with one skip. Linux build/GUI checks were skipped. Windows and macOS jobs passed native packaging/self-test.",
+        "windows_architecture": "64-bit Intel; Windows-64bit-intel PyInstaller bootloader in log130617662908",
+        "macos_architecture": "arm64; explicit PyInstaller EXE target arch in log130617663507",
+        "no_newer_native_run": "Actions run pages 1–3, newest 300 of 348 records, contain no later native run. Latest native run remains Nov 11.",
+        "limitation": "Earlier 1f691db native all-platform success is historical and predates final staging permission change; no current complete all-platform native release candidate is established."
+      },
+      "pr48_merge_release": {
+        "run_id": 43048169768,
+        "cause": "Overall failure with successful Linux, Windows and Lean/Quint jobs; macOS job130617662701 was cancelled without test steps. Do not report a proved cryptographic/formal regression."
+      },
+      "current_main": {
+        "run_id": 45973560922,
+        "source_archive_run_id": 45973560817,
+        "result": "Both push workflows passed. Exercise bank jobs passed on Python 3.11, 3.12, 3.13; inspected Python 3.12 log ran 277 tests with 1 skip, plus 22 archive tests. Guard release/installer tests appear in this run.",
+        "limitation": "No dedicated browser or native workflow ran directly on current-main SHA. Fresh release-verifier evidence is at ac04819 with an identical complete source tree."
+      }
+    },
+    "fresh_release_verification": {
+      "run_id": 45973079227,
+      "attempt": 1,
+      "actual_head_sha": "ac04819ca07f4f63ee1657c2beaa714c8a61dd08",
+      "complete_source_tree": "eb85cee239aef8c080dcc858760d27bbc4bb1888",
+      "same_tree_as_current_main": true,
+      "completed_at": "2026-11-27T09:22:54Z",
+      "result": "success",
+      "runtime": {
+        "linux": {
+          "job_id": 140418017622,
+          "release_tests": 40,
+          "installer_tests": 26,
+          "separate_server_account_tests": 1,
+          "all_passed": true
+        },
+        "windows": {
+          "job_id": 140418017489,
+          "release_tests": 40,
+          "release_skips": 2,
+          "skip_reasons": [
+            "POSIX publication permissions",
+            "Unprivileged Windows symlink creation varies by runner"
+          ],
+          "installer_tests": 26,
+          "installer_skips": 0
+        },
+        "macos": {
+          "job_id": 140418017571,
+          "release_tests": 40,
+          "installer_tests": 26,
+          "all_passed": true
+        }
+      },
+      "formal": {
+        "job_id": 140418017016,
+        "lean_version": "4.19.0",
+        "quint_version": "0.33.1",
+        "lean_theorems": 44,
+        "allowed_axioms": [
+          "propext"
+        ],
+        "quint_successor_closed_states": 81,
+        "scenarios": 8,
+        "negative_controls": 5,
+        "admission_assignments": 256,
+        "malformed_runtime_inputs_refused": 53,
+        "log_result": "PASS: 44 Lean theorems; axiom audit; 81 Quint states at successor closure; 8 scenarios; 5 negative controls; 256 admission assignments; 53 malformed runtime inputs",
+        "actual_artifacts": [
+          "tools/browser/site_scoped_youtube_guard/formal/Release.lean",
+          "tools/browser/site_scoped_youtube_guard/formal/GuardProbe.lean",
+          "tools/browser/site_scoped_youtube_guard/formal/Audit.lean",
+          "tools/browser/site_scoped_youtube_guard/formal/release.qnt"
+        ],
+        "scope": "Abstract state-machine invariants and exhaustive eight-Boolean admission projection consistency between Python, Lean and Quint. Does not prove cryptography, TLS, parsers, filesystem durability, version encoding, full runtime refinement, concurrency, Chrome behavior or liveness. This evidence does not establish estate-v3 membership or compliance."
+      }
+    },
+    "latest_browser_verification": {
+      "run_id": 43303535201,
+      "attempt": 1,
+      "head_sha": "f07451cee7e8a9b9bb6435fefbe63089af4cded4",
+      "pr": 53,
+      "status": "success",
+      "job_id": 131480678945,
+      "network_cases": {
+        "passed": 163,
+        "total": 163
+      },
+      "hypothetical_probes": {
+        "passed": 8,
+        "total": 8
+      },
+      "browser": "Chrome for Testing 151.0.7922.34",
+      "python_tests": 168,
+      "python_skips": 1,
+      "scope": "Controlled HTTPS fixtures; hypothetical DNR probes are separate. Does not establish real YouTube playback or managed enforcement."
+    },
+    "artifacts": {
+      "fresh_release_verification": [
+        {
+          "id": 15186370368,
+          "name": "schoolops-crx-release-ubuntu-24.04",
+          "run_id": 45973079227,
+          "head_sha": "ac04819ca07f4f63ee1657c2beaa714c8a61dd08",
+          "expired": false,
+          "created_at": "2026-11-27T09:22:06Z",
+          "expires_at": "2026-12-27T09:22:06Z",
+          "size_in_bytes": 2710,
+          "digest": "sha256:8c6805ee2c4d63833e8540704524eaf0ccf190b87c96072b9942beb13448e1e3",
+          "url": "https://github.com/larsbx/school-ops/actions/runs/45973079227/artifacts/15186370368",
+          "api_url": "https://api.github.com/repos/larsbx/school-ops/actions/artifacts/15186370368"
+        },
+        {
+          "id": 15186190867,
+          "name": "schoolops-crx-release-macos-15",
+          "run_id": 45973079227,
+          "head_sha": "ac04819ca07f4f63ee1657c2beaa714c8a61dd08",
+          "expired": false,
+          "created_at": "2026-11-27T09:22:50Z",
+          "expires_at": "2026-12-27T09:22:49Z",
+          "size_in_bytes": 2464,
+          "digest": "sha256:cb2258abf7d21f2e1ddab72526393e8d019347e0190732cf364d75f8b669ad25",
+          "url": "https://github.com/larsbx/school-ops/actions/runs/45973079227/artifacts/15186190867",
+          "api_url": "https://api.github.com/repos/larsbx/school-ops/actions/artifacts/15186190867"
+        },
+        {
+          "id": 15186066270,
+          "name": "schoolops-crx-release-formal",
+          "run_id": 45973079227,
+          "head_sha": "ac04819ca07f4f63ee1657c2beaa714c8a61dd08",
+          "expired": false,
+          "created_at": "2026-11-27T09:22:27Z",
+          "expires_at": "2026-12-27T09:22:26Z",
+          "size_in_bytes": 7896,
+          "digest": "sha256:3d3b3b110b74837f91fe03091749ce718ef639b664e485352bc7089b9db324e2",
+          "url": "https://github.com/larsbx/school-ops/actions/runs/45973079227/artifacts/15186066270",
+          "api_url": "https://api.github.com/repos/larsbx/school-ops/actions/artifacts/15186066270"
+        },
+        {
+          "id": 15185593140,
+          "name": "schoolops-crx-release-windows-2025",
+          "run_id": 45973079227,
+          "head_sha": "ac04819ca07f4f63ee1657c2beaa714c8a61dd08",
+          "expired": false,
+          "created_at": "2026-11-27T09:22:20Z",
+          "expires_at": "2026-12-27T09:22:19Z",
+          "size_in_bytes": 2552,
+          "digest": "sha256:93ae597a3f14089cb6a00624f26e3752ecc681b615842638a22d16407389a5ae",
+          "url": "https://github.com/larsbx/school-ops/actions/runs/45973079227/artifacts/15185593140",
+          "api_url": "https://api.github.com/repos/larsbx/school-ops/actions/artifacts/15185593140"
+        }
+      ],
+      "latest_browser": [
+        {
+          "id": 13989912099,
+          "name": "youtube-guard-chrome-evidence",
+          "run_id": 43303535201,
+          "head_sha": "f07451cee7e8a9b9bb6435fefbe63089af4cded4",
+          "expired": false,
+          "created_at": "2026-11-12T22:27:36Z",
+          "expires_at": "2026-12-12T22:27:35Z",
+          "size_in_bytes": 15415,
+          "digest": "sha256:cf1612f70debf43dbae5c86ff0e4be0d49e82c1c7a25a97d924237fd5508dd85",
+          "url": "https://github.com/larsbx/school-ops/actions/runs/43303535201/artifacts/13989912099",
+          "api_url": "https://api.github.com/repos/larsbx/school-ops/actions/artifacts/13989912099"
+        }
+      ],
+      "native": {
+        "workflow_retention_days": 14,
+        "queried_runs": [
+          {
+            "run_id": 42933442712,
+            "records_returned": 0
+          },
+          {
+            "run_id": 43042241698,
+            "records_returned": 0
+          },
+          {
+            "run_id": 43048170207,
+            "records_returned": 0
+          }
+        ],
+        "availability": "No native artifact records returned for these runs as of audit; these are not available download targets.",
+        "historical_uploads_from_latest_native_logs": [
+          {
+            "id": 13867492905,
+            "name": "schoolops-youtube-guard-windows-2025-unsigned",
+            "uploaded_at": "2026-11-11T15:26:15Z",
+            "architecture": "x86_64",
+            "currently_listed": false,
+            "expires_at": null
+          },
+          {
+            "id": 13868033808,
+            "name": "schoolops-youtube-guard-macos-15-unsigned",
+            "uploaded_at": "2026-11-11T15:35:44Z",
+            "architecture": "arm64",
+            "currently_listed": false,
+            "expires_at": null
+          }
+        ],
+        "expiry_qualification": "Exact old expires_at values are unavailable because API lists are empty. Workflow retention is 14 days; uploads are 16 days old. Do not invent an exact expiry timestamp or claim a specific deletion cause."
+      },
+      "github_releases": {
+        "api_url": "https://api.github.com/repos/larsbx/school-ops/releases?per_page=30",
+        "records_returned": 0,
+        "meaning": "No GitHub Releases returned. This alone does not exclude out-of-band publication elsewhere."
+      }
+    },
+    "repository_governance": {
+      "branch_api_url": "https://api.github.com/repos/larsbx/school-ops/branches/main",
+      "protected": false,
+      "protection_enabled": false,
+      "required_status_check_enforcement": "off",
+      "required_contexts": [],
+      "rulesets_api_url": "https://api.github.com/repos/larsbx/school-ops/rulesets?per_page=100",
+      "returned_rulesets": [],
+      "qualification": "Read-only observed repository API responses. Successful CI is distinct from an enforced required-check/merge gate.",
+      "open_issue_29_url": "https://github.com/larsbx/school-ops/issues/29"
+    },
+    "implemented_capabilities": [
+      "Five-step resumable GUI with deterministic prepared ZIP/fingerprint and frozen configuration; Windows/Linux explicit elevated application, conflict preservation, idempotence and ownership-receipt removal; macOS unsigned MDM profile and ChromeOS admin instructions.",
+      "Self-hosted CRX3 RSA/SHA256 signing or detached signer integration; immutable identity/version/URL preparation; exact update XML; manifest-last local staging with reviewed plan digest and cooperating-publisher lock.",
+      "Independent anonymous HTTPS exact-byte, signature and configuration verification with normal TLS checks and no redirects; receipt required before new self-hosted deployment export/application.",
+      "Executable release implementation, formal verification and disposable three-OS acceptance exist and are exercised; these are code/test capabilities, not a production deployment record."
+    ],
+    "deployment_boundaries": [
+      "No actual school hostname/managed estate inventory was supplied in the audited configuration: approved-site.invalid remains a deliberate placeholder.",
+      "Current repo/PR evidence does not establish production extension signing, a Chrome Web Store listing, deployment to a real HTTPS host, enrolled school devices, or applied production enterprise policy.",
+      "CI signs disposable test CRXs and creates disposable TLS credentials; native application candidates are unsigned. Those tests do not create a production release.",
+      "Self-hosted verification receipt is an unsigned observation of downloaded bytes, not an authenticated authorization or continuing availability guarantee; matching manifest observations cannot exclude change-and-change-back.",
+      "Local staging is the implemented publication adapter; advisory locking covers cooperating writers. There is no automatic production publishing job.",
+      "Chrome Web Store binding remains operator attestation, distinct from the self-hosted independent byte-verification path.",
+      "Static website configuration requires new extension version under the same signing identity; it is not runtime storage.managed configuration.",
+      "Windows assumes administrator-controlled policy/receipt registry ACLs and does not transact with simultaneous writers; Linux refuses competing ExtensionSettings files."
+    ],
+    "remaining_obligations": [
+      {
+        "id": "production-config-and-custody",
+        "owner_role": "School/IT release owner",
+        "action": "Approve actual portal hostnames, supported OS/architectures, management authority, extension identity/key custody, versions and update channel. Keep real credentials/device data private.",
+        "source": "https://github.com/larsbx/school-ops/issues/24"
+      },
+      {
+        "id": "durable-native-release",
+        "owner_role": "Release maintainer",
+        "action": "Produce and inspect a fresh complete native build at the selected exact release revision; resolve Linux dependency-fetch gap, record architecture, sign/notarize supported applications as appropriate, and retain a durable reviewed distribution with hashes. Current native CI downloads have disappeared.",
+        "source": "https://github.com/larsbx/school-ops/actions/runs/43048170207"
+      },
+      {
+        "id": "production-publication",
+        "owner_role": "Authorized signing/hosting operator",
+        "action": "Review and perform production signing/Store submission or exact self-hosted hosting writes; independently verify the actual served configuration and handoff receipt before deployment.",
+        "source": "https://github.com/larsbx/school-ops/blob/09ba1b0a963413d057c2fcaa51861e151f565c74/tools/browser/site_scoped_youtube_guard/RELEASE.md"
+      },
+      {
+        "id": "managed-device-pilot",
+        "owner_role": "Authorized device administrator",
+        "action": "Reconcile authoritative existing policies, enroll target devices, apply managed installation, and record standard-user force-install/update/restart/disable-uninstall behavior, real permitted playback, denied navigation/new-tab/offsite/lookalike cases, and bypass assessment.",
+        "source": "https://github.com/larsbx/school-ops/issues/24"
+      },
+      {
+        "id": "release-gate-record",
+        "owner_role": "Release owner",
+        "action": "Update issue 24 evidence/checklist against actual completed work; retain independent device evidence and rollout approval. Its still-open checklist does not itself prove all code tasks remain undone.",
+        "source": "https://github.com/larsbx/school-ops/issues/24"
+      },
+      {
+        "id": "operator-docs-review",
+        "owner_role": "Documentation maintainer",
+        "action": "Review still-open PR #53 operator-checklist rewrite; do not present its docs as current-main content.",
+        "source": "https://github.com/larsbx/school-ops/pull/53"
+      },
+      {
+        "id": "required-check-governance",
+        "owner_role": "Repository administrator",
+        "action": "Resolve issue 29 check-migration/merge-queue acceptance and verify actual required protection. Current API reports main unprotected and no returned rulesets.",
+        "source": "https://github.com/larsbx/school-ops/issues/29"
+      }
+    ]
+  },
+  "ci_pilot_observations": {
+    "artifacts": [
+      {
+        "api_url": "https://api.github.com/repos/larsbx/school-ops/actions/artifacts/15186275530",
+        "archive_sha256": "3fc299b1631bce107e85afaac91aa5c2933a94adfb1316da9c2845abe1284aa8",
+        "artifact_id": 15186275530,
+        "downloaded_and_digest_verified": true,
+        "expired_at_retrieval": false,
+        "identity_limitation": "ci-plan.json lacks base/head/tested commit, run/attempt identity, and selector/policy digests; source binding here requires associated GitHub metadata and checkout logs.",
+        "member_inspected": "ci-plan.json",
+        "name": "exercise-bank-impact-plan",
+        "run_id": 45973079244,
+        "size_in_bytes": 770,
+        "url": "https://github.com/larsbx/school-ops/actions/runs/45973079244/artifacts/15186275530"
+      },
+      {
+        "api_url": "https://api.github.com/repos/larsbx/school-ops/actions/artifacts/15186261258",
+        "archive_sha256": "d8323729e5dcc6b089e5f7014ea21820fda52cbd4b85249e7f291e9aa1091f8c",
+        "artifact_id": 15186261258,
+        "downloaded_and_digest_verified": true,
+        "expired_at_retrieval": false,
+        "identity_limitation": "ci-plan.json lacks base/head/tested commit, run/attempt identity, and selector/policy digests; source binding here requires associated GitHub metadata and checkout logs.",
+        "member_inspected": "ci-plan.json",
+        "name": "exercise-bank-impact-plan",
+        "run_id": 45973560922,
+        "size_in_bytes": 770,
+        "url": "https://github.com/larsbx/school-ops/actions/runs/45973560922/artifacts/15186261258"
+      }
+    ],
+    "compiled_at_utc": "2026-11-27T15:50:05Z",
+    "current_main_inclusion": {
+      "base_sha": "2aa3eb3a7934a564755823c0fb604ff1bb3b3cfd",
+      "head_and_main_full_trees_identical": true,
+      "head_sha": "ac04819ca07f4f63ee1657c2beaa714c8a61dd08",
+      "head_tree_sha": "eb85cee239aef8c080dcc858760d27bbc4bb1888",
+      "merge_commit_sha": "09ba1b0a963413d057c2fcaa51861e151f565c74",
+      "merged": true,
+      "merged_at_utc": "2026-11-27T09:25:13Z",
+      "pull_request_number": 69,
+      "tested_synthetic_merge_sha": "beb735751b4ef5c09726636f5cd86cc0df2e3aa9",
+      "tree_identity_source": "git rev-parse <revision>^{tree}; both objects independently read in the audit checkout",
+      "url": "https://github.com/larsbx/school-ops/pull/69"
+    },
+    "g8_assessment": {
+      "demonstrated": [
+        "Pilot implementation merged and present at current main",
+        "Identified PR head/base/tested synthetic merge with all planner/matrix/final-gate jobs successful",
+        "Current-main push with all planner/matrix/final-gate jobs successful at exact main SHA",
+        "Plan artifacts inspected and transport digests verified"
+      ],
+      "limitations": [
+        "A job named required gate is not evidence that branch or ruleset policy requires it",
+        "Plan artifacts require associated hosted metadata and logs for source attribution",
+        "Ubuntu runs skip one Windows-only disposable registry integration test",
+        "Separate browser/native/release/deployment obligations are outside this G8 audit"
+      ],
+      "remaining": [
+        "Actual successful merge_group execution with explicit queue base/head/tested commit, attempt and job evidence",
+        "Reviewed protected-context adoption or migration and independently verified enforcement",
+        "If estate acceptance requires portable exact-source receipts, add source/run/attempt/policy identity to the plan/receipt contract"
+      ],
+      "status": "partial_remains_open"
+    },
+    "implementation_observations": {
+      "constant_gate_conditions": "if: always(); needs: [plan, validate]; both results must equal success",
+      "constant_gate_name": "Exercise bank required gate",
+      "matrix_python_versions": [
+        "3.11",
+        "3.12",
+        "3.13"
+      ],
+      "path_filtered_required_workflow": false,
+      "registered_suite_count": 19,
+      "selector_controls": [
+        "critical paths force full coverage",
+        "unmapped paths force full coverage",
+        "unregistered test modules rejected",
+        "dependency cycles rejected",
+        "unknown suite identifiers rejected",
+        "missing selected modules rejected"
+      ],
+      "source_comparison": "Event-specific base and github.sha; git diff --name-only --no-renames -z base...head",
+      "source_identity_note": "Declared triggers and workflow code alone are not evidence of successful execution or protected-context enforcement.",
+      "triggers": [
+        "pull_request",
+        "push:main",
+        "merge_group",
+        "schedule",
+        "workflow_dispatch"
+      ]
+    },
+    "local_validation": {
+      "command": "python3 -m unittest discover -s ci -p 'test_*.py' -v",
+      "discovered": 21,
+      "exit_code": 0,
+      "passed": 21,
+      "skipped": 0,
+      "source_sha": "09ba1b0a963413d057c2fcaa51861e151f565c74"
+    },
+    "merge_group_observation": {
+      "conclusion": "No retained merge_group runs returned at retrieval; trigger declaration does not demonstrate execution.",
+      "result": "successful_response",
+      "total_count": 0,
+      "url": "https://api.github.com/repos/larsbx/school-ops/actions/runs?event=merge_group&per_page=100",
+      "workflow_runs": []
+    },
+    "original_pilot": {
+      "head_sha": "620cca0326ff0026e5187e9b333719a6b2404a40",
+      "merge_commit_sha": "e4d8b76a86aefab4c9eb47dc964865e1331e75a3",
+      "merged": true,
+      "merged_at_utc": "2026-11-02T01:50:57Z",
+      "pull_request_number": 28,
+      "url": "https://github.com/larsbx/school-ops/pull/28"
+    },
+    "protection_observations": [
+      {
+        "interpretation": "Branch metadata currently reports no protected-context enforcement.",
+        "response_subset": {
+          "protected": false,
+          "protection": {
+            "enabled": false,
+            "required_status_checks": {
+              "checks": [],
+              "contexts": [],
+              "enforcement_level": "off"
+            }
+          }
+        },
+        "result": "successful_response",
+        "url": "https://api.github.com/repos/larsbx/school-ops/branches/main"
+      },
+      {
+        "interpretation": "No repository or parent rulesets returned by this query.",
+        "response": [],
+        "result": "successful_response",
+        "url": "https://api.github.com/repos/larsbx/school-ops/rulesets?includes_parents=true"
+      },
+      {
+        "error_code": "FORBIDDEN",
+        "http_status": 403,
+        "interpretation": "Administrative detail endpoint inaccessible; this is not a 404 or proof from this endpoint that a rule does not exist.",
+        "message": "Resource not accessible by integration",
+        "result": "inaccessible",
+        "url": "https://api.github.com/repos/larsbx/school-ops/branches/main/protection"
+      }
+    ],
+    "repository": {
+      "branch": "main",
+      "current_main_commit_url": "https://github.com/larsbx/school-ops/commit/09ba1b0a963413d057c2fcaa51861e151f565c74",
+      "current_main_sha": "09ba1b0a963413d057c2fcaa51861e151f565c74",
+      "full_name": "larsbx/school-ops",
+      "main_tree_sha": "eb85cee239aef8c080dcc858760d27bbc4bb1888",
+      "url": "https://github.com/larsbx/school-ops"
+    },
+    "retrieval_time_note": "Final refresh of main branch metadata and merge_group event query; other sources were retrieved during the same audit immediately before this refresh.",
+    "retrieval_utc": "2026-11-27T15:45:57Z",
+    "schema_version": 1,
+    "scope": "Read-only SchoolOps CI pilot evidence for estate-governance ROADMAP obligation G8; not estate-wide compliance or Chrome/device deployment acceptance.",
+    "source_files": [
+      {
+        "git_blob_sha": "8b34bf41f1916ea8ad5e2e757cb18840b3944630",
+        "path": ".github/workflows/exercise-bank.yml",
+        "sha256": "fb8fd5324d0a529d4e28ec871987fa13c146c6788170a7e9149dbf9ef83fc908",
+        "source_commit_sha": "09ba1b0a963413d057c2fcaa51861e151f565c74",
+        "url": "https://github.com/larsbx/school-ops/blob/09ba1b0a963413d057c2fcaa51861e151f565c74/.github/workflows/exercise-bank.yml"
+      },
+      {
+        "git_blob_sha": "cff578f77a8b28eb004e892089f44b0c95da9891",
+        "path": "ci/policy.json",
+        "sha256": "68f329c80955de9b0f9911832fe82192fd60e44cf667ffef3408e5849c324f24",
+        "source_commit_sha": "09ba1b0a963413d057c2fcaa51861e151f565c74",
+        "url": "https://github.com/larsbx/school-ops/blob/09ba1b0a963413d057c2fcaa51861e151f565c74/ci/policy.json"
+      },
+      {
+        "git_blob_sha": "0d79cea2d31ba8cb107d834c19e9cd433e5a476f",
+        "path": "ci/impact.py",
+        "sha256": "c6f8ff18bf60b6900943439551a3abcc5bd04a5ca79de3a6cca7226eb4f4047a",
+        "source_commit_sha": "09ba1b0a963413d057c2fcaa51861e151f565c74",
+        "url": "https://github.com/larsbx/school-ops/blob/09ba1b0a963413d057c2fcaa51861e151f565c74/ci/impact.py"
+      },
+      {
+        "git_blob_sha": "b5a6d1f755c034279c464c2d4ac710ec518b7582",
+        "path": "ci/run_selected.py",
+        "sha256": "351e5f4b93f42e4731a0e30b2fdfd0b2a3619428bfe3d5091ab879e3ce1d8feb",
+        "source_commit_sha": "09ba1b0a963413d057c2fcaa51861e151f565c74",
+        "url": "https://github.com/larsbx/school-ops/blob/09ba1b0a963413d057c2fcaa51861e151f565c74/ci/run_selected.py"
+      },
+      {
+        "git_blob_sha": "2a9e8678061c384c8293daaf8cdf2f3ad009f2a5",
+        "path": "ci/test_impact.py",
+        "sha256": "d316808a6a2151c9bd1bae29992913c0dcae0d06959f3e33046cbcbbb2258264",
+        "source_commit_sha": "09ba1b0a963413d057c2fcaa51861e151f565c74",
+        "url": "https://github.com/larsbx/school-ops/blob/09ba1b0a963413d057c2fcaa51861e151f565c74/ci/test_impact.py"
+      },
+      {
+        "git_blob_sha": "9c4177207509e4afb52adca1afd026e4dc4bb531",
+        "path": "docs/ci-impact-selection.md",
+        "sha256": "34688c3163c49906963a164ae159ea21ae0b66330e0372c442a5de61ef23cb1f",
+        "source_commit_sha": "09ba1b0a963413d057c2fcaa51861e151f565c74",
+        "url": "https://github.com/larsbx/school-ops/blob/09ba1b0a963413d057c2fcaa51861e151f565c74/docs/ci-impact-selection.md"
+      }
+    ],
+    "verified_runs": [
+      {
+        "associated_head_sha": "ac04819ca07f4f63ee1657c2beaa714c8a61dd08",
+        "check_suite_id": 124374331794,
+        "comparison_base_sha": "2aa3eb3a7934a564755823c0fb604ff1bb3b3cfd",
+        "conclusion": "success",
+        "created_at_utc": "2026-11-27T09:21:49Z",
+        "event": "pull_request",
+        "jobs": [
+          {
+            "checkout_sha_observed_in_log": "beb735751b4ef5c09726636f5cd86cc0df2e3aa9",
+            "conclusion": "success",
+            "job_id": 140418017288,
+            "log_inspected": true,
+            "name": "Impact plan",
+            "role": "planner",
+            "status": "completed",
+            "tests": {
+              "discovered": 21,
+              "passed": 21,
+              "skipped": 0
+            },
+            "url": "https://github.com/larsbx/school-ops/actions/runs/45973079244/job/140418017288"
+          },
+          {
+            "checkout_sha_observed_in_log": "beb735751b4ef5c09726636f5cd86cc0df2e3aa9",
+            "conclusion": "success",
+            "job_id": 140418157619,
+            "log_inspected": true,
+            "name": "validate (3.11)",
+            "role": "validation",
+            "selected_mode_observed_in_log": "full",
+            "status": "completed",
+            "test_roots": [
+              {
+                "directory": "tests",
+                "discovered": 277,
+                "passed": 276,
+                "skip_reason": "Actual disposable Windows registry integration",
+                "skipped": 1
+              },
+              {
+                "directory": "tools",
+                "discovered": 22,
+                "passed": 22,
+                "skipped": 0
+              }
+            ],
+            "url": "https://github.com/larsbx/school-ops/actions/runs/45973079244/job/140418157619"
+          },
+          {
+            "checkout_sha_observed_in_log": "beb735751b4ef5c09726636f5cd86cc0df2e3aa9",
+            "conclusion": "success",
+            "job_id": 140418157576,
+            "log_inspected": true,
+            "name": "validate (3.12)",
+            "role": "validation",
+            "selected_mode_observed_in_log": "full",
+            "status": "completed",
+            "test_roots": [
+              {
+                "directory": "tests",
+                "discovered": 277,
+                "passed": 276,
+                "skip_reason": "Actual disposable Windows registry integration",
+                "skipped": 1
+              },
+              {
+                "directory": "tools",
+                "discovered": 22,
+                "passed": 22,
+                "skipped": 0
+              }
+            ],
+            "url": "https://github.com/larsbx/school-ops/actions/runs/45973079244/job/140418157576"
+          },
+          {
+            "checkout_sha_observed_in_log": "beb735751b4ef5c09726636f5cd86cc0df2e3aa9",
+            "conclusion": "success",
+            "job_id": 140418157612,
+            "log_inspected": true,
+            "name": "validate (3.13)",
+            "role": "validation",
+            "selected_mode_observed_in_log": "full",
+            "status": "completed",
+            "test_roots": [
+              {
+                "directory": "tests",
+                "discovered": 277,
+                "passed": 276,
+                "skip_reason": "Actual disposable Windows registry integration",
+                "skipped": 1
+              },
+              {
+                "directory": "tools",
+                "discovered": 22,
+                "passed": 22,
+                "skipped": 0
+              }
+            ],
+            "url": "https://github.com/larsbx/school-ops/actions/runs/45973079244/job/140418157612"
+          },
+          {
+            "conclusion": "success",
+            "job_id": 140418347577,
+            "log_inspected": true,
+            "name": "Exercise bank required gate",
+            "observed_environment": {
+              "PLAN_RESULT": "success",
+              "TEST_RESULT": "success"
+            },
+            "role": "aggregate_gate",
+            "status": "completed",
+            "url": "https://github.com/larsbx/school-ops/actions/runs/45973079244/job/140418347577"
+          }
+        ],
+        "metadata_url": "https://api.github.com/repos/larsbx/school-ops/actions/runs/45973079244",
+        "pull_request_number": 69,
+        "run_attempt": 1,
+        "run_id": 45973079244,
+        "selection": {
+          "full_discovery_roots": [
+            "tests",
+            "tools"
+          ],
+          "mode": "full",
+          "reasons": [
+            "critical path: ci/policy.json",
+            "critical path: ci/test_impact.py"
+          ],
+          "registered_suite_count": 19,
+          "unknown_paths": []
+        },
+        "status": "completed",
+        "tested_sha_kind": "synthetic_pull_request_merge",
+        "tested_sha_observed_in_all_checkout_logs": "beb735751b4ef5c09726636f5cd86cc0df2e3aa9",
+        "updated_at_utc": "2026-11-27T09:22:42Z",
+        "url": "https://github.com/larsbx/school-ops/actions/runs/45973079244",
+        "workflow_name": "Exercise bank",
+        "workflow_path": ".github/workflows/exercise-bank.yml"
+      },
+      {
+        "associated_head_sha": "09ba1b0a963413d057c2fcaa51861e151f565c74",
+        "check_suite_id": 124375591440,
+        "comparison_base_sha": "2aa3eb3a7934a564755823c0fb604ff1bb3b3cfd",
+        "conclusion": "success",
+        "created_at_utc": "2026-11-27T09:25:16Z",
+        "event": "push",
+        "jobs": [
+          {
+            "checkout_sha_observed_in_log": "09ba1b0a963413d057c2fcaa51861e151f565c74",
+            "conclusion": "success",
+            "job_id": 140419614121,
+            "log_inspected": true,
+            "name": "Impact plan",
+            "role": "planner",
+            "status": "completed",
+            "tests": {
+              "discovered": 21,
+              "passed": 21,
+              "skipped": 0
+            },
+            "url": "https://github.com/larsbx/school-ops/actions/runs/45973560922/job/140419614121"
+          },
+          {
+            "checkout_sha_observed_in_log": "09ba1b0a963413d057c2fcaa51861e151f565c74",
+            "conclusion": "success",
+            "job_id": 140419761924,
+            "log_inspected": true,
+            "name": "validate (3.11)",
+            "role": "validation",
+            "selected_mode_observed_in_log": "full",
+            "status": "completed",
+            "test_roots": [
+              {
+                "directory": "tests",
+                "discovered": 277,
+                "passed": 276,
+                "skip_reason": "Actual disposable Windows registry integration",
+                "skipped": 1
+              },
+              {
+                "directory": "tools",
+                "discovered": 22,
+                "passed": 22,
+                "skipped": 0
+              }
+            ],
+            "url": "https://github.com/larsbx/school-ops/actions/runs/45973560922/job/140419761924"
+          },
+          {
+            "checkout_sha_observed_in_log": "09ba1b0a963413d057c2fcaa51861e151f565c74",
+            "conclusion": "success",
+            "job_id": 140419761964,
+            "log_inspected": true,
+            "name": "validate (3.12)",
+            "role": "validation",
+            "selected_mode_observed_in_log": "full",
+            "status": "completed",
+            "test_roots": [
+              {
+                "directory": "tests",
+                "discovered": 277,
+                "passed": 276,
+                "skip_reason": "Actual disposable Windows registry integration",
+                "skipped": 1
+              },
+              {
+                "directory": "tools",
+                "discovered": 22,
+                "passed": 22,
+                "skipped": 0
+              }
+            ],
+            "url": "https://github.com/larsbx/school-ops/actions/runs/45973560922/job/140419761964"
+          },
+          {
+            "checkout_sha_observed_in_log": "09ba1b0a963413d057c2fcaa51861e151f565c74",
+            "conclusion": "success",
+            "job_id": 140419761959,
+            "log_inspected": true,
+            "name": "validate (3.13)",
+            "role": "validation",
+            "selected_mode_observed_in_log": "full",
+            "status": "completed",
+            "test_roots": [
+              {
+                "directory": "tests",
+                "discovered": 277,
+                "passed": 276,
+                "skip_reason": "Actual disposable Windows registry integration",
+                "skipped": 1
+              },
+              {
+                "directory": "tools",
+                "discovered": 22,
+                "passed": 22,
+                "skipped": 0
+              }
+            ],
+            "url": "https://github.com/larsbx/school-ops/actions/runs/45973560922/job/140419761959"
+          },
+          {
+            "conclusion": "success",
+            "job_id": 140419947321,
+            "log_inspected": true,
+            "name": "Exercise bank required gate",
+            "observed_environment": {
+              "PLAN_RESULT": "success",
+              "TEST_RESULT": "success"
+            },
+            "role": "aggregate_gate",
+            "status": "completed",
+            "url": "https://github.com/larsbx/school-ops/actions/runs/45973560922/job/140419947321"
+          }
+        ],
+        "metadata_url": "https://api.github.com/repos/larsbx/school-ops/actions/runs/45973560922",
+        "run_attempt": 1,
+        "run_id": 45973560922,
+        "selection": {
+          "full_discovery_roots": [
+            "tests",
+            "tools"
+          ],
+          "mode": "full",
+          "reasons": [
+            "critical path: ci/policy.json",
+            "critical path: ci/test_impact.py"
+          ],
+          "registered_suite_count": 19,
+          "unknown_paths": []
+        },
+        "status": "completed",
+        "tested_sha_kind": "main_push_commit",
+        "tested_sha_observed_in_all_checkout_logs": "09ba1b0a963413d057c2fcaa51861e151f565c74",
+        "updated_at_utc": "2026-11-27T09:26:06Z",
+        "url": "https://github.com/larsbx/school-ops/actions/runs/45973560922",
+        "workflow_name": "Exercise bank",
+        "workflow_path": ".github/workflows/exercise-bank.yml"
+      }
+    ]
+  }
+}
