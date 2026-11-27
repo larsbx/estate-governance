@@ -43,6 +43,7 @@ technologies, not restrictions on those implementation choices.
 | [Registry snapshot tool](tools/snapshot_registry.py) | Derive records from exact member manifests |
 | [Formal gate](tools/check_formal.py) | Execute the declared formal checks and write evidence |
 | [Roadmap](ROADMAP.md) | Remaining engineering and consumer migration work |
+| [SchoolOps pilot evidence](docs/audits/schoolops-chrome-install-2026-11-27.md) | Dated Chrome installation, release-verification and CI observations; remaining rollout and G8 obligations |
 
 ## Adopting v3
 

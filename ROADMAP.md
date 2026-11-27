@@ -94,6 +94,17 @@ The [SchoolOps pilot](https://github.com/larsbx/school-ops/pull/28) and
 work, not alternate estate policy authorities. Their present state must be
 inspected before reporting completion.
 
+**SchoolOps evidence update — 2026-11-27:** the
+[Chrome installation and CI audit](docs/audits/schoolops-chrome-install-2026-11-27.md)
+records merged installation/release work, successful current-source regression
+and scoped Lean/Quint release verification, and the observed native-distribution
+and managed-device gaps. G8 is partially demonstrated: current PR and main-push
+planning, Python 3.11–3.13 jobs, and final gates passed, while actual merge-group
+execution and reviewed protected-context enforcement remain unestablished. The
+paired observations preserve exact source/run identities and API access limits.
+SchoolOps remains an unregistered CI pilot in this record; this focused audit
+does not complete F2/G1 inventory or establish estate v3 adoption.
+
 ## Historical record
 
 The original members adopted v2 through DR-0001, with the former boundary policy
