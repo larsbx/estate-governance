@@ -43,6 +43,7 @@ technologies, not restrictions on those implementation choices.
 | [Registry snapshot tool](tools/snapshot_registry.py) | Derive records from exact member manifests |
 | [Formal gate](tools/check_formal.py) | Execute the declared formal checks and write evidence |
 | [Roadmap](ROADMAP.md) | Remaining engineering and consumer migration work |
+| [Biz-kit migration audit](docs/audits/biz-kit-migration-2026-11-27.md) | Eatsbot removal, SpruceGoose cutover evidence and dependency review status |
 
 ## Adopting v3
 
