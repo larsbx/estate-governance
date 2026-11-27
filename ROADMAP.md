@@ -105,3 +105,12 @@ Outstanding ownership/archival and proposed-membership questions should be check
 against current repository state and decision records during F2. No archival,
 membership change, bulk pin bump, or branch-protection change is performed by this
 roadmap revision.
+
+## Biz-kit release integration assessment
+
+The [2026-11-27 assessment](docs/audits/biz-kit-ship-keel-2026-11-27.md)
+records the Keel signing contract's successful hosted run and the integration
+branches' absence from inspected main sources. BKS1–BKS6 track reconciliation,
+admitted governance inputs, automatic delivery, current authority checks,
+Biz-kit browser acceptance and Lean/Quint correspondence. This contributes
+to F2, F5 and G9 with source-specific evidence and explicit remaining work.
